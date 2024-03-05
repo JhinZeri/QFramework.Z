@@ -11,16 +11,7 @@
  *  liangxie        https://github.com/liangxie
  *  soso            https://github.com/so-sos-so
  * -----------------------------------------------------------------------
- * QFramework.Z 定制版 Unity6 + Odin
- *
- * References: ZMUIFramework
- *
- * Copyright (c) 2024 Zane Pixel MIT License
- *
- * https://gitee.com/Aphelios4396/qframework.Z
- *
- * Author:
- *  Zane Pixel      https://gitee.com/Aphelios4396
+ * QFramework.Z 定制版 Unity 6 + Odin
  -------------------------------------------------------------------------*/
 
 using System;

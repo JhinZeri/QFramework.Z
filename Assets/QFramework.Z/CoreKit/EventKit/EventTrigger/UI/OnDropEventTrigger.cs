@@ -27,14 +27,10 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     public static class OnDropEventTriggerExtension
     {
         public static IUnRegister OnDropEvent<T>(this T self, Action<PointerEventData> onDrop)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnDropEventTrigger>().OnDropEvent.Register(onDrop);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnDropEventTrigger>().OnDropEvent.Register(onDrop);
 
-        public static IUnRegister OnDropEvent(this GameObject self, Action<PointerEventData> onDrop)
-        {
-            return self.GetOrAddComponent<OnDropEventTrigger>().OnDropEvent.Register(onDrop);
-        }
+        public static IUnRegister OnDropEvent(this GameObject self, Action<PointerEventData> onDrop) =>
+            self.GetOrAddComponent<OnDropEventTrigger>().OnDropEvent.Register(onDrop);
     }
 }

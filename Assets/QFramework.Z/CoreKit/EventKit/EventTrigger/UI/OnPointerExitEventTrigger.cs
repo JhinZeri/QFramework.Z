@@ -16,7 +16,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
 {
     public class OnPointerExitEventTrigger : MonoBehaviour, IPointerExitHandler
     {
-        public readonly EasyEvent<PointerEventData> OnPointerExitEvent = new EasyEvent<PointerEventData>();
+        public readonly EasyEvent<PointerEventData> OnPointerExitEvent = new();
 
         public void OnPointerExit(PointerEventData eventData)
         {
@@ -27,14 +27,10 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     public static class OnPointerExitEventTriggerExtension
     {
         public static IUnRegister OnPointerExitEvent<T>(this T self, Action<PointerEventData> onPointerExit)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnPointerExitEventTrigger>().OnPointerExitEvent.Register(onPointerExit);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnPointerExitEventTrigger>().OnPointerExitEvent.Register(onPointerExit);
 
-        public static IUnRegister OnPointerExitEvent(this GameObject self, Action<PointerEventData> onPointerExit)
-        {
-            return self.GetOrAddComponent<OnPointerExitEventTrigger>().OnPointerExitEvent.Register(onPointerExit);
-        }
+        public static IUnRegister OnPointerExitEvent(this GameObject self, Action<PointerEventData> onPointerExit) =>
+            self.GetOrAddComponent<OnPointerExitEventTrigger>().OnPointerExitEvent.Register(onPointerExit);
     }
 }

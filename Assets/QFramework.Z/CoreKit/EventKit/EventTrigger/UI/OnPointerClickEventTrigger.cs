@@ -16,7 +16,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
 {
     public class OnPointerClickEventTrigger : MonoBehaviour, IPointerClickHandler
     {
-        public readonly EasyEvent<PointerEventData> OnPointerClickEvent = new EasyEvent<PointerEventData>();
+        public readonly EasyEvent<PointerEventData> OnPointerClickEvent = new();
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -27,14 +27,10 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     public static class OnPointerClickEventTriggerExtension
     {
         public static IUnRegister OnPointerClickEvent<T>(this T self, Action<PointerEventData> onPointerClick)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
 
-        public static IUnRegister OnPointerClickEvent(this GameObject self, Action<PointerEventData> onPointerClick)
-        {
-            return self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
-        }
+        public static IUnRegister OnPointerClickEvent(this GameObject self, Action<PointerEventData> onPointerClick) =>
+            self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
     }
 }

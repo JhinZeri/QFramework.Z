@@ -26,18 +26,14 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.Physics
     public static class OnTriggerStay2DEventTriggerExtension
     {
         public static IUnRegister OnTriggerStay2DEvent<T>(this T self, Action<Collider2D> onTriggerStay2D)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnTriggerStay2DEventTrigger>()
-                       .OnTriggerStay2DEvent
-                       .Register(onTriggerStay2D);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnTriggerStay2DEventTrigger>()
+                .OnTriggerStay2DEvent
+                .Register(onTriggerStay2D);
 
-        public static IUnRegister OnTriggerStay2DEvent(this GameObject self, Action<Collider2D> onTriggerStay2D)
-        {
-            return self.GetOrAddComponent<OnTriggerStay2DEventTrigger>()
-                       .OnTriggerStay2DEvent
-                       .Register(onTriggerStay2D);
-        }
+        public static IUnRegister OnTriggerStay2DEvent(this GameObject self, Action<Collider2D> onTriggerStay2D) =>
+            self.GetOrAddComponent<OnTriggerStay2DEventTrigger>()
+                .OnTriggerStay2DEvent
+                .Register(onTriggerStay2D);
     }
 }

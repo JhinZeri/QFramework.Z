@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace QFramework.Z.Framework.EventSystemIntegration
 {
-    
     public class OrEvent : IUnRegisterList
     {
         Action _onEvent = () => { };
@@ -19,7 +18,7 @@ namespace QFramework.Z.Framework.EventSystemIntegration
         public IUnRegister Register(Action onEvent)
         {
             _onEvent += onEvent;
-            return new CustomUnRegister(onUnRegister: () =>
+            return new CustomUnRegister(() =>
             {
                 UnRegister(onEvent);
             });
@@ -41,5 +40,4 @@ namespace QFramework.Z.Framework.EventSystemIntegration
     {
         public static OrEvent Or(this IEasyEvent self, IEasyEvent e) => new OrEvent().Or(self).Or(e);
     }
-    
 }

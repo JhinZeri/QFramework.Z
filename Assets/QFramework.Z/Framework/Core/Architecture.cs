@@ -15,76 +15,66 @@
  -------------------------------------------------------------------------*/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using QFramework.Z.Extension.ScriptReuseUtility.IOCContainerUtility;
 using QFramework.Z.Framework.EventSystemIntegration;
+using UnityEngine;
 
 namespace QFramework.Z.Framework.Core
 {
     public interface IArchitecture
     {
-        //注册系统
-        void RegisterSystem<T>(T system) where T : ISystem;
+        #region 框架模块
 
-        //注册模型
-        void RegisterModel<T>(T model) where T : IModel;
+        void RegisterSystem<T>() where T : class, ISystem, new();
 
-        //注册工具
-        void RegisterUtility<T>(T utility) where T : IUtility;
+        void RegisterModel<T>() where T : class, IModel, new();
 
-        //获取系统
+        void RegisterUtility<T>() where T : class, IUtility, new();
+
         T GetSystem<T>() where T : class, ISystem;
 
-        //获取模型
         T GetModel<T>() where T : class, IModel;
 
-        //获取工具
         T GetUtility<T>() where T : class, IUtility;
 
-        //发送命令
+        #endregion
+
+        #region 框架方法
+
         void SendCommand<T>(T command) where T : ICommand;
 
-        //发送命令并返回结果
         TResult SendCommand<TResult>(ICommand<TResult> command);
 
-        //发送查询并返回结果
         TResult SendQuery<TResult>(IQuery<TResult> query);
 
-        //发送事件
         void SendEvent<T>() where T : new();
         void SendEvent<T>(T e);
 
-        //注册事件
         IUnRegister RegisterEvent<T>(Action<T> onEvent);
 
-        //取消注册事件
         void UnRegisterEvent<T>(Action<T> onEvent);
 
-        //反初始化
         void DeInit();
+
+        #endregion
     }
 
-    public abstract class Architecture<T> : IArchitecture where T : Architecture<T>, new()
+    public abstract class Architecture<T> : MonoBehaviour, IArchitecture where T : Architecture<T>, new()
     {
-        // 注册补丁时的回调
-        public static Action<T> OnRegisterPatch = architecture => { };
-
         // 静态变量，存储架构实例
-        protected static T mArchitecture;
-
-        // IOC容器
-        readonly IOCContainer mContainer = new();
+        static T _architecture;
 
         // 标记是否已经初始化
-        bool _hasInitialiZed;
+        bool _hasInited;
 
         // 获取架构接口
         public static IArchitecture Interface
         {
             get
             {
-                if (mArchitecture == null) MakeSureArchitecture();
-                return mArchitecture;
+                if (_architecture == null) MakeSureArchitecture();
+                return _architecture;
             }
         }
 
@@ -93,56 +83,90 @@ namespace QFramework.Z.Framework.Core
         {
             OnDeInit();
             // 反初始化系统
-            foreach (var system in mContainer.GetInstancesByType<ISystem>().Where(predicate: s => s.Initialized))
-                system.DeInit();
+            foreach (KeyValuePair<Type, ISystem> systemValuePair in _systemIOCContainer.InstanceDictionary
+                .Where(s => s.Value.Initialized = true))
+                systemValuePair.Value.DeInit();
             // 反初始化模型
-            foreach (var model in mContainer.GetInstancesByType<IModel>().Where(predicate: m => m.Initialized))
-                model.DeInit();
+            foreach (KeyValuePair<Type, IModel> modelValuePair in _modelIOCContainer.InstanceDictionary
+                .Where(m => m.Value.Initialized = true))
+                modelValuePair.Value.DeInit();
             // 清空容器
-            mContainer.Clear();
-            mArchitecture = null;
+            _systemIOCContainer.Clear();
+            _modelIOCContainer.Clear();
+            _utilityContainer.Clear();
+            _architecture = null;
         }
 
-        // 注册系统
-        public void RegisterSystem<TSystem>(TSystem system) where TSystem : ISystem
+        #region MonoBehavior 生命周期
+
+        void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+        }
+
+        void OnDestroy()
+        {
+            DeInit();
+        }
+
+        #endregion
+
+        #region 注册和获取模块
+
+        /// <summary>
+        /// 注册系统
+        /// </summary>
+        public void RegisterSystem<TSystem>() where TSystem : class, ISystem, new()
+        {
+            // 使用这个注册方法，默认是没有的，new 一个，设置 system 的架构，并注册到容器
+            var system = new TSystem();
             system.SetArchitecture(this);
-            mContainer.Register(system);
+            _systemIOCContainer.Register(system);
 
-            if (_hasInitialiZed)
-            {
-                system.Init();
-                system.Initialized = true;
-            }
+            // 如果 Architecture 已经完成了初始化，那么注册之后立刻进行 system 的初始化
+            if (!_hasInited) return;
+            system.Init();
+            system.Initialized = true;
         }
 
-        // 注册模型
-        public void RegisterModel<TModel>(TModel model) where TModel : IModel
+        /// <summary>
+        /// 注册数据模型
+        /// </summary>
+        public void RegisterModel<TModel>() where TModel : class, IModel, new()
         {
+            var model = new TModel();
             model.SetArchitecture(this);
-            mContainer.Register(model);
+            _modelIOCContainer.Register(model);
 
-            if (_hasInitialiZed)
-            {
-                model.Init();
-                model.Initialized = true;
-            }
+            if (!_hasInited) return;
+            model.Init();
+            model.Initialized = true;
         }
 
-        // 注册工具
-        public void RegisterUtility<TUtility>(TUtility utility) where TUtility : IUtility
+        /// <summary>
+        /// 注册工具集合
+        /// </summary>
+        /// <typeparam name="TUtility"> </typeparam>
+        public void RegisterUtility<TUtility>() where TUtility : class, IUtility, new()
         {
-            mContainer.Register(utility);
+            var utility = new TUtility();
+            _utilityContainer.Register(utility);
         }
 
         // 获取系统
-        public TSystem GetSystem<TSystem>() where TSystem : class, ISystem => mContainer.Get<TSystem>();
+        public TSystem GetSystem<TSystem>() where TSystem : class, ISystem =>
+            _systemIOCContainer.TryGetModule<TSystem>();
 
         // 获取模型
-        public TModel GetModel<TModel>() where TModel : class, IModel => mContainer.Get<TModel>();
+        public TModel GetModel<TModel>() where TModel : class, IModel => _modelIOCContainer.TryGetModule<TModel>();
 
         // 获取工具
-        public TUtility GetUtility<TUtility>() where TUtility : class, IUtility => mContainer.Get<TUtility>();
+        public TUtility GetUtility<TUtility>() where TUtility : class, IUtility =>
+            _utilityContainer.TryGetModule<TUtility>();
+
+        #endregion
+
+        #region 命令，查询，事件
 
         // 发送命令
         public TResult SendCommand<TResult>(ICommand<TResult> command) => ExecuteCommand(command);
@@ -156,64 +180,82 @@ namespace QFramework.Z.Framework.Core
         // 发送查询
         public TResult SendQuery<TResult>(IQuery<TResult> query) => DoQuery(query);
 
-
         // 发送事件
         public void SendEvent<TEvent>() where TEvent : new()
         {
-            TypeEventSystem.Send<TEvent>();
+            TypeEventSystem.Global.Send<TEvent>();
         }
 
         // 发送事件
         public void SendEvent<TEvent>(TEvent e)
         {
-            TypeEventSystem.Send(e);
+            TypeEventSystem.Global.Send(e);
         }
 
         // 注册事件
-        public IUnRegister RegisterEvent<TEvent>(Action<TEvent> onEvent) => TypeEventSystem.Register(onEvent);
+        public IUnRegister RegisterEvent<TEvent>(Action<TEvent> onEvent) => TypeEventSystem.Global.Register(onEvent);
 
         // 取消注册事件
         public void UnRegisterEvent<TEvent>(Action<TEvent> onEvent)
         {
-            TypeEventSystem.UnRegister(onEvent);
+            TypeEventSystem.Global.UnRegister(onEvent);
         }
 
+        #endregion
 
-        // 确保架构已经创建
+        #region 框架内部方法
+
+        /// <summary>
+        /// 确保架构创建
+        /// </summary>
         static void MakeSureArchitecture()
         {
-            if (mArchitecture == null)
+            // 如果不为空，表示场景中存在
+            if (_architecture != null) return;
+            // 创建新的 架构物体 
+            var architectureTrans =
+                CreateArchitectureGameObject(null, "*Archi*" + "Architecture_" + typeof(T).Name);
+            // Add 的时候就会执行 Awake () 
+            _architecture = architectureTrans.gameObject.AddComponent<T>();
+            // 架构初始化，注册需要的模块到容器中
+            _architecture.Init();
+            // 模块收集完毕，开始对各个模块进行初始化
+            _architecture.InitModules();
+            // 标记架构整个初始化过程结束
+            _architecture._hasInited = true;
+        }
+
+        /// <summary>
+        /// 执行 Modules 的初始化，先 Model -> 后 System
+        /// </summary>
+        void InitModules()
+        {
+            foreach (KeyValuePair<Type, IModel> typeModel in _modelIOCContainer.InstanceDictionary)
             {
-                mArchitecture = new T();
-                mArchitecture.Init();
+                typeModel.Value.Init();
+                typeModel.Value.Initialized = true;
+            }
 
-                OnRegisterPatch?.Invoke(mArchitecture);
-
-                // 初始化模型
-                foreach (var model in mArchitecture.mContainer.GetInstancesByType<IModel>()
-                                                   .Where(predicate: m => !m.Initialized))
-                {
-                    model.Init();
-                    model.Initialized = true;
-                }
-
-                // 初始化系统
-                foreach (var system in mArchitecture.mContainer.GetInstancesByType<ISystem>()
-                                                    .Where(predicate: m => !m.Initialized))
-                {
-                    system.Init();
-                    system.Initialized = true;
-                }
-
-                mArchitecture._hasInitialiZed = true;
+            foreach (KeyValuePair<Type, ISystem> typeSystem in _systemIOCContainer.InstanceDictionary)
+            {
+                typeSystem.Value.Init();
+                typeSystem.Value.Initialized = true;
             }
         }
 
-        // 初始化
-        protected abstract void Init();
+        static Transform CreateArchitectureGameObject(Transform parent, string architectureName)
+        {
+            var module = new GameObject(architectureName)
+            {
+                transform =
+                {
+                    position = Vector3.zero
+                }
+            };
+            module.transform.SetParent(parent);
+            return module.transform;
+        }
 
-        // 反初始化时的回调
-        protected virtual void OnDeInit() { }
 
         // 执行命令
         protected virtual TResult ExecuteCommand<TResult>(ICommand<TResult> command)
@@ -236,40 +278,32 @@ namespace QFramework.Z.Framework.Core
             return query.Do();
         }
 
-        #region 24-3-6 旧版 Architecture 内部方法存档，特殊情况这套可能有用
+        #endregion
 
-        // 事件系统
-        // readonly TypeEventSystem _typeEventSystem = new();
+        #region 三个模块容器
 
-        // // 发送事件
-        // public void SendEvent<TEvent>() where TEvent : new()
-        // {
-        //     // _typeEventSystem.Send<TEvent>();
-        //     TypeEventSystem.Global.Send<TEvent>();
-        // }
+        readonly ModuleIOCContainer<IModel> _modelIOCContainer = new ModelContainer();
+        readonly ModuleIOCContainer<ISystem> _systemIOCContainer = new SystemContainer();
+        readonly ModuleIOCContainer<IUtility> _utilityContainer = new UtilityContainer();
 
-        // // 发送事件
-        // public void SendEvent<TEvent>(TEvent e)
-        // {
-        //     // _typeEventSystem.Send(e);
-        //     TypeEventSystem.Global.Send(e);
-        // }
+        #endregion
 
-        // // 注册事件
-        // public IUnRegister RegisterEvent<TEvent>(Action<TEvent> onEvent) =>  TypeEventSystem.Global.Register(onEvent);
-        // // _typeEventSystem.Register(onEvent);
+        #region 继承实现方法
 
-        // // 取消注册事件
-        // public void UnRegisterEvent<TEvent>(Action<TEvent> onEvent)
-        // {
-        //     // _typeEventSystem.UnRegister(onEvent);
-        //     TypeEventSystem.Global.UnRegister(onEvent);
-        // }
+        /// <summary>
+        /// 初始化架构，在这里注册架构的模块到对应的容器中，如 Model、System、Utility
+        /// </summary>
+        protected abstract void Init();
+
+        /// <summary>
+        /// 反初始化，也就是销毁时调用的方法，在模块清除之前调用
+        /// </summary>
+        protected virtual void OnDeInit() { }
 
         #endregion
     }
 
-    #region IOnEvent 接口
+    #region IOnEvent 接口，T 为结构体
 
     // 定义一个泛型接口，包含一个 OnEvent 方法，用于处理事件
     public interface IOnEvent<T>
@@ -277,51 +311,17 @@ namespace QFramework.Z.Framework.Core
         void OnEvent(T e);
     }
 
-    // 静态类，提供 RegisterEvent 和 UnRegisterEvent 两个扩展方法
+    // 静态类，提供 RegisterEvent 和 UnRegisterEvent 两个扩展方法，T 为结构体
     public static class OnGlobalEventExtension
     {
-        /* 注册事件处理器到全局事件系统
-           @param self 实现了 IOnEvent<T> 接口的对象
-           @return 用于取消注册事件处理器的 IUnRegister 对象 */
         public static IUnRegister RegisterEvent<T>(this IOnEvent<T> self) where T : struct =>
-            // 调用全局事件系统的 Register 方法，将事件处理器注册到全局事件系统中
-            TypeEventSystem.Register<T>(self.OnEvent);
+            TypeEventSystem.Global.Register<T>(self.OnEvent);
 
-        /* 取消注册事件处理器
-           @param self 实现了 IOnEvent<T> 接口的对象 */
         public static void UnRegisterEvent<T>(this IOnEvent<T> self) where T : struct
         {
-            // 调用全局事件系统的 UnRegister 方法，将事件处理器从全局事件系统中取消注册
-            TypeEventSystem.UnRegister<T>(self.OnEvent);
+            TypeEventSystem.Global.UnRegister<T>(self.OnEvent);
         }
     }
-
-    #endregion
-
-    #region 24-3-6 旧版 IOnEvent 存档 特殊情况可能有用
-
-    // public interface IOnEvent<T>
-    // {
-    //     void OnEvent(T e);
-    // }
-    //
-    // public static class OnGlobalEventExtension
-    // {
-    //     /* 注册事件处理器到全局事件系统
-    //        @param self 实现了 IOnEvent<T> 接口的对象
-    //        @return 用于取消注册事件处理器的 IUnRegister 对象 */
-    //     public static IUnRegister RegisterEvent<T>(this IOnEvent<T> self) where T : struct =>
-    //         // 调用全局事件系统的 Register 方法，将事件处理器注册到全局事件系统中
-    //         TypeEventSystem.Global.Register<T>(self.OnEvent);
-    //
-    //     /* 取消注册事件处理器
-    //        @param self 实现了 IOnEvent<T> 接口的对象 */
-    //     public static void UnRegisterEvent<T>(this IOnEvent<T> self) where T : struct
-    //     {
-    //         // 调用全局事件系统的 UnRegister 方法，将事件处理器从全局事件系统中取消注册
-    //         TypeEventSystem.Global.UnRegister<T>(self.OnEvent);
-    //     }
-    // }
 
     #endregion
 }

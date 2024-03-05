@@ -16,7 +16,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
 {
     public class OnSubmitEventTrigger : MonoBehaviour, ISubmitHandler
     {
-        public readonly EasyEvent<BaseEventData> OnSubmitEvent = new EasyEvent<BaseEventData>();
+        public readonly EasyEvent<BaseEventData> OnSubmitEvent = new();
 
         public void OnSubmit(BaseEventData eventData)
         {
@@ -27,14 +27,10 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     public static class OnSubmitEventTriggerExtension
     {
         public static IUnRegister OnSubmitEvent<T>(this T self, Action<BaseEventData> onSubmit)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnSubmitEventTrigger>().OnSubmitEvent.Register(onSubmit);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnSubmitEventTrigger>().OnSubmitEvent.Register(onSubmit);
 
-        public static IUnRegister OnSubmitEvent(this GameObject self, Action<BaseEventData> onSubmit)
-        {
-            return self.GetOrAddComponent<OnSubmitEventTrigger>().OnSubmitEvent.Register(onSubmit);
-        }
+        public static IUnRegister OnSubmitEvent(this GameObject self, Action<BaseEventData> onSubmit) =>
+            self.GetOrAddComponent<OnSubmitEventTrigger>().OnSubmitEvent.Register(onSubmit);
     }
 }

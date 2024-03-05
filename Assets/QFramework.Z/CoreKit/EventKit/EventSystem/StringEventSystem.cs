@@ -9,11 +9,11 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
     {
         public static readonly StringEventSystem Global = new();
 
-        readonly Dictionary<string, IEasyEvent> mEvents = new();
+        readonly Dictionary<string, IEasyEvent> _mEvents = new();
 
         public IUnRegister Register(string key, Action onEvent)
         {
-            if (mEvents.TryGetValue(key, out IEasyEvent e))
+            if (_mEvents.TryGetValue(key, out var e))
             {
                 var easyEvent = e.As<EasyEvent>();
                 return easyEvent.Register(onEvent);
@@ -21,14 +21,14 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
             else
             {
                 var easyEvent = new EasyEvent();
-                mEvents.Add(key, easyEvent);
+                _mEvents.Add(key, easyEvent);
                 return easyEvent.Register(onEvent);
             }
         }
 
         public void UnRegister(string key, Action onEvent)
         {
-            if (mEvents.TryGetValue(key, out IEasyEvent e))
+            if (_mEvents.TryGetValue(key, out var e))
             {
                 var easyEvent = e.As<EasyEvent>();
                 easyEvent?.UnRegister(onEvent);
@@ -37,7 +37,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
 
         public void Send(string key)
         {
-            if (mEvents.TryGetValue(key, out IEasyEvent e))
+            if (_mEvents.TryGetValue(key, out var e))
             {
                 var easyEvent = e.As<EasyEvent>();
                 easyEvent?.Trigger();
@@ -47,15 +47,15 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
 
         public IUnRegister Register<T>(string key, Action<T> onEvent)
         {
-            if (mEvents.TryGetValue(key, out IEasyEvent e))
+            if (_mEvents.TryGetValue(key, out var e))
             {
                 EasyEvent<T> easyEvent = e.As<EasyEvent<T>>();
                 return easyEvent.Register(onEvent);
             }
             else
             {
-                EasyEvent<T> easyEvent = new EasyEvent<T>();
-                mEvents.Add(key, easyEvent);
+                EasyEvent<T> easyEvent = new();
+                _mEvents.Add(key, easyEvent);
                 return easyEvent.Register(onEvent);
             }
         }
@@ -63,7 +63,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
 
         public void UnRegister<T>(string key, Action<T> onEvent)
         {
-            if (mEvents.TryGetValue(key, out IEasyEvent e))
+            if (_mEvents.TryGetValue(key, out var e))
             {
                 EasyEvent<T> easyEvent = e.As<EasyEvent<T>>();
                 easyEvent?.UnRegister(onEvent);
@@ -72,7 +72,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
 
         public void Send<T>(string key, T data)
         {
-            if (mEvents.TryGetValue(key, out IEasyEvent e))
+            if (_mEvents.TryGetValue(key, out var e))
             {
                 EasyEvent<T> easyEvent = e.As<EasyEvent<T>>();
                 easyEvent?.Trigger(data);

@@ -16,7 +16,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
 {
     public class OnScrollEventTrigger : MonoBehaviour, IScrollHandler
     {
-        public readonly EasyEvent<PointerEventData> OnScrollEvent = new EasyEvent<PointerEventData>();
+        public readonly EasyEvent<PointerEventData> OnScrollEvent = new();
 
         public void OnScroll(PointerEventData eventData)
         {
@@ -27,14 +27,10 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     public static class OnScrollEventTriggerExtension
     {
         public static IUnRegister OnScrollEvent<T>(this T self, Action<PointerEventData> onScroll)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnScrollEventTrigger>().OnScrollEvent.Register(onScroll);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnScrollEventTrigger>().OnScrollEvent.Register(onScroll);
 
-        public static IUnRegister OnScrollEvent(this GameObject self, Action<PointerEventData> onScroll)
-        {
-            return self.GetOrAddComponent<OnScrollEventTrigger>().OnScrollEvent.Register(onScroll);
-        }
+        public static IUnRegister OnScrollEvent(this GameObject self, Action<PointerEventData> onScroll) =>
+            self.GetOrAddComponent<OnScrollEventTrigger>().OnScrollEvent.Register(onScroll);
     }
 }

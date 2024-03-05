@@ -26,18 +26,14 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.Physics
     public static class OnCollisionExit2DEventTriggerExtension
     {
         public static IUnRegister OnCollisionExit2DEvent<T>(this T self, Action<Collision2D> onCollisionExit2D)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnCollisionExit2DEventTrigger>()
-                       .OnCollisionExit2DEvent
-                       .Register(onCollisionExit2D);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnCollisionExit2DEventTrigger>()
+                .OnCollisionExit2DEvent
+                .Register(onCollisionExit2D);
 
-        public static IUnRegister OnCollisionExit2DEvent(this GameObject self, Action<Collision2D> onCollisionExit2D)
-        {
-            return self.GetOrAddComponent<OnCollisionExit2DEventTrigger>()
-                       .OnCollisionExit2DEvent
-                       .Register(onCollisionExit2D);
-        }
+        public static IUnRegister OnCollisionExit2DEvent(this GameObject self, Action<Collision2D> onCollisionExit2D) =>
+            self.GetOrAddComponent<OnCollisionExit2DEventTrigger>()
+                .OnCollisionExit2DEvent
+                .Register(onCollisionExit2D);
     }
 }

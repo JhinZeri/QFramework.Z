@@ -16,7 +16,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
 {
     public class OnUpdateSelectedEventTrigger : MonoBehaviour, IUpdateSelectedHandler
     {
-        public readonly EasyEvent<BaseEventData> OnUpdateSelectedEvent = new EasyEvent<BaseEventData>();
+        public readonly EasyEvent<BaseEventData> OnUpdateSelectedEvent = new();
 
 
         public void OnUpdateSelected(BaseEventData eventData)
@@ -28,16 +28,12 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     public static class OnUpdateSelectedEventTriggerExtension
     {
         public static IUnRegister OnUpdateSelectedEvent<T>(this T self, Action<BaseEventData> onUpdateSelected)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
-                       .OnUpdateSelectedEvent.Register(onUpdateSelected);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
+                .OnUpdateSelectedEvent.Register(onUpdateSelected);
 
-        public static IUnRegister OnUpdateSelectedEvent(this GameObject self, Action<BaseEventData> onUpdateSelected)
-        {
-            return self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
-                       .OnUpdateSelectedEvent.Register(onUpdateSelected);
-        }
+        public static IUnRegister OnUpdateSelectedEvent(this GameObject self, Action<BaseEventData> onUpdateSelected) =>
+            self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
+                .OnUpdateSelectedEvent.Register(onUpdateSelected);
     }
 }

@@ -131,9 +131,10 @@ namespace QFramework.Z.Framework.EventSystemIntegration
     /// <summary>
     /// 全局静态 TypeEventSystem 事件系统
     /// </summary>
-    public static class TypeEventSystem
+    public class TypeEventSystem
     {
-        static readonly Dictionary<Type, IEasyEvent> TypeEventDictionary = new();
+        public static readonly TypeEventSystem Global = new();
+        readonly Dictionary<Type, IEasyEvent> _typeEventDictionary = new();
 
         /// <summary>
         /// GetOrAddEvent 可以避免用户重复注册造成的问题，
@@ -142,13 +143,13 @@ namespace QFramework.Z.Framework.EventSystemIntegration
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <returns> </returns>
-        static T GetOrAddEvent<T>() where T : IEasyEvent, new()
+        T GetOrAddEvent<T>() where T : IEasyEvent, new()
         {
             var eType = typeof(T);
-            if (TypeEventDictionary.TryGetValue(eType, out var e)) return (T)e;
+            if (_typeEventDictionary.TryGetValue(eType, out var e)) return (T)e;
 
             var t = new T();
-            TypeEventDictionary.Add(eType, t);
+            _typeEventDictionary.Add(eType, t);
             return t;
         }
 
@@ -156,15 +157,15 @@ namespace QFramework.Z.Framework.EventSystemIntegration
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <returns> </returns>
-        static T GetEvent<T>() where T : IEasyEvent =>
-            TypeEventDictionary.TryGetValue(typeof(T), out var e) ? (T)e : default;
+        T GetEvent<T>() where T : IEasyEvent =>
+            _typeEventDictionary.TryGetValue(typeof(T), out var e) ? (T)e : default;
 
-        public static void Send<T>() where T : new()
+        public void Send<T>() where T : new()
         {
             GetEvent<EasyEvent<T>>()?.Trigger(new T());
         }
 
-        public static void Send<T>(T e)
+        public void Send<T>(T e)
         {
             GetEvent<EasyEvent<T>>()?.Trigger(e);
         }
@@ -172,43 +173,13 @@ namespace QFramework.Z.Framework.EventSystemIntegration
         /// <summary>
         /// 默认注册带一个参数的委托
         /// </summary>
-        public static IUnRegister Register<T>(Action<T> onEvent) =>
+        public IUnRegister Register<T>(Action<T> onEvent) =>
             GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
 
-        public static void UnRegister<T>(Action<T> onEvent)
+        public void UnRegister<T>(Action<T> onEvent)
         {
             EasyEvent<T> e = GetEvent<EasyEvent<T>>();
             e?.UnRegister(onEvent);
         }
-
-        #region 24-3-6 旧版 TypeEventSystem 存档
-
-        // public class TypeEventSystem
-        // {
-        //     public static readonly TypeEventSystem Global = new();
-        //
-        //     readonly EasyEvents _easyEvents = new();
-        //
-        //     public IUnRegister Register<T>(Action<T> onEvent) =>
-        //         _easyEvents.GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
-        //
-        //     public void Send<T>() where T : new()
-        //     {
-        //         _easyEvents.GetEvent<EasyEvent<T>>()?.Trigger(new T());
-        //     }
-        //
-        //     public void Send<T>(T e)
-        //     {
-        //         _easyEvents.GetEvent<EasyEvent<T>>()?.Trigger(e);
-        //     }
-        //
-        //     public void UnRegister<T>(Action<T> onEvent)
-        //     {
-        //         EasyEvent<T> e = _easyEvents.GetEvent<EasyEvent<T>>();
-        //         e?.UnRegister(onEvent);
-        //     }
-        // }
-
-        #endregion
     }
 }

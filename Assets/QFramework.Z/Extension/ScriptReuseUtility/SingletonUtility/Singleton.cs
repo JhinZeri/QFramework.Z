@@ -17,6 +17,7 @@ namespace QFramework.Z.Extension.ScriptReuseUtility.SingletonUtility
     public abstract class Singleton<T> where T : class
     {
         static readonly object LockObject = new(); // 创建一个静态只读的对象作为锁，在多线程时使用      
+
         static T _instance; // 创建一个静态字段来存储单例实例
         // 受保护的构造函数，确保该类不能被直接实例化
 

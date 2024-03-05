@@ -1,5 +1,4 @@
-﻿
-using QFramework.Z.Framework.Rule;
+﻿using QFramework.Z.Framework.Rule;
 
 namespace QFramework.Z.Framework.Core
 {

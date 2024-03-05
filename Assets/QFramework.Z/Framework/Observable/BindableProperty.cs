@@ -38,12 +38,16 @@ namespace QFramework.Z.Framework.Observable
         protected T ObservableValue;
 
         /* 构造函数，初始化属性的默认值为 defaultValue */
-        protected BindableProperty(T defaultValue = default)
+        public BindableProperty(T defaultValue = default)
         {
             ObservableValue = defaultValue;
         }
 
-        /* 定义比较两个值是否相等的方法，默认使用 Equals 进行比较 */
+        /// <summary>
+        /// 静态 Func 委托，指向一个用于比较两个值是否相等的函数，它有一个默认方法，就是两个数使用 Equals 方法比较
+        /// 另外在程序运行前，可以注册自定义比较方法
+        /// 因为他是静态的，所以可以直接通过类名访问
+        /// </summary>
         public static Func<T, T, bool> Comparer { get; set; } = (a, b) => a.Equals(b);
 
         /* 属性 Value，用于获取和设置属性的值 */
@@ -93,20 +97,22 @@ namespace QFramework.Z.Framework.Observable
             }
         }
 
-        /* 设置自定义的比较器 */
+        /// <summary>
+        /// 在程序运行过程中动态设置一个比较规则
+        /// </summary>
+        /// <param name="comparer"> Func 委托 </param>
+        /// <returns> 自身 </returns>
         public BindableProperty<T> WithComparer(Func<T, T, bool> comparer)
         {
             Comparer = comparer;
             return this;
         }
 
-        /* 设置属性的值 */
         protected virtual void SetValue(T newValue)
         {
             ObservableValue = newValue;
         }
 
-        /* 获取属性的值 */
         protected virtual T GetValue() => ObservableValue;
 
         /* 重写 ToString 方法，返回当前属性值的字符串表示形式 */

@@ -9,7 +9,7 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
     {
         public static readonly EnumEventSystem Global = new();
 
-        readonly Dictionary<int, IEasyEvent> mEvents = new(50);
+        readonly Dictionary<int, IEasyEvent> _mEvents = new(50);
 
         protected EnumEventSystem() { }
 
@@ -19,15 +19,15 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
         {
             var kv = key.ToInt32(null);
 
-            if (mEvents.TryGetValue(kv, out IEasyEvent e))
+            if (_mEvents.TryGetValue(kv, out var e))
             {
                 EasyEvent<int, object[]> easyEvent = e.As<EasyEvent<int, object[]>>();
                 return easyEvent.Register(onEvent);
             }
             else
             {
-                EasyEvent<int, object[]> easyEvent = new EasyEvent<int, object[]>();
-                mEvents.Add(kv, easyEvent);
+                EasyEvent<int, object[]> easyEvent = new();
+                _mEvents.Add(kv, easyEvent);
                 return easyEvent.Register(onEvent);
             }
         }
@@ -36,26 +36,26 @@ namespace QFramework.Z.CoreKit.EventKit.EventSystem
         {
             var kv = key.ToInt32(null);
 
-            if (mEvents.TryGetValue(kv, out IEasyEvent e)) e.As<EasyEvent<int, object[]>>()?.UnRegister(onEvent);
+            if (_mEvents.TryGetValue(kv, out var e)) e.As<EasyEvent<int, object[]>>()?.UnRegister(onEvent);
         }
 
         public void UnRegister<T>(T key) where T : IConvertible
         {
             var kv = key.ToInt32(null);
 
-            if (mEvents.ContainsKey(kv)) mEvents.Remove(kv);
+            if (_mEvents.ContainsKey(kv)) _mEvents.Remove(kv);
         }
 
         public void UnRegisterAll()
         {
-            mEvents.Clear();
+            _mEvents.Clear();
         }
 
         public void Send<T>(T key, params object[] args) where T : IConvertible
         {
             var kv = key.ToInt32(null);
 
-            if (mEvents.TryGetValue(kv, out IEasyEvent e)) e.As<EasyEvent<int, object[]>>().Trigger(kv, args);
+            if (_mEvents.TryGetValue(kv, out var e)) e.As<EasyEvent<int, object[]>>().Trigger(kv, args);
         }
 
         #endregion

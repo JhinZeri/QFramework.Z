@@ -26,18 +26,14 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.Physics
     public static class OnCollisionStayEventTriggerExtension
     {
         public static IUnRegister OnCollisionStayEvent<T>(this T self, Action<Collision> onCollisionStay)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnCollisionStayEventTrigger>()
-                       .OnCollisionStayEvent
-                       .Register(onCollisionStay);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnCollisionStayEventTrigger>()
+                .OnCollisionStayEvent
+                .Register(onCollisionStay);
 
-        public static IUnRegister OnCollisionStayEvent(this GameObject self, Action<Collision> onCollisionStay)
-        {
-            return self.GetOrAddComponent<OnCollisionStayEventTrigger>()
-                       .OnCollisionStayEvent
-                       .Register(onCollisionStay);
-        }
+        public static IUnRegister OnCollisionStayEvent(this GameObject self, Action<Collision> onCollisionStay) =>
+            self.GetOrAddComponent<OnCollisionStayEventTrigger>()
+                .OnCollisionStayEvent
+                .Register(onCollisionStay);
     }
 }

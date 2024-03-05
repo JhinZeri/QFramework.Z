@@ -29,17 +29,13 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.UI
     {
         public static IUnRegister OnInitializePotentialDragEvent<T>(this T self,
             Action<PointerEventData> onInitializePotentialDrag)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnInitializePotentialDragEventTrigger>()
-                       .OnInitializePotentialDragEvent.Register(onInitializePotentialDrag);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnInitializePotentialDragEventTrigger>()
+                .OnInitializePotentialDragEvent.Register(onInitializePotentialDrag);
 
         public static IUnRegister OnInitializePotentialDragEvent(this GameObject self,
-            Action<PointerEventData> onInitializePotentialDrag)
-        {
-            return self.GetOrAddComponent<OnInitializePotentialDragEventTrigger>()
-                       .OnInitializePotentialDragEvent.Register(onInitializePotentialDrag);
-        }
+            Action<PointerEventData> onInitializePotentialDrag) =>
+            self.GetOrAddComponent<OnInitializePotentialDragEventTrigger>()
+                .OnInitializePotentialDragEvent.Register(onInitializePotentialDrag);
     }
 }

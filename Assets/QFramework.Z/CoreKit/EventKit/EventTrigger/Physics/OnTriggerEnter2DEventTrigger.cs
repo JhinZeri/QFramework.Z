@@ -26,18 +26,14 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.Physics
     public static class OnTriggerEnter2DEventTriggerExtension
     {
         public static IUnRegister OnTriggerEnter2DEvent<T>(this T self, Action<Collider2D> onTriggerEnter2D)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnTriggerEnter2DEventTrigger>()
-                       .OnTriggerEnter2DEvent
-                       .Register(onTriggerEnter2D);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnTriggerEnter2DEventTrigger>()
+                .OnTriggerEnter2DEvent
+                .Register(onTriggerEnter2D);
 
-        public static IUnRegister OnTriggerEnter2DEvent(this GameObject self, Action<Collider2D> onTriggerEnter2D)
-        {
-            return self.GetOrAddComponent<OnTriggerEnter2DEventTrigger>()
-                       .OnTriggerEnter2DEvent
-                       .Register(onTriggerEnter2D);
-        }
+        public static IUnRegister OnTriggerEnter2DEvent(this GameObject self, Action<Collider2D> onTriggerEnter2D) =>
+            self.GetOrAddComponent<OnTriggerEnter2DEventTrigger>()
+                .OnTriggerEnter2DEvent
+                .Register(onTriggerEnter2D);
     }
 }

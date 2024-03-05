@@ -26,18 +26,14 @@ namespace QFramework.Z.CoreKit.EventKit.EventTrigger.Physics
     public static class OnTriggerExitEventTriggerExtension
     {
         public static IUnRegister OnTriggerExitEvent<T>(this T self, Action<Collider> onTriggerExit)
-            where T : Component
-        {
-            return self.GetOrAddComponent<OnTriggerExitEventTrigger>()
-                       .OnTriggerExitEvent
-                       .Register(onTriggerExit);
-        }
+            where T : Component =>
+            self.GetOrAddComponent<OnTriggerExitEventTrigger>()
+                .OnTriggerExitEvent
+                .Register(onTriggerExit);
 
-        public static IUnRegister OnTriggerExitEvent(this GameObject self, Action<Collider> onTriggerExit)
-        {
-            return self.GetOrAddComponent<OnTriggerExitEventTrigger>()
-                       .OnTriggerExitEvent
-                       .Register(onTriggerExit);
-        }
+        public static IUnRegister OnTriggerExitEvent(this GameObject self, Action<Collider> onTriggerExit) =>
+            self.GetOrAddComponent<OnTriggerExitEventTrigger>()
+                .OnTriggerExitEvent
+                .Register(onTriggerExit);
     }
 }

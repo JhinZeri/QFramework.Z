@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using QFramework.Z.Framework.EventSystemIntegration;
 
 namespace QFramework.Z.Framework.Observable
@@ -32,7 +33,7 @@ namespace QFramework.Z.Framework.Observable
     public class BindableProperty<T> : IBindableProperty<T>
     {
         /* 用于处理值变化事件的 EasyEvent<T> 字段 */
-        readonly EasyEvent<T> _onValueChanged = new();
+        readonly EasyEvent<T> _mOnValueChanged = new();
 
         /* 存储属性的值 */
         protected T ObservableValue;
@@ -60,7 +61,7 @@ namespace QFramework.Z.Framework.Observable
                 if (value != null && Comparer(value, ObservableValue)) return;
 
                 SetValue(value);
-                _onValueChanged.Trigger(value);
+                _mOnValueChanged.Trigger(value);
             }
         }
 
@@ -71,7 +72,7 @@ namespace QFramework.Z.Framework.Observable
         }
 
         /* 注册属性值变化事件的回调函数 */
-        public IUnRegister Register(Action<T> onValueChanged) => _onValueChanged.Register(onValueChanged);
+        public IUnRegister Register(Action<T> onValueChanged) => _mOnValueChanged.Register(onValueChanged);
 
         /* 注册属性值变化事件的回调函数，并立即执行回调函数传入当前属性值 */
         public IUnRegister RegisterWithInitValue(Action<T> onValueChanged)
@@ -83,7 +84,7 @@ namespace QFramework.Z.Framework.Observable
         /* 取消注册属性值变化事件的回调函数 */
         public void UnRegister(Action<T> onValueChanged)
         {
-            _onValueChanged.UnRegister(onValueChanged);
+            _mOnValueChanged.UnRegister(onValueChanged);
         }
 
         /* 实现接口方法，用于注册事件 */
@@ -96,6 +97,11 @@ namespace QFramework.Z.Framework.Observable
                 onEvent();
             }
         }
+
+        /// <summary>
+        /// 获取事件回调函数列表
+        /// </summary>
+        public List<string> GetActionInvocationList() => _mOnValueChanged.GetActionInvocationList();
 
         /// <summary>
         /// 在程序运行过程中动态设置一个比较规则

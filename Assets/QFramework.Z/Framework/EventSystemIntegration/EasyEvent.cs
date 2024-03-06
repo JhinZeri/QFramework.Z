@@ -1,39 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace QFramework.Z.Framework.EventSystemIntegration
 {
     public interface IEasyEvent
     {
         IUnRegister Register(Action onEvent);
+        List<string> GetActionInvocationList();
     }
 
     public class EasyEvent : IEasyEvent
     {
-        Action _driveAction = () => { };
+        Action _mDriveAction = () => { };
 
         public IUnRegister Register(Action onEvent)
         {
-            _driveAction += onEvent;
+            _mDriveAction += onEvent;
             return new CustomUnRegister(() =>
             {
                 UnRegister(onEvent);
             });
         }
 
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
+
         public void UnRegister(Action onEvent)
         {
-            _driveAction -= onEvent;
+            _mDriveAction -= onEvent;
         }
 
         public void Trigger()
         {
-            _driveAction?.Invoke();
+            _mDriveAction?.Invoke();
         }
     }
 
     public class EasyEvent<T> : IEasyEvent
     {
-        Action<T> _driveAction = _ => { };
+        Action<T> _mDriveAction = _ => { };
 
         IUnRegister IEasyEvent.Register(Action onEvent)
         {
@@ -47,27 +58,33 @@ namespace QFramework.Z.Framework.EventSystemIntegration
 
         public IUnRegister Register(Action<T> onEvent)
         {
-            _driveAction += onEvent;
+            _mDriveAction += onEvent;
             return new CustomUnRegister(() =>
             {
                 UnRegister(onEvent);
             });
         }
-
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
         public void UnRegister(Action<T> onEvent)
         {
-            _driveAction -= onEvent;
+            _mDriveAction -= onEvent;
         }
 
         public void Trigger(T t)
         {
-            _driveAction?.Invoke(t);
+            _mDriveAction?.Invoke(t);
         }
     }
 
     public class EasyEvent<T, TK> : IEasyEvent
     {
-        Action<T, TK> _driveAction = (_, _) => { };
+        Action<T, TK> _mDriveAction = (_, _) => { };
 
         IUnRegister IEasyEvent.Register(Action onEvent)
         {
@@ -81,27 +98,33 @@ namespace QFramework.Z.Framework.EventSystemIntegration
 
         public IUnRegister Register(Action<T, TK> onEvent)
         {
-            _driveAction += onEvent;
+            _mDriveAction += onEvent;
             return new CustomUnRegister(() =>
             {
                 UnRegister(onEvent);
             });
         }
-
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
         public void UnRegister(Action<T, TK> onEvent)
         {
-            _driveAction -= onEvent;
+            _mDriveAction -= onEvent;
         }
 
         public void Trigger(T t, TK k)
         {
-            _driveAction?.Invoke(t, k);
+            _mDriveAction?.Invoke(t, k);
         }
     }
 
     public class EasyEvent<T, TK, TS> : IEasyEvent
     {
-        Action<T, TK, TS> _driveAction = (_, _, _) => { };
+        Action<T, TK, TS> _mDriveAction = (_, _, _) => { };
 
         IUnRegister IEasyEvent.Register(Action onEvent)
         {
@@ -115,21 +138,27 @@ namespace QFramework.Z.Framework.EventSystemIntegration
 
         public IUnRegister Register(Action<T, TK, TS> onEvent)
         {
-            _driveAction += onEvent;
+            _mDriveAction += onEvent;
             return new CustomUnRegister(() =>
             {
                 UnRegister(onEvent);
             });
         }
-
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
         public void UnRegister(Action<T, TK, TS> onEvent)
         {
-            _driveAction -= onEvent;
+            _mDriveAction -= onEvent;
         }
 
         public void Trigger(T t, TK k, TS s)
         {
-            _driveAction?.Invoke(t, k, s);
+            _mDriveAction?.Invoke(t, k, s);
         }
     }
 }

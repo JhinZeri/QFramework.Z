@@ -17,11 +17,51 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using QFramework.Z.Framework.EventSystemIntegration;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace QFramework.Z.Framework.Core
 {
+    /// <summary>
+    /// 事件信息单元
+    /// </summary>
+    [Serializable]
+    public class EventInfo
+    {
+        [LabelText("事件类型")]
+        [ShowInInspector]
+        [PropertyOrder(0)]
+        public string TypeName => EventType.Name;
+
+        [ShowInInspector]
+        [LabelText("回调方法列表")]
+        [Searchable]
+        [PropertyOrder(2)]
+        public List<string> MethodList = new();
+
+        public Type EventType;
+
+        Action _mAction;
+
+
+        public EventInfo(Type eventType, Action action)
+        {
+            EventType = eventType;
+            _mAction = action;
+        }
+
+        [Button("触发事件", Icon = SdfIconType.List)]
+        [PropertyOrder(1)]
+        public void TryTrigger()
+        {
+            _mAction?.Invoke();
+        }
+
+        public void SetMethodList(IEnumerable<string> list) => MethodList = new List<string>(list);
+    }
+
     public interface IArchitecture
     {
         #region 框架模块
@@ -51,7 +91,7 @@ namespace QFramework.Z.Framework.Core
         void SendEvent<T>() where T : new();
         void SendEvent<T>(T e);
 
-        IUnRegister RegisterEvent<T>(Action<T> onEvent);
+        IUnRegister RegisterEvent<T>(Action<T> onEvent) where T : new();
 
         void UnRegisterEvent<T>(Action<T> onEvent);
 
@@ -60,6 +100,11 @@ namespace QFramework.Z.Framework.Core
         #endregion
     }
 
+    /// <summary>
+    /// 抽象架构类
+    /// 架构类是整个框架的核心，负责管理游戏项目模块的注册、获取，以及框架事件的发送和处理
+    /// </summary>
+    /// <typeparam name="T"> </typeparam>
     public abstract class Architecture<T> : MonoBehaviour, IArchitecture where T : Architecture<T>, new()
     {
         // 静态变量，存储架构实例
@@ -83,17 +128,17 @@ namespace QFramework.Z.Framework.Core
         {
             OnDeInit();
             // 反初始化系统
-            foreach (KeyValuePair<Type, ISystem> systemValuePair in _systemIOCContainer.InstanceDictionary
+            foreach (KeyValuePair<Type, ISystem> systemValuePair in _mSystemIOCContainer.InstanceDictionary
                 .Where(s => s.Value.Initialized = true))
                 systemValuePair.Value.DeInit();
             // 反初始化模型
-            foreach (KeyValuePair<Type, IModel> modelValuePair in _modelIOCContainer.InstanceDictionary
+            foreach (KeyValuePair<Type, IModel> modelValuePair in _mModelIOCContainer.InstanceDictionary
                 .Where(m => m.Value.Initialized = true))
                 modelValuePair.Value.DeInit();
             // 清空容器
-            _systemIOCContainer.Clear();
-            _modelIOCContainer.Clear();
-            _utilityContainer.Clear();
+            _mSystemIOCContainer.Clear();
+            _mModelIOCContainer.Clear();
+            _mUtilityContainer.Clear();
             _architecture = null;
         }
 
@@ -121,7 +166,7 @@ namespace QFramework.Z.Framework.Core
             // 使用这个注册方法，默认是没有的，new 一个，设置 system 的架构，并注册到容器
             var system = new TSystem();
             system.SetArchitecture(this);
-            _systemIOCContainer.Register(system);
+            _mSystemIOCContainer.Register(system);
 
             // 如果 Architecture 已经完成了初始化，那么注册之后立刻进行 system 的初始化
             if (!_hasInited) return;
@@ -136,7 +181,7 @@ namespace QFramework.Z.Framework.Core
         {
             var model = new TModel();
             model.SetArchitecture(this);
-            _modelIOCContainer.Register(model);
+            _mModelIOCContainer.Register(model);
 
             if (!_hasInited) return;
             model.Init();
@@ -150,28 +195,27 @@ namespace QFramework.Z.Framework.Core
         public void RegisterUtility<TUtility>() where TUtility : class, IUtility, new()
         {
             var utility = new TUtility();
-            _utilityContainer.Register(utility);
+            _mUtilityContainer.Register(utility);
         }
 
         // 获取系统
         public TSystem GetSystem<TSystem>() where TSystem : class, ISystem =>
-            _systemIOCContainer.TryGetModule<TSystem>();
+            _mSystemIOCContainer.TryGetModule<TSystem>();
 
         // 获取模型
-        public TModel GetModel<TModel>() where TModel : class, IModel => _modelIOCContainer.TryGetModule<TModel>();
+        public TModel GetModel<TModel>() where TModel : class, IModel => _mModelIOCContainer.TryGetModule<TModel>();
 
         // 获取工具
         public TUtility GetUtility<TUtility>() where TUtility : class, IUtility =>
-            _utilityContainer.TryGetModule<TUtility>();
+            _mUtilityContainer.TryGetModule<TUtility>();
 
         #endregion
 
         #region 命令，查询，事件
 
-        // 发送命令
         public TResult SendCommand<TResult>(ICommand<TResult> command) => ExecuteCommand(command);
 
-        // 发送命令
+
         public void SendCommand<TCommand>(TCommand command) where TCommand : ICommand
         {
             ExecuteCommand(command);
@@ -180,25 +224,34 @@ namespace QFramework.Z.Framework.Core
         // 发送查询
         public TResult SendQuery<TResult>(IQuery<TResult> query) => DoQuery(query);
 
-        // 发送事件
-        public void SendEvent<TEvent>() where TEvent : new()
+        readonly TypeEventSystem _mTypeEventSystem = new();
+
+        [Title("事件信息")]
+        [InfoBox("仅记录 Architecture 内部的 TypeEventSystem 的事件信息字典")]
+        [LabelText("架构内部的事件信息")]
+        [Searchable]
+        public List<EventInfo> EventInfos = new();
+
+        public void SendEvent<TEvent>() where TEvent : new() => _mTypeEventSystem.Send<TEvent>();
+
+        public void SendEvent<TEvent>(TEvent e) => _mTypeEventSystem.Send(e);
+
+        public IUnRegister RegisterEvent<TEvent>(Action<TEvent> onEvent) where TEvent : new()
         {
-            TypeEventSystem.Global.Send<TEvent>();
+            var type = typeof(TEvent);
+            var eventInfo = new EventInfo(type, () => _mTypeEventSystem.Send<TEvent>());
+            bool exist =
+                EventInfos.Any(info => info.EventType == type);
+            if (!exist) EventInfos.Add(eventInfo);
+            var unRegister = _mTypeEventSystem.Register(onEvent);
+            List<string> mInvocationList = _mTypeEventSystem.GetEasyEvent<TEvent>().GetActionInvocationList();
+            eventInfo.SetMethodList(mInvocationList);
+            return unRegister;
         }
 
-        // 发送事件
-        public void SendEvent<TEvent>(TEvent e)
-        {
-            TypeEventSystem.Global.Send(e);
-        }
-
-        // 注册事件
-        public IUnRegister RegisterEvent<TEvent>(Action<TEvent> onEvent) => TypeEventSystem.Global.Register(onEvent);
-
-        // 取消注册事件
         public void UnRegisterEvent<TEvent>(Action<TEvent> onEvent)
         {
-            TypeEventSystem.Global.UnRegister(onEvent);
+            _mTypeEventSystem.UnRegister(onEvent);
         }
 
         #endregion
@@ -212,11 +265,20 @@ namespace QFramework.Z.Framework.Core
         {
             // 如果不为空，表示场景中存在
             if (_architecture != null) return;
-            // 创建新的 架构物体 
-            var architectureTrans =
-                CreateArchitectureGameObject(null, "*Archi*" + "Architecture_" + typeof(T).Name);
-            // Add 的时候就会执行 Awake () 
-            _architecture = architectureTrans.gameObject.AddComponent<T>();
+            if (FindFirstObjectByType<T>() != null)
+            {
+                _architecture = FindFirstObjectByType<T>();
+                _architecture.gameObject.name = "*Archi*" + "Architecture_" + typeof(T).Name;
+            }
+            else
+            {
+                // 创建新的 架构物体 
+                var architectureTrans =
+                    CreateArchitectureGameObject(null, "*Archi*" + "Architecture_" + typeof(T).Name);
+                // Add 的时候就会执行 Awake () 
+                _architecture = architectureTrans.gameObject.AddComponent<T>();
+            }
+
             // 架构初始化，注册需要的模块到容器中
             _architecture.Init();
             // 模块收集完毕，开始对各个模块进行初始化
@@ -230,13 +292,13 @@ namespace QFramework.Z.Framework.Core
         /// </summary>
         void InitModules()
         {
-            foreach (KeyValuePair<Type, IModel> typeModel in _modelIOCContainer.InstanceDictionary)
+            foreach (KeyValuePair<Type, IModel> typeModel in _mModelIOCContainer.InstanceDictionary)
             {
                 typeModel.Value.Init();
                 typeModel.Value.Initialized = true;
             }
 
-            foreach (KeyValuePair<Type, ISystem> typeSystem in _systemIOCContainer.InstanceDictionary)
+            foreach (KeyValuePair<Type, ISystem> typeSystem in _mSystemIOCContainer.InstanceDictionary)
             {
                 typeSystem.Value.Init();
                 typeSystem.Value.Initialized = true;
@@ -255,7 +317,6 @@ namespace QFramework.Z.Framework.Core
             module.transform.SetParent(parent);
             return module.transform;
         }
-
 
         // 执行命令
         protected virtual TResult ExecuteCommand<TResult>(ICommand<TResult> command)
@@ -282,9 +343,9 @@ namespace QFramework.Z.Framework.Core
 
         #region 三个模块容器
 
-        readonly ModuleIOCContainer<IModel> _modelIOCContainer = new ModelContainer();
-        readonly ModuleIOCContainer<ISystem> _systemIOCContainer = new SystemContainer();
-        readonly ModuleIOCContainer<IUtility> _utilityContainer = new UtilityContainer();
+        readonly ModuleIOCContainer<IModel> _mModelIOCContainer = new ModelContainer();
+        readonly ModuleIOCContainer<ISystem> _mSystemIOCContainer = new SystemContainer();
+        readonly ModuleIOCContainer<IUtility> _mUtilityContainer = new UtilityContainer();
 
         #endregion
 

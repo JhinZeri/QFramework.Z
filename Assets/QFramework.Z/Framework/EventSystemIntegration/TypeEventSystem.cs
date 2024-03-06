@@ -129,57 +129,25 @@ namespace QFramework.Z.Framework.EventSystemIntegration
     #endregion
 
     /// <summary>
-    /// 全局静态 TypeEventSystem 事件系统
+    /// TypeEventSystem 事件系统
+    /// 内部包含一个 EasyEvents 事件容器
     /// </summary>
     public class TypeEventSystem
     {
         public static readonly TypeEventSystem Global = new();
-        readonly Dictionary<Type, IEasyEvent> _typeEventDictionary = new();
+        readonly EasyEvents _mEvents = new();
+        public void Send<T>() where T : new() => _mEvents.GetEvent<EasyEvent<T>>()?.Trigger(new T());
 
-        /// <summary>
-        /// GetOrAddEvent 可以避免用户重复注册造成的问题，
-        /// 如果存在就注册给具体 EasyEvent 实例对象，
-        /// 不存在则创建一个新的并添加到 TypeEventDictionary 字典，不会替换 TypeEventDictionary 中的实例元素
-        /// </summary>
-        /// <typeparam name="T"> </typeparam>
-        /// <returns> </returns>
-        T GetOrAddEvent<T>() where T : IEasyEvent, new()
-        {
-            var eType = typeof(T);
-            if (_typeEventDictionary.TryGetValue(eType, out var e)) return (T)e;
+        public void Send<T>(T e) => _mEvents.GetEvent<EasyEvent<T>>()?.Trigger(e);
 
-            var t = new T();
-            _typeEventDictionary.Add(eType, t);
-            return t;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <typeparam name="T"> </typeparam>
-        /// <returns> </returns>
-        T GetEvent<T>() where T : IEasyEvent =>
-            _typeEventDictionary.TryGetValue(typeof(T), out var e) ? (T)e : default;
-
-        public void Send<T>() where T : new()
-        {
-            GetEvent<EasyEvent<T>>()?.Trigger(new T());
-        }
-
-        public void Send<T>(T e)
-        {
-            GetEvent<EasyEvent<T>>()?.Trigger(e);
-        }
-
-        /// <summary>
-        /// 默认注册带一个参数的委托
-        /// </summary>
-        public IUnRegister Register<T>(Action<T> onEvent) =>
-            GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
+        public IUnRegister Register<T>(Action<T> onEvent) => _mEvents.GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
 
         public void UnRegister<T>(Action<T> onEvent)
         {
-            EasyEvent<T> e = GetEvent<EasyEvent<T>>();
+            EasyEvent<T> e = _mEvents.GetEvent<EasyEvent<T>>();
             e?.UnRegister(onEvent);
         }
+
+        public EasyEvent<T> GetEasyEvent<T>() => _mEvents.GetEvent<EasyEvent<T>>();
     }
 }

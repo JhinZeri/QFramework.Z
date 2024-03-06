@@ -1,4 +1,5 @@
-﻿using QFramework.Z.Framework.Core;
+﻿using System;
+using QFramework.Z.Framework.Core;
 using QFramework.Z.Framework.EventSystemIntegration;
 using QFramework.Z.Framework.Observable;
 using QFramework.Z.Framework.Rule;
@@ -54,7 +55,7 @@ namespace QFramework.Z.Examples._0.CounterApp
 
         public int LoadInt(string key, int defaultValue = 0) => PlayerPrefs.GetInt(key, defaultValue);
     }
-    
+
     // 引入 Command
     public class IncreaseCountCommand : AbstractCommand
     {
@@ -74,8 +75,10 @@ namespace QFramework.Z.Examples._0.CounterApp
         }
     }
 
+    public class DebugAEvent { }
+
     // Controller
-    public class CounterAppController : AbstractController /* 3.实现 IController 接口 */
+    public class CounterAppController : MonoBehaviour, IController /* 3.实现 IController 接口 */
     {
         // View
         Button mBtnAdd;
@@ -85,16 +88,26 @@ namespace QFramework.Z.Examples._0.CounterApp
         // 4. Model
         CounterAppModel mModel;
 
+        readonly Action<DebugAEvent> _mAction = e =>
+        {
+            Debug.Log("Debug A");
+        };
+
         void Start()
         {
             // 5. 获取模型
             mModel = this.GetModel<CounterAppModel>();
 
+
+            this.RegisterEvent<DebugAEvent>(e =>
+            {
+                Debug.Log("Debug A");
+            });
+
             // View 组件获取
             mBtnAdd = transform.Find("BtnAdd").GetComponent<Button>();
             mBtnSub = transform.Find("BtnSub").GetComponent<Button>();
             mCountText = transform.Find("CountText").GetComponent<Text>();
-
 
             // 监听输入
             mBtnAdd.onClick.AddListener(this.SendCommand<IncreaseCountCommand>);
@@ -113,6 +126,14 @@ namespace QFramework.Z.Examples._0.CounterApp
                   .UnRegisterWhenGameObjectDestroyed(gameObject);
         }
 
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                GetArchitecture().SendEvent<DebugAEvent>();
+            }
+        }
+
         void OnDestroy()
         {
             // 8. 将 Model 设置为空
@@ -125,6 +146,7 @@ namespace QFramework.Z.Examples._0.CounterApp
         }
 
         // 3.
-        protected override IArchitecture SetControllerArchitecture() => CounterApp.Interface;
+
+        public IArchitecture GetArchitecture() => CounterApp.Interface;
     }
 }

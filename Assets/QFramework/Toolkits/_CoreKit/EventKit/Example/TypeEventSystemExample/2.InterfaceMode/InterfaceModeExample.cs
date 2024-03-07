@@ -1,6 +1,6 @@
-﻿using QFramework.Z.Framework.Core;
-using QFramework.Z.Framework.EventSystemIntegration;
-using UnityEngine;
+﻿using UnityEngine;
+using ZQFramework.Framework.Core;
+using ZQFramework.Framework.EventSystemIntegration;
 
 namespace QFramework.Example
 {

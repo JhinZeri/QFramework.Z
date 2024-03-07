@@ -1,7 +1,7 @@
-﻿using QFramework.Z.CoreKit.EventKit.EventTrigger.Physics;
-using QFramework.Z.CoreKit.EventKit.EventTrigger.UI;
-using QFramework.Z.Framework.EventSystemIntegration;
-using UnityEngine;
+﻿using UnityEngine;
+using ZQFramework.Framework.EventSystemIntegration;
+using ZQFramework.Toolkits.EventKit.EventTrigger.Physics;
+using ZQFramework.Toolkits.EventKit.EventTrigger.UI;
 
 namespace QFramework.Example
 {

@@ -1,0 +1,250 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Toolkits.UIKit.UISetting;
+
+namespace ZQFramework.Toolkits.UIKit.Core
+{
+    /// <summary>
+    /// CanvasView 是一个抽象基类，用于提供 UIKit Canvas 相关的功能。
+    /// </summary>
+    public abstract class CanvasView : MonoBehaviour
+    {
+        #region 变量
+
+        // 组件字段
+        public Canvas UICanvas;
+        public CanvasGroup UICanvasGroup;
+
+        // 子级组件
+        public CanvasGroup UIMaskCanvasGroup;
+        public Image UIPanel;
+
+        // 状态字段
+        public bool Visible;
+        public bool CanvasDontMask;
+
+        #endregion
+
+
+        #region 方法
+
+        /// <summary>
+        /// UI 物体一旦生成，绑定赋值 UIKit 模板组件变量
+        /// </summary>
+        void Awake()
+        {
+            InitCanvasViewComponents();
+        }
+
+        /// <summary>
+        /// 绑定 CanvasView 的基础组件变量
+        /// </summary>
+        void InitCanvasViewComponents()
+        {
+            UICanvas = transform.GetComponent<Canvas>();
+            UICanvasGroup = transform.GetComponent<CanvasGroup>();
+            UIMaskCanvasGroup = transform.Find("UIMask").GetComponent<CanvasGroup>();
+            UIPanel = transform.Find("UIPanel").GetComponent<Image>();
+        }
+
+        /// <summary>
+        /// 设置物体可见性
+        /// </summary>
+        /// <param name="isVisible"></param>
+        public void SetVisible(bool isVisible)
+        {
+            Visible = isVisible;
+            gameObject.SetActive(isVisible); // Todo: 临时写法
+        }
+
+        public void SetMaskVisibleSelf(bool isVisible)
+        {
+            // 如果不是单层遮罩系统，直接返回
+            if (!UIRuntimeSetting.Instance.SingleMaskSystem) return;
+
+            UIMaskCanvasGroup.alpha = isVisible ? UIRuntimeSetting.Instance.SingleMaskAlpha : 0f;
+        }
+
+        #region UICanvasView 自定义生命周期
+
+        /// <summary>
+        /// 首次生成初始化，在 UI 物体的 MonoBehaviour 的 Awake 之后调用
+        /// </summary>
+        public void UIAwake()
+        {
+            OnInit();
+        }
+
+        /// <summary>
+        /// 每次显示操作执行后调用，时机在 SetVisible (true) 之后
+        /// </summary>
+        public void UIShow()
+        {
+            OnShow();
+        }
+
+        /// <summary>
+        /// 只有显示状态才执行更新
+        /// </summary>
+        public void UIUpdate()
+        {
+            OnUpdate();
+        }
+
+        /// <summary>
+        /// 每次隐藏操作执行后调用，时机在 SetVisible (false) 之后
+        /// </summary>
+        public void UIHide()
+        {
+            OnHide();
+        }
+
+        /// <summary>
+        /// UI销毁时调用
+        /// </summary>
+        public void UIDestroy()
+        {
+            RemoveAllButtonClickListeners();
+            RemoveAllToggleClickListener();
+            RemoveAllInputFieldListener();
+            m_Buttons.Clear();
+            m_Toggles.Clear();
+            m_InputFields.Clear();
+            OnUIDestroy();
+            Destroy(gameObject);
+        }
+
+        #endregion
+
+
+        #region 抽象方法
+
+        /// <summary>
+        /// 首次生成初始化，在 UI 物体的 MonoBehaviour 的 Awake 之后调用
+        /// </summary>
+        protected abstract void OnInit();
+
+        /// <summary>
+        /// 每次显示操作执行后调用，时机在 SetVisible (true) 之后，显示之后立刻执行全局遮罩控制
+        /// </summary>
+        protected abstract void OnShow();
+
+        /// <summary>
+        /// 只有显示状态才执行更新
+        /// </summary>
+        protected abstract void OnUpdate();
+
+        /// <summary>
+        /// 每次隐藏操作执行后调用，时机在 SetVisible (false) 之后，隐藏之后立刻执行全局遮罩控制
+        /// </summary>
+        protected abstract void OnHide();
+
+        /// <summary>
+        /// 此方法会在最后销毁物体之前，清除内部变量属性之后
+        /// </summary>
+        protected abstract void OnUIDestroy();
+
+        /// <summary>
+        /// 提供给子类绑定 UI 组件的方法
+        /// </summary>
+        protected abstract void BindCanvasViewUIComponents();
+
+        #endregion
+
+        #endregion
+
+
+        #region UI 事件管理
+
+        // 三个常用的组件
+        readonly List<Button> m_Buttons = new();
+        readonly List<Toggle> m_Toggles = new();
+        readonly List<InputField> m_InputFields = new();
+
+        #region 事件监听
+
+        public void AddButtonClickListener(Button button, UnityAction action)
+        {
+            if (button.IsNotNull())
+            {
+                if (!m_Buttons.Contains(button))
+                {
+                    m_Buttons.Add(button);
+                }
+
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(action);
+            }
+        }
+
+        public void AddToggleClickListener(Toggle toggle, UnityAction<bool, Toggle> action)
+        {
+            if (toggle.IsNotNull())
+            {
+                if (!m_Toggles.Contains(toggle))
+                {
+                    m_Toggles.Add(toggle);
+                }
+
+                toggle.onValueChanged.RemoveAllListeners();
+                toggle.onValueChanged.AddListener(isOn =>
+                {
+                    action?.Invoke(isOn, toggle);
+                });
+            }
+        }
+
+        public void AddInputFieldListener(InputField inputField, UnityAction<string> onChangeAction,
+            UnityAction<string> onEndEdit)
+        {
+            if (inputField.IsNotNull())
+            {
+                if (!m_InputFields.Contains(inputField))
+                {
+                    m_InputFields.Add(inputField);
+                }
+
+                inputField.onValueChanged.RemoveAllListeners();
+                inputField.onEndEdit.RemoveAllListeners();
+                inputField.onValueChanged.AddListener(onChangeAction);
+                inputField.onEndEdit.AddListener(onEndEdit);
+            }
+        }
+
+        #endregion
+
+        #region 移除监听
+
+        public void RemoveAllButtonClickListeners()
+        {
+            foreach (var button in m_Buttons)
+            {
+                button.onClick.RemoveAllListeners();
+            }
+        }
+
+        public void RemoveAllToggleClickListener()
+        {
+            foreach (var toggle in m_Toggles)
+            {
+                toggle.onValueChanged.RemoveAllListeners();
+            }
+        }
+
+        public void RemoveAllInputFieldListener()
+        {
+            foreach (var inputField in m_InputFields)
+            {
+                inputField.onValueChanged.RemoveAllListeners();
+                inputField.onEndEdit.RemoveAllListeners();
+            }
+        }
+
+        #endregion
+
+        #endregion
+    }
+}

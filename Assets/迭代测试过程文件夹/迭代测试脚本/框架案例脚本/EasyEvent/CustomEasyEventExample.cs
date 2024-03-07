@@ -1,6 +1,6 @@
 using System;
-using QFramework.Z.Framework.EventSystemIntegration;
 using UnityEngine;
+using ZQFramework.Framework.EventSystemIntegration;
 
 namespace 迭代测试过程文件夹.迭代测试脚本.框架案例脚本.EasyEvent
 {
@@ -37,7 +37,7 @@ namespace 迭代测试过程文件夹.迭代测试脚本.框架案例脚本.Easy
         {
             if (Input.GetMouseButtonDown(0))
             {
-                _easyEvent.Trigger("Hello QFramework.Z");
+                _easyEvent.Trigger("Hello ZQFramework");
             }
 
             if (Input.GetMouseButtonDown(1))

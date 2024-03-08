@@ -16,10 +16,23 @@ namespace ZQFramework.Toolkits.UIKit.Core
         Transform m_UIRoot;
         Camera m_UICamera;
 
+        Transform m_DontMaskParent;
+        Transform m_NeedMaskParent;
+
+        UIRuntimeSetting m_UIRuntimeSetting;
+
         protected override void Awake()
         {
             base.Awake();
             Init();
+        }
+
+        void Update()
+        {
+            foreach (var canvasView in m_VisibleCanvasViewList)
+            {
+                canvasView.UIUpdate();
+            }
         }
 
         #region 三个 UICanvasView 容器
@@ -33,16 +46,22 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 静态初始化 UIKit 组件赋值
         /// </summary>
-        public static void Init()
+        public void Init()
         {
-            Instance.m_UICamera = GameObject.Find("UICamera")
-                                            .GetComponent<Camera>();
+            m_UIRuntimeSetting = UIRuntimeSetting.Instance;
+#if UNITY_EDITOR
+            m_UIRuntimeSetting.GenerateUIPrefabToPathInResourcesUnit();
+#endif
             // 第一个路径前面使用斜杠，表示必须是根节点
-            Instance.m_UIRoot = GameObject.Find("/UIRoot").transform;
-
             // Hand must not have a parent in the Hierarchy view.
             // hand = GameObject.Find("/Hand");
+            Instance.m_UIRoot = GameObject.Find("/UIRoot").transform;
+            Instance.m_UICamera = Instance.m_UIRoot.Find("UICamera")
+                                          .GetComponent<Camera>();
+            Instance.m_DontMaskParent = Instance.m_UIRoot.Find("DontMaskUILayer").transform;
+            Instance.m_NeedMaskParent = Instance.m_UIRoot.Find("NeedMaskUILayer").transform;
         }
+
 
         #region UIKit 公共静态方法，优化使用，从设计上确定只维护一套 CanvasView 容器，共三个
 
@@ -51,7 +70,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// </summary>
         /// <typeparam name="T">具体 CanvasView 的实现类</typeparam>
         /// <returns>UI对象</returns>
-        public static T PopUpCanvas<T>(bool useResources = true) where T : CanvasView, new()
+        public static T OpenCanvas<T>(bool useResources = true) where T : CanvasView, new()
         {
             var type = typeof(T);
             string canvasName = type.Name;
@@ -166,7 +185,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
             // 注入 UICamera
             canvasView.UICanvas.worldCamera = Instance.m_UICamera;
             // 确定 CanvasView 的类别并调整父物体
-            // ClassifyUICanvasByMask(canvasView);
+            ClassifyUICanvasByMask(canvasView);
             canvasView.UIAwake();
             canvasView.SetVisible(true);
             canvasView.UIShow();
@@ -179,6 +198,13 @@ namespace ZQFramework.Toolkits.UIKit.Core
             // 新生成一个 Canvas 需要设置一次全局遮罩可见性
             Instance.SetGlobalCanvasMaskVisible();
             return canvasView;
+        }
+
+        static void ClassifyUICanvasByMask(CanvasView canvasView)
+        {
+            // 先判断当前 Canvas 是否需要遮罩
+            canvasView.transform.SetParent(
+                canvasView.CanvasDontMask ? Instance.m_DontMaskParent : Instance.m_NeedMaskParent, false);
         }
 
         /// <summary>
@@ -340,7 +366,15 @@ namespace ZQFramework.Toolkits.UIKit.Core
             GameObject uiPrefab = null;
             if (useResources)
             {
-                uiPrefab = Resources.Load<GameObject>("UIPrefabs/" + typeof(T).Name);
+                string uiName = typeof(T).Name;
+                var resourcesLoadPath = string.Empty;
+                foreach (var uiPrefabObject in Instance.m_UIRuntimeSetting.UIPrefabToPathInResourcesManager.Where(
+                    uiPrefabObject => uiName == uiPrefabObject.UIPrefabName))
+                {
+                    resourcesLoadPath = uiPrefabObject.ResourcesPath;
+                }
+
+                uiPrefab = Resources.Load<GameObject>(resourcesLoadPath);
             }
             else
             {

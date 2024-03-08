@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit
+namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor
 {
     public class CreateScriptFromTemplateTxt
     {

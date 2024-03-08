@@ -3,9 +3,9 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
-using ZQFramework.Toolkits.CodeGenKit.UICodeGen;
 using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config;
 using ZQFramework.Toolkits.CommonKit.UnityEditorKit.Editor.Tools.HierarchyColorCardTool;
+using ZQFramework.Toolkits.UIKit.UISetting;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
 {
@@ -26,8 +26,11 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
             {
                 { "ZQ 框架配置", null, SdfIconType.GearFill }, // Draws the this.someData field in this case.
                 { "ZQ 框架配置/UI 代码生成配置", UICodeGenConfig.Instance, SdfIconType.Apple },
+                { "运行时设置/", null, SdfIconType.Sunset },
+                { "运行时设置/UI 设置", UIRuntimeSetting.Instance, SdfIconType.SunriseFill },
                 { "工具配置", null, SdfIconType.Tools },
                 { "工具配置/名称前缀卡片绘制", HierarchyPrefixColorCardConfig.Instance, SdfIconType.PaletteFill },
+                { "ZQ 过程日志信息", null, SdfIconType.InfoCircle }
             };
             return tree;
         }

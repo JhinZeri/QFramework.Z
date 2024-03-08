@@ -1,38 +1,32 @@
-using UnityEngine;
+﻿/*---------------------------------------------------------------------------
+ * UI 自动化组件生成 ViewController 脚本工具
+ * 作者: Zane
+ * 脚本生成时间: 2024-03-08 18:07:30
+ * 使用说明: UI 组件需要以 | [UI类型]组件名称 | 的方式命名，命名没有空格，或者 UI 组件物体使用特殊 Tag
+ * 右键 UICanvas 预制体根节点物体，右键 UICanvas 预制体根节点物体，挂载 UI 助手脚本
+ * 注意: ViewController 脚本是自动生成，手动修改后，再次更新会补充在标识注释后，不会覆盖
+---------------------------------------------------------------------------*/
+using UnityEngine.UI;
 using ZQFramework.Toolkits.UIKit.Core;
 
-namespace ZQFramework.Toolkits.UIKit.Example.Scripts
+namespace ZGameProject.UI
 {
-    public class UILoginTest : CanvasView
+    public partial class UILoginTest : CanvasView
     {
-        protected override void OnInit()
-        {
-            Debug.Log("UILoginTest OnInit !");
-        }
+        #region UI 自定义生命周期 
 
-        protected override void OnShow()
-        {
-            Debug.Log("UILoginTest OnShow !");
-        }
+        protected override void OnInit() { }
+        protected override void OnShow() { }
+        protected override void OnUpdate() { }
+        protected override void OnHide() { }
+        protected override void OnUIDestroy() { }
 
-        protected override void OnUpdate()
-        {
-            Debug.Log("UILoginTest OnUpdate !");
-        }
+        #endregion
 
-        protected override void OnHide()
-        {
-            Debug.Log("UILoginTest OnHide !");
-        }
+        #region UI 事件绑定
 
-        protected override void OnUIDestroy()
-        {
-            Debug.Log("UILoginTest OnUIDestroy !");
-        }
+        /*更新代码位置标识，不可删除和修改内容，仅可移动位置*/
 
-        protected override void BindCanvasViewUIComponents()
-        {
-            
-        }
+        #endregion
     }
 }

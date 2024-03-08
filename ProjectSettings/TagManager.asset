@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - "ZQ \u6846\u67B6 UI \u6807\u7B7E Start"
+  - Image
+  - RawImage
+  - Button
+  - Text
+  - Toggle
+  - InputField
+  - Slider
+  - Dropdown
+  - Scrollbar
+  - ScrollRect
+  - "ZQ \u6846\u67B6 UI \u6807\u7B7E End"
   layers:
   - Default
   - TransparentFX

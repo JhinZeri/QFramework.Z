@@ -3,11 +3,12 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using ZQFramework.Toolkits.CommonKit.UnityEditorKit;
+using ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.ConfigKit.ConfigHelper
 {
     // [CreateAssetMenu(fileName = "ConfigDefaultPathsConfig", menuName = "ZQ/ConfigDefaultPathsConfig", order = 0)]
-    public class ConfigDefaultPathsConfig : ScriptableObject, IConfigOrSetting
+    public class ConfigDefaultPathsConfig : ScriptableObject, IConfigOrSettingOrLogInfo
     {
         #region 资源文件相关
 

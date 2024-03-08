@@ -13,4 +13,20 @@ MonoBehaviour:
   m_Name: UICodeGenConfig
   m_EditorClassIdentifier: 
   CurrentUICodeGenPath: Assets/ZGameProject/UI
-  CurrentUICodeNamespace: ZGameProject/UI
+  CurrentUICodeNamespace: ZGameProject.UI
+  IsCompleteTag: 1
+  CurrentUICodeGenAdditionalTags:
+  - "ZQ \u6846\u67B6 UI \u6807\u7B7E Start"
+  - Image
+  - RawImage
+  - Button
+  - Text
+  - Toggle
+  - InputField
+  - Slider
+  - Dropdown
+  - Scrollbar
+  - ScrollRect
+  - "ZQ \u6846\u67B6 UI \u6807\u7B7E End"
+  CurrentCodeGenPreview: 1
+  OnlySavedLatestUIParseLogInfo: 1

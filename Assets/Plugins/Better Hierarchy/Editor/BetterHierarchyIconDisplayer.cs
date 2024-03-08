@@ -28,7 +28,7 @@ namespace Utilities.BetterHierarchy
 
         private static void OnEditorUpdate()
         {
-            if (!hierarchyEditorWindow)
+            if (!hierarchyEditorWindow && IsHierarchyWindowFocused())
             {
                 hierarchyEditorWindow = EditorWindow.GetWindow(
                     Type.GetType($"{nameof(UnityEditor)}.SceneHierarchyWindow,{nameof(UnityEditor)}"));
@@ -38,6 +38,13 @@ namespace Utilities.BetterHierarchy
                 && EditorWindow.focusedWindow == hierarchyEditorWindow;
             
 			additionalSelectedInstanceIDs.Clear();
+        }
+        
+        private static bool IsHierarchyWindowFocused()
+        {
+            EditorWindow focusedWindow = EditorWindow.focusedWindow;
+            
+            return focusedWindow != null && focusedWindow.GetType().Name == "SceneHierarchyWindow";
         }
 
         private static void OnHierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)

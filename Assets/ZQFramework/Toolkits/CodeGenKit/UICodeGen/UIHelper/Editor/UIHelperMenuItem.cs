@@ -1,12 +1,13 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using ZQFramework.Toolkits.CommonKit.UnityEditorKit;
+using ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.UIHelper.Editor
 {
     public static class UIHelperMenuItem
     {
-        [MenuItem("GameObject/挂载 UI 助手脚本  Shift + Alt + Z #&z")]
+        [MenuItem("GameObject/挂载 UI 助手脚本 (Shift + Alt + Z) #&z", priority = 0)]
         static void AddUIHelper()
         {
             var obj = Selection.activeGameObject;
@@ -16,7 +17,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.UIHelper.Editor
             Debug.Log("挂载 UI 助手脚本成功");
         }
 
-        [MenuItem("GameObject/挂载 UI 助手脚本  Shift + Alt + Z #&z", true)]
+        [MenuItem("GameObject/挂载 UI 助手脚本 (Shift + Alt + Z) #&z", true, priority = 0)]
         static bool AddUIHelperValidator()
         {
             return FilterSelectedGameObject.IsUIKitCanvasTemplate();

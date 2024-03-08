@@ -14,3 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SingleMaskSystem: 1
   SingleMaskAlpha: 0.7
+  UIPrefabToPathInResourcesManager:
+  - UIPrefabName: UILoginTest
+    ResourcesPath: UIPrefabs/New Folder/UILoginTest
+  - UIPrefabName: UIParseTest
+    ResourcesPath: UIPrefabs/UIParseTest
+  - UIPrefabName: UIRegisterTest
+    ResourcesPath: UIPrefabs/UIRegisterTest
+  - UIPrefabName: UIViewGenTest
+    ResourcesPath: UIPrefabs/UIViewGenTest

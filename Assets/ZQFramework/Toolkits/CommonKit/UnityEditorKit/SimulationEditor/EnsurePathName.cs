@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System.IO;
 
-namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit
+namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor
 {
     /// <summary>
     /// 确保文件路径有后缀，且使用 Path 合并，兼容操作系统

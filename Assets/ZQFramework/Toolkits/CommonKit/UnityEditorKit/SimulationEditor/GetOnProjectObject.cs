@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit
+namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor
 {
     public static class GetOnProjectObject
     {

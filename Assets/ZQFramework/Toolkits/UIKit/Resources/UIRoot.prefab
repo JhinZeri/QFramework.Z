@@ -109,7 +109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2859142735051878308}
   m_Layer: 0
-  m_Name: UseMaskUILayer
+  m_Name: NeedMaskUILayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,7 +140,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8113849203220306460}
   m_Layer: 0
-  m_Name: DontUseMaskUILayer
+  m_Name: DontMaskUILayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

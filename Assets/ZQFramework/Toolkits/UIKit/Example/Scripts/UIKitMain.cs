@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZGameProject.UI;
 
 namespace ZQFramework.Toolkits.UIKit.Example.Scripts
 {
@@ -6,15 +7,15 @@ namespace ZQFramework.Toolkits.UIKit.Example.Scripts
     {
         void Start()
         {
-            Core.UIKit.PopUpCanvas<UILoginTest>();
-            Core.UIKit.PopUpCanvas<UIRegisterTest>();
+            Core.UIKit.OpenCanvas<UILoginTest>();
+            Core.UIKit.OpenCanvas<UIRegisterTest>();
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                Core.UIKit.PopUpCanvas<UILoginTest>();
+                Core.UIKit.OpenCanvas<UILoginTest>();
             }
 
             if (Input.GetKeyDown(KeyCode.W))
@@ -29,7 +30,7 @@ namespace ZQFramework.Toolkits.UIKit.Example.Scripts
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                Core.UIKit.PopUpCanvas<UIRegisterTest>();
+                Core.UIKit.OpenCanvas<UIRegisterTest>();
             }
 
             if (Input.GetKeyDown(KeyCode.T))

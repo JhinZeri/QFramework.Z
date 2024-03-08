@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit
+namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor
 {
     public class FilterSelectedGameObject
     {
@@ -33,10 +33,16 @@ namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit
             Component[] components = obj.GetComponents<Component>();
             bool hasCanvas = components.Any(c => c is Canvas);
 
-            // todo: 使用过 UICanvas 模板
+            // Todo: 使用过 UICanvas 模板
             var hasUIMask = false;
             var hasUIPanel = false;
             foreach (Transform child in obj.transform)
+            {
+                if (hasUIMask && hasUIPanel)
+                {
+                    break;
+                }
+
                 switch (child.name)
                 {
                     case "UIMask":
@@ -46,8 +52,40 @@ namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit
                         hasUIPanel = true;
                         break;
                 }
+            }
 
-            return obj != null && hasCanvas && hasUIMask && hasUIPanel;
+            if (hasCanvas)
+            {
+                return obj != null && hasUIMask && hasUIPanel;
+            }
+
+            if (obj.name == "UIMask" && obj.transform.parent.GetComponent<Canvas>() != null &&
+                obj.transform.parent.name.StartsWith("UI"))
+            {
+                return true;
+            }
+
+            if (obj.name == "UIPanel" && obj.transform.parent.GetComponent<Canvas>() != null &&
+                obj.transform.parent.name.StartsWith("UI"))
+            {
+                return true;
+            }
+
+            if (obj.name != "UIMask" && obj.name != "UIPanel")
+            {
+                while (obj.transform.parent != null)
+                {
+                    obj = obj.transform.parent.gameObject;
+                }
+
+                if (obj.transform.parent.GetComponent<Canvas>() != null &&
+                    obj.transform.parent.name.StartsWith("UI"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

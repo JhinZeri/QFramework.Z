@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,16 +16,31 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region 变量
 
         // 组件字段
+        [FoldoutGroup("基础组件")]
+        [LabelText("根节点 Canvas")]
         public Canvas UICanvas;
+
+        [FoldoutGroup("基础组件")]
+        [LabelText("根节点 CanvasGroup")]
         public CanvasGroup UICanvasGroup;
 
         // 子级组件
+        [FoldoutGroup("基础组件")]
+        [LabelText("遮罩 CanvasGroup")]
         public CanvasGroup UIMaskCanvasGroup;
+
+        [LabelText("UI 面板")]
+        [FoldoutGroup("基础组件")]
         public Image UIPanel;
 
         // 状态字段
-        public bool Visible;
+        [Title("基础状态")]
+        [LabelText("不使用遮罩")]
+        [InfoBox("如果 Canvas 的 OrderInLayer = 0，则自动设置为 false，不使用遮罩")]
         public bool CanvasDontMask;
+
+        [LabelText("是否为显示状态")]
+        public bool Visible;
 
         #endregion
 
@@ -37,17 +53,20 @@ namespace ZQFramework.Toolkits.UIKit.Core
         void Awake()
         {
             InitCanvasViewComponents();
+            BindCanvasViewComponents();
         }
 
         /// <summary>
         /// 绑定 CanvasView 的基础组件变量
         /// </summary>
-        void InitCanvasViewComponents()
+        public void InitCanvasViewComponents()
         {
-            UICanvas = transform.GetComponent<Canvas>();
-            UICanvasGroup = transform.GetComponent<CanvasGroup>();
-            UIMaskCanvasGroup = transform.Find("UIMask").GetComponent<CanvasGroup>();
-            UIPanel = transform.Find("UIPanel").GetComponent<Image>();
+            UICanvas = UICanvas ? UICanvas : transform.GetComponentInChildren<Canvas>();
+            UICanvasGroup = UICanvasGroup != null ? UICanvasGroup : transform.GetComponent<CanvasGroup>();
+            UIMaskCanvasGroup = UIMaskCanvasGroup != null
+                ? UIMaskCanvasGroup
+                : transform.Find("UIMask").GetComponent<CanvasGroup>();
+            UIPanel = UIPanel != null ? UIPanel : transform.Find("UIPanel").GetComponent<Image>();
         }
 
         /// <summary>
@@ -87,7 +106,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         }
 
         /// <summary>
-        /// 只有显示状态才执行更新
+        /// 处于显示状态时由 UIKit 控制执行
         /// </summary>
         public void UIUpdate()
         {
@@ -150,7 +169,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 提供给子类绑定 UI 组件的方法
         /// </summary>
-        protected abstract void BindCanvasViewUIComponents();
+        public abstract void BindCanvasViewComponents();
 
         #endregion
 
@@ -166,7 +185,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         #region 事件监听
 
-        public void AddButtonClickListener(Button button, UnityAction action)
+        public void AddButtonListener(Button button, UnityAction action)
         {
             if (button.IsNotNull())
             {
@@ -180,7 +199,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
             }
         }
 
-        public void AddToggleClickListener(Toggle toggle, UnityAction<bool, Toggle> action)
+        public void AddToggleListener(Toggle toggle, UnityAction<bool, Toggle> action)
         {
             if (toggle.IsNotNull())
             {

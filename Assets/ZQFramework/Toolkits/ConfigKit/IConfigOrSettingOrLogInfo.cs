@@ -7,7 +7,7 @@ namespace ZQFramework.Toolkits.ConfigKit
     /// Config 指纯编辑器状态使用的配置，
     /// Setting 指运行时加载到游戏场景内使用的配置
     /// </summary>
-    public interface IConfigOrSetting
+    public interface IConfigOrSettingOrLogInfo
     {
         /// <summary>
         /// 配置文件需要一个初始化

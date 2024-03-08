@@ -2,8 +2,8 @@
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor;
 using ZQFramework.Toolkits.ConfigKit;
-using ZQFramework.Toolkits.ConfigKit.ConfigHelper;
 
 namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit.Editor.Tools.HierarchyColorCardTool
 {
@@ -11,7 +11,7 @@ namespace ZQFramework.Toolkits.CommonKit.UnityEditorKit.Editor.Tools.HierarchyCo
     /// 卡片颜色设计列表
     /// </summary>
     // [CreateAssetMenu(fileName = "HierarchyPrefixColorCardConfig", menuName = "QFZ/HierarchyPrefixColorCardConfig",order = 0)]
-    public class HierarchyPrefixColorCardConfig : ScriptableObject, IConfigOrSetting
+    public class HierarchyPrefixColorCardConfig : ScriptableObject, IConfigOrSettingOrLogInfo
     {
         #region 资源文件相关
 

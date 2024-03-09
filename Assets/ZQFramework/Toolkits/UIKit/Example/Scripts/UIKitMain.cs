@@ -8,7 +8,7 @@ namespace ZQFramework.Toolkits.UIKit.Example.Scripts
         void Start()
         {
             Core.UIKit.OpenCanvas<UILoginTest>();
-            Core.UIKit.OpenCanvas<UIRegisterTest>();
+            // Core.UIKit.OpenCanvas<UIRegisterTest>();
         }
 
         void Update()
@@ -19,13 +19,11 @@ namespace ZQFramework.Toolkits.UIKit.Example.Scripts
 
             if (Input.GetKeyDown(KeyCode.E)) Core.UIKit.DestroyCanvas<UILoginTest>();
 
-            if (Input.GetKeyDown(KeyCode.R)) Core.UIKit.OpenCanvas<UIRegisterTest>();
+            if (Input.GetKeyDown(KeyCode.R)) Core.UIKit.HideCanvas<UIParseTest>();
 
-            if (Input.GetKeyDown(KeyCode.T)) Core.UIKit.HideCanvas<UIRegisterTest>();
+            if (Input.GetKeyDown(KeyCode.T)) Core.UIKit.DestroyCanvas<UIRegisterTest>();
 
-            if (Input.GetKeyDown(KeyCode.Y)) Core.UIKit.DestroyCanvas<UIRegisterTest>();
-
-            if (Input.GetKeyDown(KeyCode.U)) Core.UIKit.DestroyAllCanvas();
+            if (Input.GetKeyDown(KeyCode.Y)) Core.UIKit.DestroyCanvas<UIViewGenTest>();
         }
     }
 }

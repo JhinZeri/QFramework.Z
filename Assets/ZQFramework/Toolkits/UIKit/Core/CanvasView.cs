@@ -38,16 +38,68 @@ namespace ZQFramework.Toolkits.UIKit.Core
         // 状态字段
         [Title("基础状态")]
         [LabelText("不使用遮罩")]
-        [InfoBox("如果 Canvas 的 OrderInLayer = 0，则自动设置为 false，不使用遮罩")]
+        [InfoBox("如果 Canvas 的 OrderInLayer <= 100，则初始化自动设置为 false，不使用遮罩")]
         public bool CanvasDontMask;
 
         [LabelText("是否为显示状态")]
         public bool Visible;
 
+        [Title("堆栈状态")]
+        [InfoBox("发起者尽管没有在实际的堆栈队列中，但是自身关闭前属于堆栈队列")]
+        [LabelText("是否属于堆栈队列中")]
+        public bool BelongViewQueue;
+
         #endregion
 
 
         #region 方法
+
+        #region 公共方法
+
+        /// <summary>
+        /// 开始发起堆栈，将多个 UI CanvasView 压入堆栈队列中，建立关联
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void StartOrPushCanvasView<T>() where T : CanvasView
+        {
+            if (UIKit.Instance.QueueOwnerCanvasView == null)
+            {
+                UIKit.Instance.QueueOwnerCanvasView = this;
+                BelongViewQueue = true;
+                UIKit.PushCanvasViewQueue<T>();
+            }
+            else if (UIKit.Instance.QueueOwnerCanvasView == this)
+            {
+                BelongViewQueue = true;
+                UIKit.PushCanvasViewQueue<T>();
+            }
+            else if (UIKit.Instance.QueueOwnerCanvasView != null && UIKit.Instance.QueueOwnerCanvasView != this)
+            {
+                Debug.LogError("堆栈队列已经由其他 CanvasView 发起，请调整堆栈关联顺序");
+            }
+        }
+
+        /// <summary>
+        /// 隐藏自身
+        /// </summary>
+        /// <remarks>HideSelf(this)</remarks>
+        public void HideSelf<T>(T self) where T : CanvasView
+        {
+            UIKit.HideCanvas<T>();
+        }
+
+        /// <summary>
+        /// 关闭销毁自身
+        /// </summary>
+        /// <remarks>CloseSelf(this)</remarks>
+        public void CloseSelf<T>(T self) where T : CanvasView
+        {
+            UIKit.DestroyCanvas<T>();
+        }
+
+        #endregion
+
+        #region UIKit 内部方法
 
         /// <summary>
         /// UI 物体一旦生成，绑定赋值 UIKit 模板组件变量
@@ -88,6 +140,8 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
             UIMaskCanvasGroup.alpha = isVisible ? UIRuntimeSetting.Instance.SingleMaskAlpha : 0f;
         }
+
+        #endregion
 
         #region UICanvasView 自定义生命周期
 
@@ -140,7 +194,6 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         #endregion
 
-
         #region 抽象方法
 
         /// <summary>
@@ -176,7 +229,6 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #endregion
 
         #endregion
-
 
         #region UI 事件管理
 

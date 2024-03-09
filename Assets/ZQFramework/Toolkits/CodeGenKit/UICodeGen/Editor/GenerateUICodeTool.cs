@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -418,7 +417,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
         #endregion
 
-
         #region 生成脚本 StringBuilder
 
         /// <summary>
@@ -436,8 +434,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine(" * UI 自动化组件生成 Designer 脚本工具");
             sb.AppendLine(" * 作者: Zane ");
             sb.AppendLine(" * 脚本生成时间: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            sb.AppendLine(" * 使用说明: UI 组件需要以 | [UI类型]组件名称 | 的方式命名，命名没有空格，示例: [Button]Login ");
-            sb.AppendLine(" * 右键 UICanvas 预制体根节点物体，挂载 UI 助手脚本");
+            sb.AppendLine(" * 使用说明: UI 组件需要以 | [UI类型]组件名称 | 的方式命名，命名没有空格，示例: [Button]Login，或者 UI 组件物体使用特殊 Tag");
+            sb.AppendLine(" * 右键 UICanvas 预制体根节点物体，生成UI脚本，名称+Tag解析 或 生成UI脚本，仅Tag解析");
             sb.AppendLine(" * 注意: Designer 脚本是自动生成，任何手动修改都会被下次生成覆盖，如果手动修改后，尽量避免再次生成");
             sb.AppendLine(
                 "--------------------------------------------------------------------------------------------*/");
@@ -487,7 +485,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine(TWO_INDENT + "public override void BindCanvasViewComponents()");
             sb.AppendLine(TWO_INDENT + "{");
             sb.AppendLine(THREE_INDENT + "// 判断是否 DontMask");
-            sb.AppendLine(THREE_INDENT + "CanvasDontMask = UICanvas.sortingOrder == 0;");
+            sb.AppendLine(THREE_INDENT + "CanvasDontMask = UICanvas.sortingOrder <= 100;");
             sb.AppendLine();
             sb.AppendLine(THREE_INDENT + "// UI 组件自动化绑定");
             // 根据查找路径字典，自动绑定UI组件
@@ -559,7 +557,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine(" * 作者: Zane");
             sb.AppendLine(" * 脚本生成时间: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine(" * 使用说明: UI 组件需要以 | [UI类型]组件名称 | 的方式命名，命名没有空格，或者 UI 组件物体使用特殊 Tag");
-            sb.AppendLine(" * 右键 UICanvas 预制体根节点物体，右键 UICanvas 预制体根节点物体，挂载 UI 助手脚本");
+            sb.AppendLine(" * 右键 UICanvas 预制体根节点物体，生成UI脚本，名称+Tag解析 或 生成UI脚本，仅Tag解析");
             sb.AppendLine(" * 注意: ViewController 脚本是自动生成，手动修改后，再次更新会补充在标识注释后，不会覆盖");
             sb.AppendLine("---------------------------------------------------------------------------*/");
             // 生成引入的命名空间
@@ -713,4 +711,3 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 #endif
     }
 }
-#endif

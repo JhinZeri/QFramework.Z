@@ -54,18 +54,38 @@ namespace ZQFramework.Toolkits.UIKit.Core
             Instance.m_NeedMaskParent = Instance.m_UIRoot.Find("NeedMaskUILayer").transform;
         }
 
-        #region 三个 UICanvasView 容器
+        #region 三个 UICanvasView 容器 和 堆栈
+
+        [PropertyOrder(0)]
+        [Title("堆栈系统")]
+        [LabelText("堆栈队列发起者")]
+        public CanvasView QueueOwnerCanvasView;
+
+        [PropertyOrder(1)]
+        [LabelText("堆栈队列")]
+        [ShowInInspector]
+        public Queue<CanvasView> CanvasViewQueue = new();
+
+        [PropertyOrder(2)]
+        [Title("UIKit 容器")]
+        [OnInspectorGUI]
+        public void Space0() { }
 
         readonly Dictionary<Type, CanvasView> m_AllCanvasViewDict = new();
 
+        [PropertyOrder(3)]
+        [LabelText("所有 CanvasView")]
         [ShowInInspector]
+        [ReadOnly]
         readonly List<CanvasView> m_AllCanvasViewList = new();
 
+        [PropertyOrder(4)]
+        [LabelText("显示状态的 CanvasView")]
         [ShowInInspector]
+        [ReadOnly]
         readonly List<CanvasView> m_VisibleCanvasViewList = new();
 
         #endregion
-
 
         #region UIKit 公共静态方法，优化使用，从设计上确定只维护一套 CanvasView 容器，共三个
 
@@ -74,12 +94,14 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// </summary>
         /// <typeparam name="T"> 具体 CanvasView 的实现类 </typeparam>
         /// <returns> UI对象 </returns>
-        public static T OpenCanvas<T>(bool useResources = true) where T : CanvasView, new()
+        public static T OpenCanvas<T>(bool useResources = true) where T : CanvasView
         {
             var type = typeof(T);
-            string canvasName = type.Name;
             var canvasView = Instance.TryGetCanvasFromDict(type);
-            if (canvasView != null) return Instance.TryShowCanvas(type) as T;
+            if (canvasView != null)
+            {
+                return Instance.ShowCanvas(canvasView) as T;
+            }
 
             // 加载并生成 T 类型的 canvas 预制体
             // Todo: 目前只有 Resources 加载
@@ -168,9 +190,93 @@ namespace ZQFramework.Toolkits.UIKit.Core
             return null;
         }
 
+        /// <summary>
+        /// 使用 UIKit 推入堆栈队列，会检测当前是否有堆栈队列发起者，如果有，则直接推入
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        public static void PushCanvasViewQueue<T>() where T : CanvasView
+        {
+            if (Instance.QueueOwnerCanvasView != null)
+            {
+                var type = typeof(T);
+                if (Instance.m_AllCanvasViewDict.TryGetValue(type, out var canvasView))
+                {
+                    if (canvasView != null)
+                    {
+                        if (canvasView.Visible)
+                        {
+                            Instance.HideCanvas(canvasView);
+                        }
+
+                        canvasView.BelongViewQueue = true;
+                        Instance.CanvasViewQueue.Enqueue(canvasView);
+                    }
+                }
+
+                if (canvasView == null)
+                {
+                    // TODo: 仅加载，不显示，此部分整合了 OpenCanvas 和 InitCanvasView
+                    // Todo: 目前只有 Resources 加载
+                    // 加载并生成 T 类型的 canvas 预制体
+                    var canvasViewObj = CreateCanvasView<T>();
+                    // Create 成功后立刻进行了对 GameObject 的属性初始化操作，以及 RectTransform，Transform
+                    if (canvasViewObj != null)
+                    {
+                        canvasView = canvasViewObj.GetComponent<T>();
+                        InitRectTransform(canvasView);
+                        canvasView.transform.SetAsLastSibling();
+                        // 接下来主要是对 CanvasView UI 脚本内容进行初始化
+                        // 注入 UICamera
+                        canvasView.UICanvas.worldCamera = Instance.m_UICamera;
+                        // 确定 CanvasView 的类别并调整父物体
+                        ClassifyUICanvasByMask(canvasView);
+                        canvasView.UIAwake();
+                        canvasView.SetVisible(false);
+                        // 新生成的 Canvas 存入到 UIKit 提供的容器中
+                        Instance.m_AllCanvasViewDict.Add(type, canvasView);
+                        Instance.m_AllCanvasViewList.Add(canvasView);
+                        // 先设置一次自己的
+                        canvasView.SetMaskVisibleSelf(false);
+                        // 新生成一个 Canvas 需要设置一次全局遮罩可见性
+                        Instance.SetGlobalCanvasMaskVisible();
+                        // 推入堆栈队列
+                        canvasView.BelongViewQueue = true;
+                        Instance.CanvasViewQueue.Enqueue(canvasView);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("当前没有队列发起者，请在 CanvasView 的 OnInit 中发起堆栈队列，任命堆栈队列发起者");
+            }
+        }
+
         #endregion
 
         #region UIKit 内部方法
+
+        /// <summary>
+        /// 自动弹出队列中的下一个 CanvasView
+        /// </summary>
+        void PopNextQueueCanvasView()
+        {
+            if (QueueOwnerCanvasView != null)
+            {
+                if (CanvasViewQueue.Count > 0)
+                {
+                    var canvasView = CanvasViewQueue.Dequeue();
+                    canvasView.BelongViewQueue = false;
+                    ShowCanvas(canvasView);
+                }
+                else
+                {
+                    // 队列已经弹空，首先把发起者的状态要清空
+                    QueueOwnerCanvasView.BelongViewQueue = false;
+                    // 然后移除发起者的引用
+                    QueueOwnerCanvasView = null;
+                }
+            }
+        }
 
         /// <summary>
         /// Mono Awake 在创建新 UI 成功后就会立刻执行，UIAwake 在 Mono 的 Awake 之后。
@@ -223,32 +329,24 @@ namespace ZQFramework.Toolkits.UIKit.Core
         CanvasView TryGetCanvasFromDict(Type canvasType) => m_AllCanvasViewDict.GetValueOrDefault(canvasType);
 
         /// <summary>
-        /// 内部对字典进行判断，尝试 Show CanvasView 对象并返回
+        /// Show CanvasView 对象并返回
         /// </summary>
-        CanvasView TryShowCanvas(Type canvasType)
+        CanvasView ShowCanvas(CanvasView canvasView)
         {
-            if (m_AllCanvasViewDict.TryGetValue(canvasType, out var canvasView))
+            if (canvasView.Visible)
             {
-                // 上一层 if 如果为真，则能返回 canvasView，如果返回了 canvasView 对象，继承了 Mono
-                // gameObject 不可能为空
-                if (canvasView.Visible)
-                {
-                    Debug.LogWarning("该 CanvasView 已经是显示状态，请先关闭对应窗口");
-                    return canvasView;
-                }
-
-                canvasView.transform.SetAsLastSibling();
-                canvasView.SetVisible(true);
-                canvasView.UIShow();
-                m_VisibleCanvasViewList.Add(canvasView);
-                // 先设置一次自己的
-                canvasView.SetMaskVisibleSelf(true);
-                SetGlobalCanvasMaskVisible();
+                Debug.LogWarning("该 CanvasView 已经是显示状态，请先关闭对应窗口");
                 return canvasView;
             }
 
-            Debug.LogError("目前没有该 CanvasView : " + canvasType);
-            return null;
+            canvasView.transform.SetAsLastSibling();
+            canvasView.SetVisible(true);
+            canvasView.UIShow();
+            m_VisibleCanvasViewList.Add(canvasView);
+            // 先设置一次自己的
+            canvasView.SetMaskVisibleSelf(true);
+            SetGlobalCanvasMaskVisible();
+            return canvasView;
         }
 
         /// <summary>
@@ -265,6 +363,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
             m_VisibleCanvasViewList.Remove(canvasView);
             // 隐藏完一个 CanvasView 之后，需要重新设置一次全局遮罩
             SetGlobalCanvasMaskVisible();
+
+            if (canvasView.BelongViewQueue && Instance.QueueOwnerCanvasView != null &&
+                Instance.CanvasViewQueue.Count > 0)
+            {
+                Instance.PopNextQueueCanvasView();
+            }
         }
 
         /// <summary>
@@ -278,6 +382,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
             canvasView.SetMaskVisibleSelf(false);
             // 完成隐藏之后，也需要刷新一次全局遮罩可见性
             SetGlobalCanvasMaskVisible();
+
             // 移除字典中的元素
             if (m_AllCanvasViewDict.ContainsKey(type))
             {
@@ -288,6 +393,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
             // UIDestroy 中包含了物体销毁
             canvasView.UIDestroy();
+            if (canvasView.BelongViewQueue && Instance.QueueOwnerCanvasView != null &&
+                Instance.CanvasViewQueue.Count > 0)
+            {
+                Instance.PopNextQueueCanvasView();
+            }
+
             // 有可能关闭之后还需要打开，只销毁物体，所以不在此处卸载资源，避免重复卸载和加载资源造成卡顿，不流畅
             // 在特殊情况下可能每次都要卸载资源，保证内存完全没有空闲资源
             if (unloadResources)
@@ -350,7 +461,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// 创建 CanvasView 对象，并返回 GameObject，该方法默认从 Resources 文件夹中加载预制体，
         /// 通过预制体生成物体后，CanvasView 立即执行 Mono 周期的 Awake
         /// </summary>
-        static GameObject CreateCanvasView<T>(bool useResources = true) where T : CanvasView, new()
+        static GameObject CreateCanvasView<T>(bool useResources = true) where T : CanvasView
         {
             GameObject uiPrefab = null;
             if (useResources)

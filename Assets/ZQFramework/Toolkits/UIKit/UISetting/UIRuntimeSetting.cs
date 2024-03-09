@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using ZQFramework.Toolkits.ConfigKit;
+#if UNITY_EDITOR
 using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
+#endif
 
 namespace ZQFramework.Toolkits.UIKit.UISetting
 {

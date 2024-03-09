@@ -24,7 +24,7 @@ namespace ZQFramework.Toolkits.UIKit.Example.Scripts
         public override void BindCanvasViewComponents()
         {
             // 判断是否 DontMask
-            CanvasDontMask = UICanvas.sortingOrder == 0;
+            CanvasDontMask = UICanvas.sortingOrder <= 100;
 
             // UI 组件自动化绑定
             GGGButton = GGGButton != null ? GGGButton : transform.Find("UIPanel/[Button]GGG").GetComponent<Button>();

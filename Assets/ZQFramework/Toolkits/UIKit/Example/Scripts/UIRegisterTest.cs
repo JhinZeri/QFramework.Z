@@ -6,27 +6,27 @@
  * 右键 UICanvas 预制体根节点物体，右键 UICanvas 预制体根节点物体，挂载 UI 助手脚本
  * 注意: ViewController 脚本是自动生成，手动修改后，再次更新会补充在标识注释后，不会覆盖
 ---------------------------------------------------------------------------*/
-using UnityEngine.UI;
+
 using ZQFramework.Toolkits.UIKit.Core;
 
-namespace ZGameProject.UI
+namespace ZQFramework.Toolkits.UIKit.Example.Scripts
 {
     public partial class UIRegisterTest : CanvasView
     {
-        #region UI 自定义生命周期 
+        #region UI 事件绑定
+
+        /*更新代码位置标识，不可删除和修改内容，仅可移动位置*/
+        void OnRegisterButtonClick() { }
+
+        #endregion
+
+        #region UI 自定义生命周期
 
         protected override void OnInit() { }
         protected override void OnShow() { }
         protected override void OnUpdate() { }
         protected override void OnHide() { }
         protected override void OnUIDestroy() { }
-
-        #endregion
-
-        #region UI 事件绑定
-
-        /*更新代码位置标识，不可删除和修改内容，仅可移动位置*/
-        void OnRegisterButtonClick(){ }
 
         #endregion
     }

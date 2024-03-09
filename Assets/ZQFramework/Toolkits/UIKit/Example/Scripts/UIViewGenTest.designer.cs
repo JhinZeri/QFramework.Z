@@ -6,12 +6,11 @@
  * 右键 UICanvas 预制体根节点物体，挂载 UI 助手脚本
  * 注意: Designer 脚本是自动生成，任何手动修改都会被下次生成覆盖，如果手动修改后，尽量避免再次生成
 --------------------------------------------------------------------------------------------*/
+
 using UnityEngine;
 using UnityEngine.UI;
-using ZQFramework.Framework;
-using ZQFramework.Toolkits.UIKit.Core;
 
-namespace ZGameProject.UI
+namespace ZQFramework.Toolkits.UIKit.Example.Scripts
 {
     public partial class UIViewGenTest
     {

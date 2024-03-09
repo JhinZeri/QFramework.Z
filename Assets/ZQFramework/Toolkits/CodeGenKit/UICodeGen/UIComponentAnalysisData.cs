@@ -1,6 +1,5 @@
 ﻿using System;
 using Sirenix.OdinInspector;
-using UnityEngine;
 
 namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen
 {

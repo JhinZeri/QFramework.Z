@@ -12,7 +12,7 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <returns> </returns>
         public static Transform SetPosX(this Transform transform, float x)
         {
-            Vector3 position = transform.position;
+            var position = transform.position;
             position.x = x;
             transform.position = position;
             return transform;
@@ -26,7 +26,7 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <returns> </returns>
         public static Transform SetPosY(this Transform transform, float y)
         {
-            Vector3 position = transform.position;
+            var position = transform.position;
             position.y = y;
             transform.position = position;
             return transform;
@@ -40,7 +40,7 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <returns> </returns>
         public static Transform SetPosZ(this Transform transform, float z)
         {
-            Vector3 position = transform.position;
+            var position = transform.position;
             position.z = z;
             transform.position = position;
             return transform;
@@ -54,7 +54,7 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <returns> </returns>
         public static Transform SetLocalPosX(this Transform transform, float x)
         {
-            Vector3 localPosition = transform.localPosition;
+            var localPosition = transform.localPosition;
             localPosition.x = x;
             transform.localPosition = localPosition;
             return transform;
@@ -68,7 +68,7 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <returns> </returns>
         public static Transform SetLocalPosY(this Transform transform, float y)
         {
-            Vector3 localPosition = transform.localPosition;
+            var localPosition = transform.localPosition;
             localPosition.y = y;
             transform.localPosition = localPosition;
             return transform;
@@ -82,7 +82,7 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <returns> </returns>
         public static Transform SetLocalPosZ(this Transform transform, float z)
         {
-            Vector3 localPosition = transform.localPosition;
+            var localPosition = transform.localPosition;
             localPosition.z = z;
             transform.localPosition = localPosition;
             return transform;

@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor;
+using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
 
 namespace ZQFramework.Toolkits.UIKit.Editor
 {
@@ -12,76 +12,61 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         static void CreateUICanvasTemplateLevelDontMask(MenuCommand menuCommand)
         {
             var templateAsset = Resources.Load<GameObject>("UICanvasTemplateDontMask");
-            GameObject go = Object.Instantiate(templateAsset, null);
+            var go = Object.Instantiate(templateAsset, null);
             go.name = "UICanvasTemplateDontUseMask";
             CreateUICanvasTemplateScript(go, menuCommand);
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/无遮罩 Canvas 模板 (Shift+Alt+X) #&x", true, priority = 0)]
-        static bool CreateUICanvasTemplateLevelDontMaskValidator()
-        {
-            return !FilterSelectedGameObject.IsUIKitCanvasTemplate();
-        }
+        static bool CreateUICanvasTemplateLevelDontMaskValidator() => !FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/一级 Canvas 模板 (Shift+Alt+C) #&c", false, priority = 1)]
         static void CreateUICanvasTemplateLevelFirst(MenuCommand menuCommand)
         {
             var templateAsset = Resources.Load<GameObject>("UICanvasTemplateLevel_1");
-            GameObject go = Object.Instantiate(templateAsset, null);
+            var go = Object.Instantiate(templateAsset, null);
             go.name = "UICanvasTemplateLevel_1";
             CreateUICanvasTemplateScript(go, menuCommand);
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/一级 Canvas 模板 (Shift+Alt+C) #&c", true, priority = 1)]
-        static bool TemplateLevelFirstValidator()
-        {
-            return !FilterSelectedGameObject.IsUIKitCanvasTemplate();
-        }
+        static bool TemplateLevelFirstValidator() => !FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/二级 Canvas 模板", false, priority = 2)]
         static void CreateUICanvasTemplateLevelSecond(MenuCommand menuCommand)
         {
             var templateAsset = Resources.Load<GameObject>("UICanvasTemplateLevel_2");
-            GameObject go = Object.Instantiate(templateAsset, null);
+            var go = Object.Instantiate(templateAsset, null);
             go.name = "UICanvasTemplateLevel_2";
             CreateUICanvasTemplateScript(go, menuCommand);
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/二级 Canvas 模板", true, priority = 2)]
-        static bool TemplateLevelSecondValidator()
-        {
-            return !FilterSelectedGameObject.IsUIKitCanvasTemplate();
-        }
+        static bool TemplateLevelSecondValidator() => !FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/三级 Canvas 模板", false, priority = 3)]
         static void CreateUICanvasTemplateLevelThird(MenuCommand menuCommand)
         {
             var templateAsset = Resources.Load<GameObject>("UICanvasTemplateLevel_3");
-            GameObject go = Object.Instantiate(templateAsset, null);
+            var go = Object.Instantiate(templateAsset, null);
             go.name = "UICanvasTemplateLevel_3";
             CreateUICanvasTemplateScript(go, menuCommand);
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/三级 Canvas 模板", true, priority = 3)]
-        static bool TemplateLevelThirdValidator()
-        {
-            return !FilterSelectedGameObject.IsUIKitCanvasTemplate();
-        }
+        static bool TemplateLevelThirdValidator() => !FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/四级 Canvas 模板", false, priority = 4)]
         static void CreateUICanvasTemplateLevelFourth(MenuCommand menuCommand)
         {
             var templateAsset = Resources.Load<GameObject>("UICanvasTemplateLevel_4");
-            GameObject go = Object.Instantiate(templateAsset, null);
+            var go = Object.Instantiate(templateAsset, null);
             go.name = "UICanvasTemplateLevel_4";
             CreateUICanvasTemplateScript(go, menuCommand);
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/四级 Canvas 模板", true, priority = 4)]
-        static bool TemplateLevelFourthValidator()
-        {
-            return !FilterSelectedGameObject.IsUIKitCanvasTemplate();
-        }
+        static bool TemplateLevelFourthValidator() => !FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/五级 Canvas 模板", false, priority = 5)]
         static void CreateUICanvasTemplateLevelFifth(MenuCommand menuCommand)
@@ -93,10 +78,7 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/五级 Canvas 模板", true, priority = 5)]
-        static bool TemplateLevelFifthValidator()
-        {
-            return !FilterSelectedGameObject.IsUIKitCanvasTemplate();
-        }
+        static bool TemplateLevelFifthValidator() => !FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         /// <summary>
         /// 创建 UICanvas 模板代码，为了保留 IDE 的 Resources 路径自动补全功能，并自动添加到选中的 GameObject 下

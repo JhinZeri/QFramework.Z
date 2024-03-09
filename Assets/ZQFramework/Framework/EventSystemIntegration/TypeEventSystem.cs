@@ -135,19 +135,19 @@ namespace ZQFramework.Framework.EventSystemIntegration
     public class TypeEventSystem
     {
         public static readonly TypeEventSystem Global = new();
-        readonly EasyEvents _mEvents = new();
-        public void Send<T>() where T : new() => _mEvents.GetEvent<EasyEvent<T>>()?.Trigger(new T());
+        readonly EasyEvents m_Events = new();
+        public void Send<T>() where T : new() => m_Events.GetEvent<EasyEvent<T>>()?.Trigger(new T());
 
-        public void Send<T>(T e) => _mEvents.GetEvent<EasyEvent<T>>()?.Trigger(e);
+        public void Send<T>(T e) => m_Events.GetEvent<EasyEvent<T>>()?.Trigger(e);
 
-        public IUnRegister Register<T>(Action<T> onEvent) => _mEvents.GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
+        public IUnRegister Register<T>(Action<T> onEvent) => m_Events.GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
 
         public void UnRegister<T>(Action<T> onEvent)
         {
-            EasyEvent<T> e = _mEvents.GetEvent<EasyEvent<T>>();
+            EasyEvent<T> e = m_Events.GetEvent<EasyEvent<T>>();
             e?.UnRegister(onEvent);
         }
 
-        public EasyEvent<T> GetEasyEvent<T>() => _mEvents.GetEvent<EasyEvent<T>>();
+        public EasyEvent<T> GetEasyEvent<T>() => m_Events.GetEvent<EasyEvent<T>>();
     }
 }

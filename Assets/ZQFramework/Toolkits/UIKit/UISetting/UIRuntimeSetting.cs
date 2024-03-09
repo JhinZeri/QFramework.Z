@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using ZQFramework.Toolkits.CommonKit.UnityEditorKit.SimulationEditor;
 using ZQFramework.Toolkits.ConfigKit;
+using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.UIKit.UISetting
 {
-    //[CreateAssetMenu(fileName = "UIRuntimeSetting", menuName = "QFZ/UIRuntimeSetting", order = 0)]
+    // [CreateAssetMenu(fileName = "UIRuntimeSetting", menuName = "QFZ/UIRuntimeSetting", order = 0)]
     public class UIRuntimeSetting : ScriptableObject, IConfigOrSettingOrLogInfo
     {
         #region 资源文件相关
@@ -24,8 +23,9 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
             {
                 if (m_Instance != null) return m_Instance;
 #if UNITY_EDITOR
-                m_Instance = GetOrCreateScriptableObject
-                    .GetSingletonAssetOnPathAssetDatabase<UIRuntimeSetting>(UI_RUNTIME_SETTING_RESOURCES_PATH);
+                m_Instance = GetOrCreateRuntimeSetting
+                    .GetSingletonAssetOnPathAssetDatabase<UIRuntimeSetting>(
+                        UI_RUNTIME_SETTING_RESOURCES_PATH);
 #endif
                 m_Instance = Resources.Load<UIRuntimeSetting>("UIRuntimeSetting");
                 return m_Instance;
@@ -115,10 +115,7 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
                 if (!path.Contains("Resources/")) continue;
                 int index = path.IndexOf("Resources/", StringComparison.Ordinal) + "Resources/".Length;
                 path = path.Substring(index, path.Length - index);
-                if (path.EndsWith(".prefab"))
-                {
-                    path = path.Replace(".prefab", "");
-                }
+                if (path.EndsWith(".prefab")) path = path.Replace(".prefab", "");
 
                 UIPrefabToPathInResourcesManager.Add(new UIPrefabToPathInResources
                 {

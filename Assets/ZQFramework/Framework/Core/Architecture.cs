@@ -29,20 +29,15 @@ namespace ZQFramework.Framework.Core
     [Serializable]
     public class EventInfo
     {
-        [LabelText("事件类型")]
-        [ShowInInspector]
-        [PropertyOrder(0)]
-        public string TypeName => EventType.Name;
-
         [ShowInInspector]
         [LabelText("回调方法列表")]
         [Searchable]
         [PropertyOrder(2)]
         public List<string> MethodList = new();
 
-        public Type EventType;
-
         Action _mAction;
+
+        public Type EventType;
 
 
         public EventInfo(Type eventType, Action action)
@@ -50,6 +45,11 @@ namespace ZQFramework.Framework.Core
             EventType = eventType;
             _mAction = action;
         }
+
+        [LabelText("事件类型")]
+        [ShowInInspector]
+        [PropertyOrder(0)]
+        public string TypeName => EventType.Name;
 
         [Button("触发事件", Icon = SdfIconType.List)]
         [PropertyOrder(1)]

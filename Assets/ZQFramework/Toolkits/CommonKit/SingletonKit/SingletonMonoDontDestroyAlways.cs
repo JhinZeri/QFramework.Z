@@ -42,6 +42,16 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
         }
 
         /// <summary>
+        /// 提供了虚方法 OnBeforeDestroy ，在 OnDestroy 中执行，销毁前的操作写在该方法中，不要重写 OnDestroy
+        /// </summary>
+        protected virtual void OnDestroy()
+        {
+            OnBeforeDestroy();
+
+            if (m_Instance == this) m_Instance = null;
+        }
+
+        /// <summary>
         /// 确保 GameObject 存在，如果 GameObject 不存在，则创建一个新实例，同时虚方法可以让子类重写，自定义确保存在的方式
         /// </summary>
         protected virtual void EnsureGameObjectExist()
@@ -58,16 +68,6 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
                     m_Instance = singletonObject.AddComponent<T>();
                 }
             }
-        }
-
-        /// <summary>
-        /// 提供了虚方法 OnBeforeDestroy ，在 OnDestroy 中执行，销毁前的操作写在该方法中，不要重写 OnDestroy
-        /// </summary>
-        protected virtual void OnDestroy()
-        {
-            OnBeforeDestroy();
-
-            if (m_Instance == this) m_Instance = null;
         }
 
         /// <summary>

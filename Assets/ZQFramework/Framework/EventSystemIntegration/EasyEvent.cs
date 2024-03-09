@@ -56,6 +56,14 @@ namespace ZQFramework.Framework.EventSystemIntegration
             }
         }
 
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
+
         public IUnRegister Register(Action<T> onEvent)
         {
             _mDriveAction += onEvent;
@@ -64,13 +72,7 @@ namespace ZQFramework.Framework.EventSystemIntegration
                 UnRegister(onEvent);
             });
         }
-        public List<string> GetActionInvocationList()
-        {
-            Delegate[] invocationList = _mDriveAction.GetInvocationList();
-            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
-            result.RemoveAt(0);
-            return result;
-        }
+
         public void UnRegister(Action<T> onEvent)
         {
             _mDriveAction -= onEvent;
@@ -96,6 +98,14 @@ namespace ZQFramework.Framework.EventSystemIntegration
             }
         }
 
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
+
         public IUnRegister Register(Action<T, TK> onEvent)
         {
             _mDriveAction += onEvent;
@@ -104,13 +114,7 @@ namespace ZQFramework.Framework.EventSystemIntegration
                 UnRegister(onEvent);
             });
         }
-        public List<string> GetActionInvocationList()
-        {
-            Delegate[] invocationList = _mDriveAction.GetInvocationList();
-            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
-            result.RemoveAt(0);
-            return result;
-        }
+
         public void UnRegister(Action<T, TK> onEvent)
         {
             _mDriveAction -= onEvent;
@@ -136,6 +140,14 @@ namespace ZQFramework.Framework.EventSystemIntegration
             }
         }
 
+        public List<string> GetActionInvocationList()
+        {
+            Delegate[] invocationList = _mDriveAction.GetInvocationList();
+            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
+            result.RemoveAt(0);
+            return result;
+        }
+
         public IUnRegister Register(Action<T, TK, TS> onEvent)
         {
             _mDriveAction += onEvent;
@@ -144,13 +156,7 @@ namespace ZQFramework.Framework.EventSystemIntegration
                 UnRegister(onEvent);
             });
         }
-        public List<string> GetActionInvocationList()
-        {
-            Delegate[] invocationList = _mDriveAction.GetInvocationList();
-            List<string> result = invocationList.Select(@delegate => @delegate.Method.Name).ToList();
-            result.RemoveAt(0);
-            return result;
-        }
+
         public void UnRegister(Action<T, TK, TS> onEvent)
         {
             _mDriveAction -= onEvent;

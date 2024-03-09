@@ -34,10 +34,10 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <summary>
         /// 打开组件
         /// </summary>
-        /// <param name="selfBehaviour"></param>
-        /// <param name="enable"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <param name="selfBehaviour"> </param>
+        /// <param name="enable"> </param>
+        /// <typeparam name="T"> </typeparam>
+        /// <returns> </returns>
         public static T Enable<T>(this T selfBehaviour, bool enable = true) where T : Behaviour
         {
             selfBehaviour.enabled = enable;
@@ -48,9 +48,9 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
         /// <summary>
         /// 关闭组件
         /// </summary>
-        /// <param name="selfBehaviour"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <param name="selfBehaviour"> </param>
+        /// <typeparam name="T"> </typeparam>
+        /// <returns> </returns>
         public static T Disable<T>(this T selfBehaviour) where T : Behaviour
         {
             selfBehaviour.enabled = false;

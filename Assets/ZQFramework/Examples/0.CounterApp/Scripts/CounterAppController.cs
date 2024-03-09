@@ -86,7 +86,7 @@ namespace ZQFramework.Examples._0.CounterApp.Scripts
 
         // 4. Model
         CounterAppModel m_Model;
-        
+
         void Start()
         {
             // 5. 获取模型
@@ -114,18 +114,15 @@ namespace ZQFramework.Examples._0.CounterApp.Scripts
 
             // 表现逻辑
             m_Model.Count.RegisterWithInitValue(_ => // -+
-                  {
-                      UpdateView();
-                  })
-                  .UnRegisterWhenGameObjectDestroyed(gameObject);
+                   {
+                       UpdateView();
+                   })
+                   .UnRegisterWhenGameObjectDestroyed(gameObject);
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                GetArchitecture().SendEvent<DebugAEvent>();
-            }
+            if (Input.GetKeyDown(KeyCode.Q)) GetArchitecture().SendEvent<DebugAEvent>();
         }
 
         void OnDestroy()
@@ -134,13 +131,13 @@ namespace ZQFramework.Examples._0.CounterApp.Scripts
             m_Model = null;
         }
 
+        // 3.
+
+        public IArchitecture GetArchitecture() => Architecture.CounterApp.Interface;
+
         void UpdateView()
         {
             m_CountText.text = m_Model.Count.ToString();
         }
-
-        // 3.
-
-        public IArchitecture GetArchitecture() => Architecture.CounterApp.Interface;
     }
 }

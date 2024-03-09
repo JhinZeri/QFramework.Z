@@ -11,12 +11,10 @@ namespace ZQFramework.Toolkits.CommonKit.Extension.MathematicsUtility
         /// </summary>
         /// <param name="percent"> 0-100，为 true 的概率 </param>
         /// <returns> true or false </returns>
-        public static bool GetBool(int percent)
-        {
+        public static bool GetBool(int percent) =>
             // 如果 percent = 0 ，右边最小值为 0 ，percent 不可能大于，一定为 false
             // 如果 percent = 100 ，右边最大值为 99 ，percent 不可能小于，一定为 true
-            return percent > Random.Range(0, 100);
-        }
+            percent > Random.Range(0, 100);
 
         /// <summary>
         /// 随机返回列表中的一个元素
@@ -24,10 +22,7 @@ namespace ZQFramework.Toolkits.CommonKit.Extension.MathematicsUtility
         /// <param name="list"> </param>
         /// <typeparam name="T"> </typeparam>
         /// <returns> </returns>
-        public static T GetRandomValueFrom<T>(List<T> list)
-        {
-            return list[Random.Range(0, list.Count)];
-        }
+        public static T GetRandomValueFrom<T>(List<T> list) => list[Random.Range(0, list.Count)];
 
         /// <summary>
         /// 随机返回数组中的一个元素
@@ -35,10 +30,7 @@ namespace ZQFramework.Toolkits.CommonKit.Extension.MathematicsUtility
         /// <param name="array"> </param>
         /// <typeparam name="T"> </typeparam>
         /// <returns> </returns>
-        public static T GetRandomValueFrom<T>(T[] array)
-        {
-            return array[Random.Range(0, array.Length)];
-        }
+        public static T GetRandomValueFrom<T>(T[] array) => array[Random.Range(0, array.Length)];
 
         /// <summary>
         /// 2D 范围随机函数，中心为原点，返回环形中的任意一个点

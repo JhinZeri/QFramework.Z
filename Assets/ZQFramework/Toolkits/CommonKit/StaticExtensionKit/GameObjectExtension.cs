@@ -129,25 +129,19 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtensionKit
             var component = self.gameObject.GetComponent(type);
             return component ? component : self.gameObject.AddComponent(type);
         }
+
         /// <summary>
         /// 快速获取position-Vector3
         /// </summary>
         /// <param name="obj"> </param>
         /// <returns> </returns>
-        public static Vector3 GetPositionVector3(this GameObject obj)
-        {
-            return obj.transform.position;
-        }
+        public static Vector3 GetPositionVector3(this GameObject obj) => obj.transform.position;
 
         /// <summary>
         /// 快速获取position-Vector2
         /// </summary>
         /// <param name="obj"> </param>
         /// <returns> </returns>
-        public static Vector2 GetPositionVector2(this GameObject obj)
-        {
-            return obj.transform.position;
-        }
-
+        public static Vector2 GetPositionVector2(this GameObject obj) => obj.transform.position;
     }
 }

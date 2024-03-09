@@ -16,7 +16,7 @@ MonoBehaviour:
   SingleMaskAlpha: 0.7
   UIPrefabToPathInResourcesManager:
   - UIPrefabName: UILoginTest
-    ResourcesPath: UIPrefabs/New Folder/UILoginTest
+    ResourcesPath: UIPrefabs/UILoginTest
   - UIPrefabName: UIParseTest
     ResourcesPath: UIPrefabs/UIParseTest
   - UIPrefabName: UIRegisterTest

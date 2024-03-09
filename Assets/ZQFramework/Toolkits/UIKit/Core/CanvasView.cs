@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,6 +12,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
     /// <summary>
     /// CanvasView 是一个抽象基类，用于提供 UIKit Canvas 相关的功能。
     /// </summary>
+    [Serializable]
     public abstract class CanvasView : MonoBehaviour
     {
         #region 变量
@@ -72,7 +74,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 设置物体可见性
         /// </summary>
-        /// <param name="isVisible"></param>
+        /// <param name="isVisible"> </param>
         public void SetVisible(bool isVisible)
         {
             Visible = isVisible;
@@ -189,10 +191,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             if (button.IsNotNull())
             {
-                if (!m_Buttons.Contains(button))
-                {
-                    m_Buttons.Add(button);
-                }
+                if (!m_Buttons.Contains(button)) m_Buttons.Add(button);
 
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(action);
@@ -203,10 +202,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             if (toggle.IsNotNull())
             {
-                if (!m_Toggles.Contains(toggle))
-                {
-                    m_Toggles.Add(toggle);
-                }
+                if (!m_Toggles.Contains(toggle)) m_Toggles.Add(toggle);
 
                 toggle.onValueChanged.RemoveAllListeners();
                 toggle.onValueChanged.AddListener(isOn =>
@@ -221,10 +217,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             if (inputField.IsNotNull())
             {
-                if (!m_InputFields.Contains(inputField))
-                {
-                    m_InputFields.Add(inputField);
-                }
+                if (!m_InputFields.Contains(inputField)) m_InputFields.Add(inputField);
 
                 inputField.onValueChanged.RemoveAllListeners();
                 inputField.onEndEdit.RemoveAllListeners();
@@ -239,18 +232,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         public void RemoveAllButtonClickListeners()
         {
-            foreach (var button in m_Buttons)
-            {
-                button.onClick.RemoveAllListeners();
-            }
+            foreach (var button in m_Buttons) button.onClick.RemoveAllListeners();
         }
 
         public void RemoveAllToggleClickListener()
         {
-            foreach (var toggle in m_Toggles)
-            {
-                toggle.onValueChanged.RemoveAllListeners();
-            }
+            foreach (var toggle in m_Toggles) toggle.onValueChanged.RemoveAllListeners();
         }
 
         public void RemoveAllInputFieldListener()

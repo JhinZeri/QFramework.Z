@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using ZQFramework.Toolkits.CommonKit.SingletonKit;
 using ZQFramework.Toolkits.UIKit.UISetting;
@@ -12,12 +13,13 @@ namespace ZQFramework.Toolkits.UIKit.Core
     /// </summary>
     public class UIKit : SingletonMonoDontDestroy<UIKit>
     {
-        // UIRoot 一定是场景物体，因此 UIKit 完全可以选择 MonoBehaviour
-        Transform m_UIRoot;
-        Camera m_UICamera;
-
         Transform m_DontMaskParent;
         Transform m_NeedMaskParent;
+
+        Camera m_UICamera;
+
+        // UIRoot 一定是场景物体，因此 UIKit 完全可以选择 MonoBehaviour
+        Transform m_UIRoot;
 
         UIRuntimeSetting m_UIRuntimeSetting;
 
@@ -29,19 +31,8 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         void Update()
         {
-            foreach (var canvasView in m_VisibleCanvasViewList)
-            {
-                canvasView.UIUpdate();
-            }
+            foreach (var canvasView in m_VisibleCanvasViewList) canvasView.UIUpdate();
         }
-
-        #region 三个 UICanvasView 容器
-
-        readonly Dictionary<Type, CanvasView> m_AllCanvasViewDict = new();
-        readonly List<CanvasView> m_AllCanvasViewList = new();
-        readonly List<CanvasView> m_VisibleCanvasViewList = new();
-
-        #endregion
 
         /// <summary>
         /// 静态初始化 UIKit 组件赋值
@@ -50,6 +41,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             m_UIRuntimeSetting = UIRuntimeSetting.Instance;
 #if UNITY_EDITOR
+            // TODO: 一个编辑器模式下的 UI 预设生成工具，用于在编辑器下生成 UI 预设，如果卡顿可以删除
             m_UIRuntimeSetting.GenerateUIPrefabToPathInResourcesUnit();
 #endif
             // 第一个路径前面使用斜杠，表示必须是根节点
@@ -62,23 +54,32 @@ namespace ZQFramework.Toolkits.UIKit.Core
             Instance.m_NeedMaskParent = Instance.m_UIRoot.Find("NeedMaskUILayer").transform;
         }
 
+        #region 三个 UICanvasView 容器
+
+        readonly Dictionary<Type, CanvasView> m_AllCanvasViewDict = new();
+
+        [ShowInInspector]
+        readonly List<CanvasView> m_AllCanvasViewList = new();
+
+        [ShowInInspector]
+        readonly List<CanvasView> m_VisibleCanvasViewList = new();
+
+        #endregion
+
 
         #region UIKit 公共静态方法，优化使用，从设计上确定只维护一套 CanvasView 容器，共三个
 
         /// <summary>
         /// 弹出 UICanvas
         /// </summary>
-        /// <typeparam name="T">具体 CanvasView 的实现类</typeparam>
-        /// <returns>UI对象</returns>
+        /// <typeparam name="T"> 具体 CanvasView 的实现类 </typeparam>
+        /// <returns> UI对象 </returns>
         public static T OpenCanvas<T>(bool useResources = true) where T : CanvasView, new()
         {
             var type = typeof(T);
             string canvasName = type.Name;
             var canvasView = Instance.TryGetCanvasFromDict(type);
-            if (canvasView != null)
-            {
-                return Instance.TryShowCanvas(type) as T;
-            }
+            if (canvasView != null) return Instance.TryShowCanvas(type) as T;
 
             // 加载并生成 T 类型的 canvas 预制体
             // Todo: 目前只有 Resources 加载
@@ -96,7 +97,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// 隐藏 CanvasView 实例对象
         /// 注意：隐藏后，实例会保留在内存中，但不会显示
         /// </summary>
-        /// <typeparam name="T">CanvasView 类型</typeparam>
+        /// <typeparam name="T"> CanvasView 类型 </typeparam>
         public static void HideCanvas<T>() where T : CanvasView
         {
             var type = typeof(T);
@@ -116,8 +117,6 @@ namespace ZQFramework.Toolkits.UIKit.Core
             {
                 Debug.LogError("场景中不存在" + type.Name + "类型的 CanvasView 实例对象");
             }
-
-            // GetTopUICanvas();
         }
 
         /// <summary>
@@ -156,18 +155,14 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 获取任意 CanvasView 实例对象，
         /// </summary>
-        /// <typeparam name="T">具体 CanvasView 的实现类</typeparam>
-        /// <returns> UI 对象</returns>
+        /// <typeparam name="T"> 具体 CanvasView 的实现类 </typeparam>
+        /// <returns> UI 对象 </returns>
         public static T GetCanvasView<T>() where T : CanvasView
         {
             var type = typeof(T);
             foreach (var canvasView in Instance.m_AllCanvasViewList)
-            {
                 if (canvasView.GetType() == type)
-                {
                     return canvasView as T;
-                }
-            }
 
             Debug.LogError("全局 CanvasView 列表中并没有找到：" + type.Name + "，请先加载到场景中");
             return null;
@@ -178,7 +173,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region UIKit 内部方法
 
         /// <summary>
-        /// Mono Awake 在创建新 UI 成功后就会立刻执行，UIAwake 在 Mono 的 Awake 之后。 
+        /// Mono Awake 在创建新 UI 成功后就会立刻执行，UIAwake 在 Mono 的 Awake 之后。
         /// </summary>
         static CanvasView InitCanvasView(CanvasView canvasView, Type canvasType)
         {
@@ -225,10 +220,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 内部对字典进行判断，尝试获取 CanvasView 对象
         /// </summary>
-        CanvasView TryGetCanvasFromDict(Type canvasType)
-        {
-            return m_AllCanvasViewDict.GetValueOrDefault(canvasType);
-        }
+        CanvasView TryGetCanvasFromDict(Type canvasType) => m_AllCanvasViewDict.GetValueOrDefault(canvasType);
 
         /// <summary>
         /// 内部对字典进行判断，尝试 Show CanvasView 对象并返回
@@ -304,18 +296,15 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         /// <summary>
         /// 全局遮罩系统，控制所有 CanvasView 对象的 Mask 遮罩是否可见，分单层遮罩和多层遮罩
-        /// <remarks>单层遮罩：打开最顶层的 CanvasView 对象的 Mask 遮罩，关闭其他对象遮罩 </remarks>
-        /// <remarks>多层遮罩：所有 CanvasView 对象的遮罩由自身控制，或者全部打开</remarks>
+        /// <remarks> 单层遮罩：打开最顶层的 CanvasView 对象的 Mask 遮罩，关闭其他对象遮罩 </remarks>
+        /// <remarks> 多层遮罩：所有 CanvasView 对象的遮罩由自身控制，或者全部打开 </remarks>
         /// </summary>
         void SetGlobalCanvasMaskVisible()
         {
             if (!UIRuntimeSetting.Instance.SingleMaskSystem) return;
             if (m_VisibleCanvasViewList.Count <= 0) return;
             // 如果是单层遮罩，则首先把所有的遮罩关闭
-            foreach (var canvasView in m_AllCanvasViewList)
-            {
-                canvasView.SetMaskVisibleSelf(false);
-            }
+            foreach (var canvasView in m_AllCanvasViewList) canvasView.SetMaskVisibleSelf(false);
 
             // 找到顶层的 CanvasView 对象，并打开遮罩
             var topCanvasView = GetTopCanvasView();
@@ -370,9 +359,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
                 var resourcesLoadPath = string.Empty;
                 foreach (var uiPrefabObject in Instance.m_UIRuntimeSetting.UIPrefabToPathInResourcesManager.Where(
                     uiPrefabObject => uiName == uiPrefabObject.UIPrefabName))
-                {
                     resourcesLoadPath = uiPrefabObject.ResourcesPath;
-                }
 
                 uiPrefab = Resources.Load<GameObject>(resourcesLoadPath);
             }

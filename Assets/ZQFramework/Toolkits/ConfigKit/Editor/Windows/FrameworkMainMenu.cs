@@ -3,9 +3,9 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
-using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config;
-using ZQFramework.Toolkits.CommonKit.UnityEditorKit.Editor.Tools.HierarchyColorCardTool;
+using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor;
 using ZQFramework.Toolkits.UIKit.UISetting;
+using ZQFramework.Toolkits.UnityEditorKit.Editor.Tools.HierarchyColorCardTool;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
 {
@@ -22,7 +22,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
 
         protected override OdinMenuTree BuildMenuTree()
         {
-            OdinMenuTree tree = new OdinMenuTree(supportsMultiSelect: true)
+            var tree = new OdinMenuTree(true)
             {
                 { "ZQ 框架配置", null, SdfIconType.GearFill }, // Draws the this.someData field in this case.
                 { "ZQ 框架配置/UI 代码生成配置", UICodeGenConfig.Instance, SdfIconType.Apple },

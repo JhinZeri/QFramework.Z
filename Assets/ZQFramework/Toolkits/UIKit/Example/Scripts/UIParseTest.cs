@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ZQFramework.Toolkits.UIKit.Core;
 
-namespace ZGameProject.UI
+namespace ZQFramework.Toolkits.UIKit.Example.Scripts
 {
     public partial class UIParseTest : CanvasView
     {

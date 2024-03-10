@@ -18,11 +18,11 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
         {
             get
             {
-                if (m_Instance == null)
-                    lock (LockObject)
-                    {
-                        m_Instance.EnsureGameObjectExist();
-                    }
+                if (m_Instance != null) return m_Instance;
+                lock (LockObject)
+                {
+                    m_Instance.EnsureGameObjectExist();
+                }
 
                 return m_Instance;
             }
@@ -55,13 +55,15 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
         /// 确保 GameObject 存在，如果 GameObject 不存在，则创建一个新实例，同时虚方法可以让子类重写，自定义确保存在的方式
         /// 可以自定义新物体的名称
         /// </summary>
-        /// <example><code>
+        /// <example>
+        ///     <code>
         /// protected override void EnsureGameObjectExist(string gameObjectName = null)
         /// {
         ///     gameObjectName = "UIRoot";
         ///     base.EnsureGameObjectExist(gameObjectName);
         /// }
-        /// </code></example>
+        /// </code>
+        /// </example>
         protected virtual void EnsureGameObjectExist(string gameObjectName = null)
         {
             if (m_Instance == null)
@@ -74,13 +76,9 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
                 {
                     GameObject singletonObject;
                     if (gameObjectName == null)
-                    {
                         singletonObject = new GameObject(typeof(T).Name);
-                    }
                     else
-                    {
                         singletonObject = new GameObject(gameObjectName);
-                    }
 
                     m_Instance = singletonObject.AddComponent<T>();
                 }

@@ -29,26 +29,10 @@ namespace ZQFramework.Framework.Core
     [Serializable]
     public class EventInfo
     {
-        Action m_Action;
-        public Type EventType;
-
-        public EventInfo(Type eventType, Action action)
-        {
-            EventType = eventType;
-            m_Action = action;
-        }
-
         [LabelText("事件类型")]
         [ShowInInspector]
         [PropertyOrder(0)]
         public string TypeName => EventType.Name;
-
-        [Button("@\"触发事件 \"+TypeName", Icon = SdfIconType.List)]
-        [PropertyOrder(1)]
-        public void TryTrigger()
-        {
-            m_Action?.Invoke();
-        }
 
         [PropertyOrder(2)]
         [ShowInInspector]
@@ -56,6 +40,23 @@ namespace ZQFramework.Framework.Core
         [LabelText("事件订阅方法列表")]
         [Searchable]
         public List<string> MethodList = new();
+
+        public Type EventType;
+
+        Action m_Action;
+
+        public EventInfo(Type eventType, Action action)
+        {
+            EventType = eventType;
+            m_Action = action;
+        }
+
+        [Button("@\"触发事件 \"+TypeName", Icon = SdfIconType.List)]
+        [PropertyOrder(1)]
+        public void TryTrigger()
+        {
+            m_Action?.Invoke();
+        }
 
         public void SetMethodList(IEnumerable<string> list) => MethodList = new List<string>(list);
     }
@@ -116,7 +117,7 @@ namespace ZQFramework.Framework.Core
         {
             get
             {
-                if (m_Architecture == null) MakeSureArchitecture();
+                if (m_Architecture == null) EnSureArchitecture();
                 return m_Architecture;
             }
         }
@@ -259,7 +260,7 @@ namespace ZQFramework.Framework.Core
         /// <summary>
         /// 确保架构创建
         /// </summary>
-        static void MakeSureArchitecture()
+        static void EnSureArchitecture()
         {
             // 如果不为空，表示场景中存在
             if (m_Architecture != null) return;

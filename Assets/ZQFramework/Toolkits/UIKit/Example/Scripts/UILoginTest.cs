@@ -6,14 +6,14 @@
  * 右键 UICanvas 预制体根节点物体，生成UI脚本，名称+Tag解析 或 生成UI脚本，仅Tag解析
  * 注意: ViewController 脚本是自动生成，手动修改后，再次更新会补充在标识注释后，不会覆盖
 ---------------------------------------------------------------------------*/
-using UnityEngine.UI;
+
 using ZQFramework.Toolkits.UIKit.Core;
 
 namespace ZGameProject.UI
 {
     public partial class UILoginTest : CanvasView
     {
-        #region UI 自定义生命周期 
+        #region UI 自定义生命周期
 
         protected override void OnInit() { }
         protected override void OnShow() { }
@@ -25,11 +25,11 @@ namespace ZGameProject.UI
 
         #region UI 事件绑定
 
-        void OnGGGButtonClick(){ }
-        void OnPPPButtonClick(){ }
-        void OnUUUButtonClick(){ }
-        void OnLLLButtonClick(){ }
-        
+        void OnGGGButtonClick() { }
+        void OnPPPButtonClick() { }
+        void OnUUUButtonClick() { }
+        void OnLLLButtonClick() { }
+
         /*更新代码位置标识，不可删除和修改内容，仅可移动位置*/
 
         #endregion

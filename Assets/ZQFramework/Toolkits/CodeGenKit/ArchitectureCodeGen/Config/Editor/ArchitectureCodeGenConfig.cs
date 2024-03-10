@@ -129,10 +129,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
             }
 
             string folderPath = ProjectFolderConfig.Instance.CurrentArchitecturePath;
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
             string architecture = GenerateArchitectureTool.GenerateArchitecture(CurrentArchitectureNamespace,
                 CurrentArchitectureClassName);

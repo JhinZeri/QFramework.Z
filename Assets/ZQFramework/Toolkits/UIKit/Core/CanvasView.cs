@@ -64,7 +64,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 开始发起堆栈，将多个 UI CanvasView 压入堆栈队列中，本质就是建立界面之间的关联
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T"> </typeparam>
         public void StartOrPushCanvasView<T>() where T : CanvasView
         {
             if (UIKit.Instance.QueueOwnerCanvasView == null)
@@ -87,7 +87,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 隐藏自身
         /// </summary>
-        /// <remarks>HideSelf(this)</remarks>
+        /// <remarks> HideSelf(this) </remarks>
         public void HideSelf<T>(T self) where T : CanvasView
         {
             UIKit.HideCanvas<T>();
@@ -96,7 +96,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 关闭销毁自身
         /// </summary>
-        /// <remarks>CloseSelf(this)</remarks>
+        /// <remarks> CloseSelf(this) </remarks>
         public void CloseSelf<T>(T self) where T : CanvasView
         {
             UIKit.DestroyCanvas<T>();
@@ -323,18 +323,13 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             foreach (var graphic in FindObjectsByType<MaskableGraphic>(FindObjectsInactive.Exclude,
                 FindObjectsSortMode.None))
-            {
                 if (graphic.raycastTarget)
                 {
-                    RectTransform rectTransform = graphic.transform as RectTransform;
+                    var rectTransform = graphic.transform as RectTransform;
                     if (rectTransform != null) rectTransform.GetWorldCorners(m_FourCorners);
                     Gizmos.color = Color.blue;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        Gizmos.DrawLine(m_FourCorners[i], m_FourCorners[(i + 1) % 4]);
-                    }
+                    for (var i = 0; i < 4; i++) Gizmos.DrawLine(m_FourCorners[i], m_FourCorners[(i + 1) % 4]);
                 }
-            }
         }
 
         #endregion

@@ -13,7 +13,7 @@ namespace ZQFramework.Toolkits.CommonKit.Extension.ExportUtility
         /// <returns> ZFramework前缀的包名 </returns>
         public static string GeneratePackageName()
         {
-            string packName = "ZFramework_" + DateTime.Now.ToString("yyyyMMdd_HH");
+            string packName = "ZQFramework_" + DateTime.Now.ToString("yyyyMMdd_HH");
             return packName;
         }
 

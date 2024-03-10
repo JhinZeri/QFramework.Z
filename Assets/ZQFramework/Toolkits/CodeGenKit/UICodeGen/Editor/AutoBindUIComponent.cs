@@ -23,10 +23,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             // Debug.Log("UICodeGenProcessLogInfo.Instance.isPrefabInScene: " + objIsPrefabInScene);
             var analysisData = UICodeGenProcessLogInfo.Instance.LatestAnalysisData;
             string className = analysisData.CanvasViewRootGameObjectName;
-            if (string.IsNullOrEmpty(className))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(className)) return;
 
             // 1.通过反射的方式，从程序集中找到这个脚本，把它挂载到对应的物体上
             // 2.通过反射的方式，遍历数据列表，找到对应的字段，赋值
@@ -37,10 +34,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             {
                 var canvasViewType =
                     cSharpAssembly.GetType(UICodeGenConfig.Instance.CurrentUICodeNamespace + "." + className);
-                if (canvasViewType == null)
-                {
-                    return;
-                }
+                if (canvasViewType == null) return;
 
                 var canvasGameObject =
                     EditorUtility.InstanceIDToObject(analysisData.CanvasGameObjectInstanceId) as GameObject;
@@ -92,30 +86,26 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                                                                           BindingFlags.Instance);
                             // 遍历字段，给字段赋值
                             foreach (var fieldInfo in fields)
-                            {
-                                foreach (var objData in objDataList)
+                            foreach (var objData in objDataList)
+                                if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
                                 {
-                                    if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
+                                    // 根据 InstanceId 找到对应的对象
+                                    var uiObject =
+                                        EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
+                                    // 赋值字段
+                                    if (string.Equals(objData.FieldType, "GameObject"))
                                     {
-                                        // 根据 InstanceId 找到对应的对象
-                                        var uiObject =
-                                            EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
-                                        // 赋值字段
-                                        if (string.Equals(objData.FieldType, "GameObject"))
-                                        {
-                                            fieldInfo.SetValue(componentCanvasView, uiObject);
-                                        }
-                                        else
-                                        {
-                                            if (uiObject != null)
-                                                fieldInfo.SetValue(componentCanvasView,
-                                                    uiObject.GetComponent(objData.FieldType));
-                                        }
-
-                                        break;
+                                        fieldInfo.SetValue(componentCanvasView, uiObject);
                                     }
+                                    else
+                                    {
+                                        if (uiObject != null)
+                                            fieldInfo.SetValue(componentCanvasView,
+                                                uiObject.GetComponent(objData.FieldType));
+                                    }
+
+                                    break;
                                 }
-                            }
 
                             #endregion
 
@@ -158,30 +148,26 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                                                                           BindingFlags.Instance);
                             // 遍历字段，给字段赋值
                             foreach (var fieldInfo in fields)
-                            {
-                                foreach (var objData in objDataList)
+                            foreach (var objData in objDataList)
+                                if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
                                 {
-                                    if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
+                                    // 根据 InstanceId 找到对应的对象
+                                    var uiObject =
+                                        EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
+                                    // 赋值字段
+                                    if (string.Equals(objData.FieldType, "GameObject"))
                                     {
-                                        // 根据 InstanceId 找到对应的对象
-                                        var uiObject =
-                                            EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
-                                        // 赋值字段
-                                        if (string.Equals(objData.FieldType, "GameObject"))
-                                        {
-                                            fieldInfo.SetValue(componentCanvasView, uiObject);
-                                        }
-                                        else
-                                        {
-                                            if (uiObject != null)
-                                                fieldInfo.SetValue(componentCanvasView,
-                                                    uiObject.GetComponent(objData.FieldType));
-                                        }
-
-                                        break;
+                                        fieldInfo.SetValue(componentCanvasView, uiObject);
                                     }
+                                    else
+                                    {
+                                        if (uiObject != null)
+                                            fieldInfo.SetValue(componentCanvasView,
+                                                uiObject.GetComponent(objData.FieldType));
+                                    }
+
+                                    break;
                                 }
-                            }
 
                             #endregion
                         }
@@ -216,30 +202,26 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                                                                           BindingFlags.Instance);
                             // 遍历字段，给字段赋值
                             foreach (var fieldInfo in fields)
-                            {
-                                foreach (var objData in objDataList)
+                            foreach (var objData in objDataList)
+                                if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
                                 {
-                                    if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
+                                    // 根据 InstanceId 找到对应的对象
+                                    var uiObject =
+                                        EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
+                                    // 赋值字段
+                                    if (string.Equals(objData.FieldType, "GameObject"))
                                     {
-                                        // 根据 InstanceId 找到对应的对象
-                                        var uiObject =
-                                            EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
-                                        // 赋值字段
-                                        if (string.Equals(objData.FieldType, "GameObject"))
-                                        {
-                                            fieldInfo.SetValue(componentCanvasView, uiObject);
-                                        }
-                                        else
-                                        {
-                                            if (uiObject != null)
-                                                fieldInfo.SetValue(componentCanvasView,
-                                                    uiObject.GetComponent(objData.FieldType));
-                                        }
-
-                                        break;
+                                        fieldInfo.SetValue(componentCanvasView, uiObject);
                                     }
+                                    else
+                                    {
+                                        if (uiObject != null)
+                                            fieldInfo.SetValue(componentCanvasView,
+                                                uiObject.GetComponent(objData.FieldType));
+                                    }
+
+                                    break;
                                 }
-                            }
 
                             #endregion
                         }
@@ -271,30 +253,26 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                                                                           BindingFlags.Instance);
                             // 遍历字段，给字段赋值
                             foreach (var fieldInfo in fields)
-                            {
-                                foreach (var objData in objDataList)
+                            foreach (var objData in objDataList)
+                                if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
                                 {
-                                    if (fieldInfo.Name == objData.FieldPrefixName + objData.FieldType)
+                                    // 根据 InstanceId 找到对应的对象
+                                    var uiObject =
+                                        EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
+                                    // 赋值字段
+                                    if (string.Equals(objData.FieldType, "GameObject"))
                                     {
-                                        // 根据 InstanceId 找到对应的对象
-                                        var uiObject =
-                                            EditorUtility.InstanceIDToObject(objData.ObjectInstanceId) as GameObject;
-                                        // 赋值字段
-                                        if (string.Equals(objData.FieldType, "GameObject"))
-                                        {
-                                            fieldInfo.SetValue(componentCanvasView, uiObject);
-                                        }
-                                        else
-                                        {
-                                            if (uiObject != null)
-                                                fieldInfo.SetValue(componentCanvasView,
-                                                    uiObject.GetComponent(objData.FieldType));
-                                        }
-
-                                        break;
+                                        fieldInfo.SetValue(componentCanvasView, uiObject);
                                     }
+                                    else
+                                    {
+                                        if (uiObject != null)
+                                            fieldInfo.SetValue(componentCanvasView,
+                                                uiObject.GetComponent(objData.FieldType));
+                                    }
+
+                                    break;
                                 }
-                            }
 
                             #endregion
                         }

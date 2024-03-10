@@ -29,15 +29,15 @@ namespace ZQFramework.Toolkits.UIKit.Core
             Init();
         }
 
+        void Update()
+        {
+            foreach (var canvasView in m_VisibleCanvasViewList) canvasView.UIUpdate();
+        }
+
         protected override void EnsureGameObjectExist(string gameObjectName = null)
         {
             gameObjectName = "UIRoot";
             base.EnsureGameObjectExist(gameObjectName);
-        }
-
-        void Update()
-        {
-            foreach (var canvasView in m_VisibleCanvasViewList) canvasView.UIUpdate();
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 预加载 CanvasView 到内存中，只生成物体，不执行生命周期，不会加载到 CanvasView 列表中
         /// </summary>
-        /// <typeparam name="T">预加载的类型</typeparam>
+        /// <typeparam name="T"> 预加载的类型 </typeparam>
         public static void PreLoadCanvas<T>(bool useResourcesLoad = true) where T : CanvasView
         {
             var type = typeof(T);
@@ -144,10 +144,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             var type = typeof(T);
             var canvasView = Instance.TryGetCanvasFromDict(type);
-            if (canvasView != null)
-            {
-                return Instance.ShowCanvas(canvasView) as T;
-            }
+            if (canvasView != null) return Instance.ShowCanvas(canvasView) as T;
 
             // 加载并生成 T 类型的 canvas 预制体
             // Todo: 目前只有 Resources 加载
@@ -239,25 +236,20 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 使用 UIKit 推入堆栈队列，会检测当前是否有堆栈队列发起者，如果有，则直接推入
         /// </summary>
-        /// <typeparam name="T">类型</typeparam>
+        /// <typeparam name="T"> 类型 </typeparam>
         public static void PushCanvasViewQueue<T>() where T : CanvasView
         {
             if (Instance.QueueOwnerCanvasView != null)
             {
                 var type = typeof(T);
                 if (Instance.m_AllCanvasViewDict.TryGetValue(type, out var canvasView))
-                {
                     if (canvasView != null)
                     {
-                        if (canvasView.Visible)
-                        {
-                            Instance.HideCanvas(canvasView);
-                        }
+                        if (canvasView.Visible) Instance.HideCanvas(canvasView);
 
                         canvasView.BelongViewQueue = true;
                         Instance.CanvasViewQueue.Enqueue(canvasView);
                     }
-                }
 
                 if (canvasView == null)
                 {
@@ -351,7 +343,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 根据遮罩状态调整 Canvas 的父物体，并排序
         /// </summary>
-        /// <param name="canvasView"></param>
+        /// <param name="canvasView"> </param>
         static void ClassifyUICanvasByMask(CanvasView canvasView)
         {
             // 先判断当前 Canvas 是否需要遮罩
@@ -423,9 +415,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
             if (canvasView.BelongViewQueue && Instance.QueueOwnerCanvasView != null &&
                 Instance.CanvasViewQueue.Count > 0)
-            {
                 Instance.PopNextQueueCanvasView();
-            }
         }
 
         /// <summary>
@@ -452,9 +442,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
             canvasView.UIDestroy();
             if (canvasView.BelongViewQueue && Instance.QueueOwnerCanvasView != null &&
                 Instance.CanvasViewQueue.Count > 0)
-            {
                 Instance.PopNextQueueCanvasView();
-            }
 
             // 有可能关闭之后还需要打开，只销毁物体，所以不在此处卸载资源，避免重复卸载和加载资源造成卡顿，不流畅
             // 在特殊情况下可能每次都要卸载资源，保证内存完全没有空闲资源

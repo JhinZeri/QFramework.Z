@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 public static class PageTypeCreater
 {
 #if UNITY_EDITOR
     const string key = "UIManagerCachedBindNeededObject";
-    static List<TypeBindingConfiguration> binds = new List<TypeBindingConfiguration>();
+    static readonly List<TypeBindingConfiguration> binds = new();
 
     [MenuItem("Assets/UIManager/Create Page Type")]
     static void CreatScriptForPagePrefab()
     {
         string TypeNameProvider(GameObject target)
         {
-            var name = target.name;
+            string name = target.name;
             if (name.EndsWith("Panel") || name.EndsWith("Page"))
-            {
                 if (name.EndsWith("Panel"))
-                {
                     name = name.Substring(0, name.Length - 5) + "Page";
-                }
-            }
 
             return name;
         }
@@ -33,11 +30,15 @@ public static class PageTypeCreater
     [MenuItem("Assets/UIManager/Create Panel Type")]
     static void CreatScriptForPanel()
     {
-        string TypeNameProvider(GameObject target) => target.name;
+        string TypeNameProvider(GameObject target)
+        {
+            return target.name;
+        }
+
         GenerateTypes("Assets/Scripts/UI/Panels", TypeNameProvider, false);
     }
 
-    private static void GenerateTypes(string path, Func<GameObject, string> typeNameProvider, bool overwrite = true)
+    static void GenerateTypes(string path, Func<GameObject, string> typeNameProvider, bool overwrite = true)
     {
         if (EditorApplication.isCompiling)
         {
@@ -46,11 +47,11 @@ public static class PageTypeCreater
         }
 
         EditorApplication.LockReloadAssemblies();
-        var objs = Selection.gameObjects;
+        GameObject[] objs = Selection.gameObjects;
         binds.Clear();
         foreach (var item in objs)
         {
-            var name = typeNameProvider.Invoke(item);
+            string name = typeNameProvider.Invoke(item);
             //注意：完全复写 已存在的文件
             var saveto = $"{path}/{name}.cs";
             if (overwrite || !System.IO.File.Exists(saveto))
@@ -59,10 +60,7 @@ public static class PageTypeCreater
 public class {name} : BasePage
 {{
 }}";
-                if (!System.IO.Directory.Exists(path))
-                {
-                    System.IO.Directory.CreateDirectory(path);
-                }
+                if (!System.IO.Directory.Exists(path)) System.IO.Directory.CreateDirectory(path);
 
                 try
                 {
@@ -77,7 +75,7 @@ public class {name} : BasePage
                 var bind = new TypeBindingConfiguration
                 {
                     type = name,
-                    guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(item)),
+                    guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(item))
                 };
                 binds.Add(bind);
             }
@@ -85,9 +83,7 @@ public class {name} : BasePage
 
         // 后处理步骤：将生成的类型存到 EditorPrefs 以便从新加载 Assembly 后在预制体上挂脚本
         if (binds.Count > 0)
-        {
             EditorPrefs.SetString(key, JsonUtility.ToJson(new Serialization<TypeBindingConfiguration>(binds), false));
-        }
 
         EditorApplication.UnlockReloadAssemblies();
         AssetDatabase.Refresh();
@@ -98,14 +94,14 @@ public class {name} : BasePage
     {
         if (EditorPrefs.HasKey(key))
         {
-            var json = EditorPrefs.GetString(key);
+            string json = EditorPrefs.GetString(key);
             Serialization<TypeBindingConfiguration> obj =
                 JsonUtility.FromJson<Serialization<TypeBindingConfiguration>>(json);
-            var list = obj.ToList();
+            List<TypeBindingConfiguration> list = obj.ToList();
 
             if (null != list && list.Count > 0)
             {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
                 var defaultAssembly = assemblies.First(assembly => assembly.GetName().Name == "Assembly-CSharp");
                 foreach (var item in list)
                 {
@@ -139,15 +135,12 @@ public class {name} : BasePage
         [SerializeField]
         List<T> target;
 
-        public List<T> ToList()
-        {
-            return target;
-        }
-
         public Serialization(List<T> target)
         {
             this.target = target;
         }
+
+        public List<T> ToList() => target;
     }
 
 #endif

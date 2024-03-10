@@ -76,27 +76,14 @@ namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
         /// <summary>
         /// 如果选择的物体是 Prefab 就返回 true
         /// </summary>
-        /// <returns></returns>
+        /// <returns> </returns>
         public static bool IsPrefab()
         {
-            GameObject selectedObject = Selection.activeObject as GameObject;
-
+            var selectedObject = Selection.activeObject as GameObject;
             if (selectedObject == null)
-            {
-                // Debug.LogWarning("No object selected!");
                 return false;
-            }
-
-            PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
-
-            if (assetType == PrefabAssetType.Regular)
-            {
-                // Debug.Log("Selected object is a prefab asset.");
-                return true;
-            }
-
-            // Debug.Log("Selected object is not a prefab asset.");
-            return false;
+            var assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
+            return assetType == PrefabAssetType.Regular;
         }
 
         /// <summary>
@@ -104,7 +91,7 @@ namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
         /// </summary>
         public static bool IsPrefabInScene()
         {
-            GameObject selectedObject = Selection.activeGameObject;
+            var selectedObject = Selection.activeGameObject;
 
             if (selectedObject == null)
             {
@@ -112,20 +99,19 @@ namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
                 return false;
             }
 
-            PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
-            PrefabInstanceStatus instanceStatus = PrefabUtility.GetPrefabInstanceStatus(selectedObject);
+            // 先获得资源类型，如果是预制体-常规，则是预制体资源
+            var assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
+            // 然后看状态，如果是链接的，那么就是场景中的预制体
+            var instanceStatus = PrefabUtility.GetPrefabInstanceStatus(selectedObject);
 
             if (assetType == PrefabAssetType.Regular)
             {
                 if (instanceStatus == PrefabInstanceStatus.Connected)
-                {
-                    // Debug.Log("Selected prefab is a scene instance of a prefab.");
                     return true;
-                }
             }
             else
             {
-                Debug.Log("Selected object is not a prefab asset.");
+                Debug.Log("选择的 Object 不是预制体");
             }
 
             return false;
@@ -136,7 +122,7 @@ namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
         /// </summary>
         public static bool IsPrefabOnProject()
         {
-            GameObject selectedObject = Selection.activeGameObject;
+            var selectedObject = Selection.activeGameObject;
 
             if (selectedObject == null)
             {
@@ -144,8 +130,8 @@ namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
                 return false;
             }
 
-            PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
-            PrefabInstanceStatus instanceStatus = PrefabUtility.GetPrefabInstanceStatus(selectedObject);
+            var assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
+            var instanceStatus = PrefabUtility.GetPrefabInstanceStatus(selectedObject);
 
             if (assetType == PrefabAssetType.Regular)
             {

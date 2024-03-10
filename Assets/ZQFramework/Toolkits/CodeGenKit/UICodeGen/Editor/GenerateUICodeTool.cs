@@ -72,15 +72,9 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
         public static void ParseAndCreateUIScripts(GameObject selectedGameObject, bool useNameAndTagParse = true)
         {
-            if (FilterSelectedGameObject.IsPrefabOnProject())
-            {
-                return;
-            }
+            if (FilterSelectedGameObject.IsPrefabOnProject()) return;
 
-            if (!FilterSelectedGameObject.IsUIKitCanvasTemplate())
-            {
-                return;
-            }
+            if (!FilterSelectedGameObject.IsUIKitCanvasTemplate()) return;
 
             if (FilterSelectedGameObject.IsPrefabInScene())
             {

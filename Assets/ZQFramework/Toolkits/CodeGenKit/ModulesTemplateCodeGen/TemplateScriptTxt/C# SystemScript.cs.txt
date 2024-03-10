@@ -1,17 +1,9 @@
-﻿using UnityEngine;
-using ZFramework.Framework;
+﻿using ZQFramework.Framework.Core;
 
 namespace #ZFPROJECTNAME#
 {
-    public class #ZFSYSTEMSCRIPTNAME# : ZFSystem
+    public class #ZFSYSTEMSCRIPTNAME# : AbstractSystem
     {
-        #region System 自定义生命周期
-
-        // 非特殊情况，请勿使用 Mono 生命周期
         protected override void OnInit() { }
-        protected override void OnUpdate() { }
-        protected override void OnDeInit() { }
-
-        #endregion
     }
 }

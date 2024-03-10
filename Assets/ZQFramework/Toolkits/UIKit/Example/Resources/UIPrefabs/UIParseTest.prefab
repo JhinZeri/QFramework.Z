@@ -615,7 +615,9 @@ MonoBehaviour:
   UIMaskCanvasGroup: {fileID: 1908311995447514338}
   UIPanel: {fileID: 8919250860392567506}
   CanvasDontMask: 1
+  HasInit: 0
   Visible: 0
+  BelongViewQueue: 0
   GGGButton: {fileID: 6640617133183751690}
   OOOButton: {fileID: 3515637827958319312}
   SSSToggle: {fileID: 656828816353718866}

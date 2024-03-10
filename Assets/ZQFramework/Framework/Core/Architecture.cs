@@ -29,21 +29,13 @@ namespace ZQFramework.Framework.Core
     [Serializable]
     public class EventInfo
     {
-        [ShowInInspector]
-        [LabelText("回调方法列表")]
-        [Searchable]
-        [PropertyOrder(2)]
-        public List<string> MethodList = new();
-
-        Action _mAction;
-
+        Action m_Action;
         public Type EventType;
-
 
         public EventInfo(Type eventType, Action action)
         {
             EventType = eventType;
-            _mAction = action;
+            m_Action = action;
         }
 
         [LabelText("事件类型")]
@@ -51,12 +43,19 @@ namespace ZQFramework.Framework.Core
         [PropertyOrder(0)]
         public string TypeName => EventType.Name;
 
-        [Button("触发事件", Icon = SdfIconType.List)]
+        [Button("@\"触发事件 \"+TypeName", Icon = SdfIconType.List)]
         [PropertyOrder(1)]
         public void TryTrigger()
         {
-            _mAction?.Invoke();
+            m_Action?.Invoke();
         }
+
+        [PropertyOrder(2)]
+        [ShowInInspector]
+        [ReadOnly]
+        [LabelText("事件订阅方法列表")]
+        [Searchable]
+        public List<string> MethodList = new();
 
         public void SetMethodList(IEnumerable<string> list) => MethodList = new List<string>(list);
     }

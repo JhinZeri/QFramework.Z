@@ -37,26 +37,46 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
         #region MenuItem 方法
 
-        [MenuItem("GameObject/生成UI脚本，名称+Tag解析(Shift+Alt+Q) #&q", priority = 0)]
+        // 添加分割线
+        [MenuItem("GameObject/@ ZQ UIKit -------", false, 199)]
+        static void AddSeparator()
+        {
+            // 这里不需要实际的逻辑，只是用来表示分割线
+        }
+
+        [MenuItem("GameObject/@ ZQ UIKit -------", true, 199)]
+        static bool AddSeparatorValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+
+        [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析(Shift+Alt+Q) #&q", priority = 200)]
         public static void CreateUIScriptsUseNameAndTag()
         {
             var obj = Selection.activeGameObject;
             ParseAndCreateUIScripts(obj);
         }
 
-        [MenuItem("GameObject/生成UI脚本，名称+Tag解析(Shift+Alt+Q) #&q", true, 0)]
+        [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析(Shift+Alt+Q) #&q", true, 200)]
         public static bool CreateUIScriptsUseNameAndTagValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
 
-        [MenuItem("GameObject/生成UI脚本，仅Tag解析", priority = 1)]
+        [MenuItem("GameObject/@ZQ 生成UI脚本,仅Tag解析", priority = 201)]
         public static void CreateUIScriptsOnlyTag()
         {
             var obj = Selection.activeGameObject;
             ParseAndCreateUIScripts(obj, false);
         }
 
-        [MenuItem("GameObject/生成UI脚本，仅Tag解析", true, 1)]
+        [MenuItem("GameObject/@ZQ 生成UI脚本,仅Tag解析", true, 201)]
         public static bool CreateUIScriptsOnlyTagValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+
+        // 添加分割线
+        [MenuItem("GameObject/------- @ ZQ UIKit", false, 202)]
+        static void AddSeparator2()
+        {
+            // 这里不需要实际的逻辑，只是用来表示分割线
+        }
+
+        [MenuItem("GameObject/------- @ ZQ UIKit", true, 202)]
+        static bool AddSeparator2Validator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
         #endregion
 
@@ -64,7 +84,29 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
         public static void ParseAndCreateUIScripts(GameObject selectedGameObject, bool useNameAndTagParse = true)
         {
+            if (FilterSelectedGameObject.IsPrefabOnProject())
+            {
+                return;
+            }
+
+            if (!FilterSelectedGameObject.IsUIKitCanvasTemplate())
+            {
+                return;
+            }
+
+            if (FilterSelectedGameObject.IsPrefabInScene())
+            {
+                UICodeGenProcessLogInfo.Instance.isPrefabInScene = true;
+                Debug.Log("当前选中的是场景中的 Prefab + " + UICodeGenProcessLogInfo.Instance.isPrefabInScene);
+            }
+
             var obj = selectedGameObject;
+            if (EditorApplication.isCompiling)
+            {
+                Debug.LogWarning("正在编译时无法解析和生成脚本！");
+                return;
+            }
+
             // 清空上一个分析结果
             UIAnalysisDataList.Clear();
             // 设置脚本生成文件夹
@@ -354,44 +396,20 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         static void SavedParseProcessLogInfo(Transform trans, string rootCanvasName,
             List<UIComponentAnalysisData> uiAnalysisDataList)
         {
-            if (CodeGenConfig.OnlySavedLatestUIParseLogInfo)
+            // 临时数据，用完清空
+            UICodeGenProcessLogInfo.Instance.LatestAnalysisData = new UICanvasViewGameObjectAnalysisData
             {
-                UICodeGenProcessLogInfo.Instance.UICanvasViewGameObjectAnalysisDataList.Clear();
-                UICodeGenProcessLogInfo.Instance.LatestAnalysisData = new UICanvasViewGameObjectAnalysisData
-                {
-                    CanvasViewInstanceId = trans.GetInstanceID(),
-                    CanvasViewRootGameObjectName = rootCanvasName,
-                    UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
-                };
-                UICodeGenProcessLogInfo.Instance.UICanvasViewGameObjectAnalysisDataList.Add(UICodeGenProcessLogInfo
-                    .Instance.LatestAnalysisData);
-            }
-            else
+                CanvasGameObjectInstanceId = trans.gameObject.GetInstanceID(),
+                CanvasViewRootGameObjectName = rootCanvasName,
+                UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
+            };
+            // 记录数据，保留上一个分析完成的UI物体数据
+            UICodeGenProcessLogInfo.Instance.PreviousUIGameObjectAnalysisData = new UICanvasViewGameObjectAnalysisData
             {
-                UICodeGenProcessLogInfo.Instance.LatestAnalysisData = new UICanvasViewGameObjectAnalysisData
-                {
-                    CanvasViewInstanceId = trans.GetInstanceID(),
-                    CanvasViewRootGameObjectName = rootCanvasName,
-                    UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
-                };
-                var isExistData = false;
-                foreach (var data in UICodeGenProcessLogInfo.Instance.UICanvasViewGameObjectAnalysisDataList.Where(
-                    data => data.CanvasViewRootGameObjectName == rootCanvasName))
-                {
-                    isExistData = true;
-                    data.CanvasViewInstanceId = trans.GetInstanceID();
-                    data.UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList);
-                }
-
-                if (!isExistData)
-                    UICodeGenProcessLogInfo.Instance.UICanvasViewGameObjectAnalysisDataList.Add(
-                        new UICanvasViewGameObjectAnalysisData
-                        {
-                            CanvasViewInstanceId = trans.GetInstanceID(),
-                            CanvasViewRootGameObjectName = rootCanvasName,
-                            UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
-                        });
-            }
+                CanvasGameObjectInstanceId = trans.gameObject.GetInstanceID(),
+                CanvasViewRootGameObjectName = rootCanvasName,
+                UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
+            };
         }
 
         /// <summary>
@@ -461,7 +479,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine("{");
             sb.AppendLine(ONE_INDENT + "public partial class " + designerViewName);
             sb.AppendLine(ONE_INDENT + "{");
-            sb.AppendLine(TWO_INDENT + "[Title(\"自动化绑定 UI 组件\")]");
+            sb.AppendLine(TWO_INDENT + "[Title(\"自动化绑定 UI 组件，运行时自动赋值\")]");
             // 根据获取到的字段数据列表，声明字段
             foreach (var objectData in UIAnalysisDataList)
                 sb.AppendLine(TWO_INDENT + "public " + objectData.FieldType + " " +
@@ -588,7 +606,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine();
             sb.AppendLine(TWO_INDENT + "#region UI 事件绑定");
             sb.AppendLine();
-            sb.AppendLine(TWO_INDENT + "/*更新代码位置标识，不可删除和修改内容，仅可移动位置*/");
             // 生成 UI 事件绑定代码
             foreach (var analysisData in UIAnalysisDataList)
             {
@@ -611,6 +628,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                 }
             }
 
+            sb.AppendLine();
+            sb.AppendLine(TWO_INDENT + "/*更新代码位置标识，不可删除和修改内容，仅可移动位置*/");
             sb.AppendLine();
             sb.AppendLine(TWO_INDENT + "#endregion");
             sb.AppendLine(ONE_INDENT + "}");

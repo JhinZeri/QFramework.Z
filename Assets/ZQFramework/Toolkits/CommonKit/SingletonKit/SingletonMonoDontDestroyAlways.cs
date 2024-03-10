@@ -53,8 +53,16 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
 
         /// <summary>
         /// 确保 GameObject 存在，如果 GameObject 不存在，则创建一个新实例，同时虚方法可以让子类重写，自定义确保存在的方式
+        /// 可以自定义新物体的名称
         /// </summary>
-        protected virtual void EnsureGameObjectExist()
+        /// <example><code>
+        /// protected override void EnsureGameObjectExist(string gameObjectName = null)
+        /// {
+        ///     gameObjectName = "UIRoot";
+        ///     base.EnsureGameObjectExist(gameObjectName);
+        /// }
+        /// </code></example>
+        protected virtual void EnsureGameObjectExist(string gameObjectName = null)
         {
             if (m_Instance == null)
             {
@@ -64,7 +72,16 @@ namespace ZQFramework.Toolkits.CommonKit.SingletonKit
                 // 如果场景中不存在该实例，则创建一个新实例
                 if (m_Instance == null)
                 {
-                    var singletonObject = new GameObject(typeof(T).Name);
+                    GameObject singletonObject;
+                    if (gameObjectName == null)
+                    {
+                        singletonObject = new GameObject(typeof(T).Name);
+                    }
+                    else
+                    {
+                        singletonObject = new GameObject(gameObjectName);
+                    }
+
                     m_Instance = singletonObject.AddComponent<T>();
                 }
             }

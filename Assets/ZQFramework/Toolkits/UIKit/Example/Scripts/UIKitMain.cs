@@ -18,12 +18,6 @@ namespace ZQFramework.Toolkits.UIKit.Example.Scripts
             if (Input.GetKeyDown(KeyCode.W)) Core.UIKit.HideCanvas<UILoginTest>();
 
             if (Input.GetKeyDown(KeyCode.E)) Core.UIKit.DestroyCanvas<UILoginTest>();
-
-            if (Input.GetKeyDown(KeyCode.R)) Core.UIKit.HideCanvas<UIParseTest>();
-
-            if (Input.GetKeyDown(KeyCode.T)) Core.UIKit.DestroyCanvas<UIRegisterTest>();
-
-            if (Input.GetKeyDown(KeyCode.Y)) Core.UIKit.DestroyCanvas<UIViewGenTest>();
         }
     }
 }

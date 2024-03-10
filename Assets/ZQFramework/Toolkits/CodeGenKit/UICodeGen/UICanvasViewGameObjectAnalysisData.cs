@@ -18,7 +18,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen
         /// </summary>
         [LabelText("根节点Id")]
         [ShowInInspector]
-        public int CanvasViewInstanceId { get; set; }
+        public int CanvasGameObjectInstanceId { get; set; }
 
         /// <summary>
         /// 场景中单个 UICanvasView 物体的根节点名称

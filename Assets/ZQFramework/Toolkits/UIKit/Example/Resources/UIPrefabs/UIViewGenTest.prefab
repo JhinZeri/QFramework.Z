@@ -373,8 +373,10 @@ MonoBehaviour:
   UICanvasGroup: {fileID: 4705256833125572517}
   UIMaskCanvasGroup: {fileID: 8909300311605337527}
   UIPanel: {fileID: 1428780484037473697}
-  Visible: 0
   CanvasDontMask: 1
+  HasInit: 0
+  Visible: 0
+  BelongViewQueue: 0
   LogoImage: {fileID: 3257513850216707113}
   TestButton: {fileID: 8699827069109587737}
   PasswordInputField: {fileID: 6275124703320952668}

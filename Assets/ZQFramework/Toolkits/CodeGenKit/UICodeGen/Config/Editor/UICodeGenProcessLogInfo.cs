@@ -31,7 +31,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
 
         public void Init()
         {
-            UICanvasViewGameObjectAnalysisDataList.Clear();
+            isPrefabInScene = false;
+            LatestAnalysisData = null;
         }
 
         [Title("锁定脚本工具")]
@@ -49,16 +50,18 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
 
         #region LogInfo
 
-        [LabelText("临时单个 UI 组件解析数据")]
+        [LabelText("临时的单个 UI 物体解析数据")]
         [InfoBox("生成脚本过程中的临时数据，使用完会清空信息")]
         [HideInInspector]
         public UICanvasViewGameObjectAnalysisData LatestAnalysisData;
 
-        [Title("UI 组件解析数据，用于记录，可以清空，便于调试")]
-        [LabelText("UI 组件解析数据列表日志信息")]
-        [InlineButton("Init", "清空日志")]
-        [Searchable]
-        public List<UICanvasViewGameObjectAnalysisData> UICanvasViewGameObjectAnalysisDataList = new();
+        [Title("上一个解析完成的 UI 物体数据，仅用于记录")]
+        [LabelText("刚刚解析的物体是场景中的预制体")]
+        public bool isPrefabInScene;
+
+        // [LabelText("UI 组件解析数据列表日志信息")]
+        [HideLabel]
+        public UICanvasViewGameObjectAnalysisData PreviousUIGameObjectAnalysisData;
 
         #endregion
     }

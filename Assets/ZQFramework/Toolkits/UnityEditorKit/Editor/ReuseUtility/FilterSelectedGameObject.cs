@@ -72,6 +72,96 @@ namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
 
             return false;
         }
+
+        /// <summary>
+        /// 如果选择的物体是 Prefab 就返回 true
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsPrefab()
+        {
+            GameObject selectedObject = Selection.activeObject as GameObject;
+
+            if (selectedObject == null)
+            {
+                // Debug.LogWarning("No object selected!");
+                return false;
+            }
+
+            PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
+
+            if (assetType == PrefabAssetType.Regular)
+            {
+                // Debug.Log("Selected object is a prefab asset.");
+                return true;
+            }
+
+            // Debug.Log("Selected object is not a prefab asset.");
+            return false;
+        }
+
+        /// <summary>
+        /// 选择的物体是场景中的 Prefab，返回 true
+        /// </summary>
+        public static bool IsPrefabInScene()
+        {
+            GameObject selectedObject = Selection.activeGameObject;
+
+            if (selectedObject == null)
+            {
+                Debug.LogWarning("No object selected!");
+                return false;
+            }
+
+            PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
+            PrefabInstanceStatus instanceStatus = PrefabUtility.GetPrefabInstanceStatus(selectedObject);
+
+            if (assetType == PrefabAssetType.Regular)
+            {
+                if (instanceStatus == PrefabInstanceStatus.Connected)
+                {
+                    // Debug.Log("Selected prefab is a scene instance of a prefab.");
+                    return true;
+                }
+            }
+            else
+            {
+                Debug.Log("Selected object is not a prefab asset.");
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 选择的物体是资源文件夹中的 Prefab，返回 true
+        /// </summary>
+        public static bool IsPrefabOnProject()
+        {
+            GameObject selectedObject = Selection.activeGameObject;
+
+            if (selectedObject == null)
+            {
+                Debug.LogWarning("No object selected!");
+                return false;
+            }
+
+            PrefabAssetType assetType = PrefabUtility.GetPrefabAssetType(selectedObject);
+            PrefabInstanceStatus instanceStatus = PrefabUtility.GetPrefabInstanceStatus(selectedObject);
+
+            if (assetType == PrefabAssetType.Regular)
+            {
+                if (instanceStatus == PrefabInstanceStatus.NotAPrefab)
+                {
+                    Debug.Log("当前选择的是资源文件夹中的预制体");
+                    return true;
+                }
+            }
+            else
+            {
+                Debug.Log("当前选择的资源不是预制体");
+            }
+
+            return false;
+        }
     }
 }
 #endif

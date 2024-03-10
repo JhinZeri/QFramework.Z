@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b868160e1b645a5913e0faf85bb1a13, type: 3}
   m_Name: UICodeGenProcessLogInfo
   m_EditorClassIdentifier: 
-  UICanvasViewGameObjectAnalysisDataList: []
+  isPrefabInScene: 0

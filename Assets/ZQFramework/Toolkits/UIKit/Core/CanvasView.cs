@@ -18,21 +18,21 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region 变量
 
         // 组件字段
-        [FoldoutGroup("基础组件")]
+        [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("根节点 Canvas")]
         public Canvas UICanvas;
 
-        [FoldoutGroup("基础组件")]
+        [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("根节点 CanvasGroup")]
         public CanvasGroup UICanvasGroup;
 
         // 子级组件
-        [FoldoutGroup("基础组件")]
+        [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("遮罩 CanvasGroup")]
         public CanvasGroup UIMaskCanvasGroup;
 
+        [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("UI 面板")]
-        [FoldoutGroup("基础组件")]
         public Image UIPanel;
 
         // 状态字段
@@ -41,7 +41,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
         [InfoBox("如果 Canvas 的 OrderInLayer <= 100，则初始化自动设置为 false，不使用遮罩")]
         public bool CanvasDontMask;
 
-        [LabelText("是否为显示状态")]
+        [ShowIf("HasInit")]
+        [LabelText("已经完成初始化")]
+        public bool HasInit;
+
+        [ShowIf("Visible")]
+        [LabelText("界面处于显示状态")]
         public bool Visible;
 
         [Title("堆栈状态")]
@@ -57,7 +62,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region 公共方法
 
         /// <summary>
-        /// 开始发起堆栈，将多个 UI CanvasView 压入堆栈队列中，建立关联
+        /// 开始发起堆栈，将多个 UI CanvasView 压入堆栈队列中，本质就是建立界面之间的关联
         /// </summary>
         /// <typeparam name="T"></typeparam>
         public void StartOrPushCanvasView<T>() where T : CanvasView
@@ -130,7 +135,9 @@ namespace ZQFramework.Toolkits.UIKit.Core
         public void SetVisible(bool isVisible)
         {
             Visible = isVisible;
-            gameObject.SetActive(isVisible); // Todo: 临时写法
+            UICanvasGroup.alpha = isVisible ? 1 : 0;
+            UICanvasGroup.blocksRaycasts = isVisible;
+            // gameObject.SetActive(isVisible); 
         }
 
         public void SetMaskVisibleSelf(bool isVisible)
@@ -151,6 +158,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         public void UIAwake()
         {
             OnInit();
+            HasInit = true;
         }
 
         /// <summary>
@@ -304,5 +312,33 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #endregion
 
         #endregion
+
+#if UNITY_EDITOR
+
+        #region UnityEditor 编辑器状态辅助图形
+
+        static Vector3[] m_FourCorners = new Vector3[4];
+
+        void OnDrawGizmos()
+        {
+            foreach (var graphic in FindObjectsByType<MaskableGraphic>(FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None))
+            {
+                if (graphic.raycastTarget)
+                {
+                    RectTransform rectTransform = graphic.transform as RectTransform;
+                    if (rectTransform != null) rectTransform.GetWorldCorners(m_FourCorners);
+                    Gizmos.color = Color.blue;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Gizmos.DrawLine(m_FourCorners[i], m_FourCorners[(i + 1) % 4]);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+#endif
     }
 }

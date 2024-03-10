@@ -1,21 +1,27 @@
 /*---------------------------------------------------------------------------
  * UI 自动化组件生成 ViewController 脚本工具
  * 作者: Zane
- * 脚本生成时间: 2024-03-09 18:26:50
+ * 脚本生成时间: 2024-03-09 21:47:43
  * 使用说明: UI 组件需要以 | [UI类型]组件名称 | 的方式命名，命名没有空格，或者 UI 组件物体使用特殊 Tag
  * 右键 UICanvas 预制体根节点物体，生成UI脚本，名称+Tag解析 或 生成UI脚本，仅Tag解析
  * 注意: ViewController 脚本是自动生成，手动修改后，再次更新会补充在标识注释后，不会覆盖
 ---------------------------------------------------------------------------*/
+
+using UnityEngine;
 using UnityEngine.UI;
 using ZQFramework.Toolkits.UIKit.Core;
 
 namespace ZGameProject.UI
 {
-    public partial class UILoginTest : CanvasView
+    public partial class UIRegisterTest : CanvasView
     {
-        #region UI 自定义生命周期 
+        #region UI 自定义生命周期
 
-        protected override void OnInit() { }
+        protected override void OnInit()
+        {
+            Debug.Log("UIRegisterTest OnInit");
+        }
+
         protected override void OnShow() { }
         protected override void OnUpdate() { }
         protected override void OnHide() { }
@@ -26,6 +32,11 @@ namespace ZGameProject.UI
         #region UI 事件绑定
 
         /*更新代码位置标识，不可删除和修改内容，仅可移动位置*/
+        void OnSSSButtonClick(){ }
+        void OnOOOButtonClick(){ }
+        void OnPPPButtonClick(){ }
+        void OnYYYYButtonClick(){ }
+        void OnRegisterButtonClick() { }
 
         #endregion
     }

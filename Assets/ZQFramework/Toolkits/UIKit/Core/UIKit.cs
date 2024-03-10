@@ -11,7 +11,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
     /// <summary>
     /// 全局单例 UIKit 且切换场景不销毁
     /// </summary>
-    public class UIKit : SingletonMonoDontDestroy<UIKit>
+    public class UIKit : SingletonMonoDontDestroyAlways<UIKit>
     {
         Transform m_DontMaskParent;
         Transform m_NeedMaskParent;
@@ -27,6 +27,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
         {
             base.Awake();
             Init();
+        }
+
+        protected override void EnsureGameObjectExist(string gameObjectName = null)
+        {
+            gameObjectName = "UIRoot";
+            base.EnsureGameObjectExist(gameObjectName);
         }
 
         void Update()
@@ -52,6 +58,8 @@ namespace ZQFramework.Toolkits.UIKit.Core
                                           .GetComponent<Camera>();
             Instance.m_DontMaskParent = Instance.m_UIRoot.Find("DontMaskUILayer").transform;
             Instance.m_NeedMaskParent = Instance.m_UIRoot.Find("NeedMaskUILayer").transform;
+            // 给 UIRoot 修改名称，增加前缀
+            GameObject.Find("/UIRoot").name = "*UI*UIRoot";
         }
 
         #region 三个 UICanvasView 容器 和 堆栈
@@ -90,11 +98,49 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region UIKit 公共静态方法，优化使用，从设计上确定只维护一套 CanvasView 容器，共三个
 
         /// <summary>
+        /// 预加载 CanvasView 到内存中，只生成物体，不执行生命周期，不会加载到 CanvasView 列表中
+        /// </summary>
+        /// <typeparam name="T">预加载的类型</typeparam>
+        public static void PreLoadCanvas<T>(bool useResourcesLoad = true) where T : CanvasView
+        {
+            var type = typeof(T);
+            var canvasView = Instance.TryGetCanvasFromDict(type);
+            if (canvasView != null)
+            {
+                Debug.LogError("已经存在该面板，请修改预加载代码");
+            }
+            else
+            {
+                // 加载并生成 T 类型的 canvas 预制体
+                // Todo: 目前只有 Resources 加载
+                var canvasViewObj = CreateCanvasView<T>(useResourcesLoad);
+                // Create 成功后立刻进行了对 GameObject 的属性初始化操作，以及 RectTransform，Transform
+                if (canvasViewObj == null)
+                    return;
+                canvasView = canvasViewObj.GetComponent<T>();
+                InitRectTransform(canvasView);
+                // 注入 UICamera
+                canvasView.UICanvas.worldCamera = Instance.m_UICamera;
+                // 确定 CanvasView 的类别并调整父物体，排序到最下方
+                ClassifyUICanvasByMask(canvasView);
+                // 预加载调整到最上方，也就是最底层
+                canvasView.transform.SetAsFirstSibling();
+                canvasView.SetVisible(false);
+                // 预加载的 Canvas 只存入到 UIKit 的字典中，没有加载到所有 CanvasView 的列表中
+                Instance.m_AllCanvasViewDict.Add(type, canvasView);
+                // 先设置一次自己的
+                canvasView.SetMaskVisibleSelf(false);
+                // 新生成一个 Canvas 需要设置一次全局遮罩可见性
+                Instance.SetGlobalCanvasMaskVisible();
+            }
+        }
+
+        /// <summary>
         /// 弹出 UICanvas
         /// </summary>
         /// <typeparam name="T"> 具体 CanvasView 的实现类 </typeparam>
         /// <returns> UI对象 </returns>
-        public static T OpenCanvas<T>(bool useResources = true) where T : CanvasView
+        public static T OpenCanvas<T>(bool useResourcesLoad = true) where T : CanvasView
         {
             var type = typeof(T);
             var canvasView = Instance.TryGetCanvasFromDict(type);
@@ -105,7 +151,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
             // 加载并生成 T 类型的 canvas 预制体
             // Todo: 目前只有 Resources 加载
-            var canvasViewObj = CreateCanvasView<T>(useResources);
+            var canvasViewObj = CreateCanvasView<T>(useResourcesLoad);
             // Create 成功后立刻进行了对 GameObject 的属性初始化操作，以及 RectTransform，Transform
             if (canvasViewObj == null) return null;
             canvasView = canvasViewObj.GetComponent<T>();
@@ -224,12 +270,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
                     {
                         canvasView = canvasViewObj.GetComponent<T>();
                         InitRectTransform(canvasView);
-                        canvasView.transform.SetAsLastSibling();
                         // 接下来主要是对 CanvasView UI 脚本内容进行初始化
                         // 注入 UICamera
                         canvasView.UICanvas.worldCamera = Instance.m_UICamera;
                         // 确定 CanvasView 的类别并调整父物体
                         ClassifyUICanvasByMask(canvasView);
+                        canvasView.transform.SetAsLastSibling();
                         canvasView.UIAwake();
                         canvasView.SetVisible(false);
                         // 新生成的 Canvas 存入到 UIKit 提供的容器中
@@ -287,6 +333,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
             canvasView.UICanvas.worldCamera = Instance.m_UICamera;
             // 确定 CanvasView 的类别并调整父物体
             ClassifyUICanvasByMask(canvasView);
+            canvasView.transform.SetAsLastSibling();
             canvasView.UIAwake();
             canvasView.SetVisible(true);
             canvasView.UIShow();
@@ -301,6 +348,10 @@ namespace ZQFramework.Toolkits.UIKit.Core
             return canvasView;
         }
 
+        /// <summary>
+        /// 根据遮罩状态调整 Canvas 的父物体，并排序
+        /// </summary>
+        /// <param name="canvasView"></param>
         static void ClassifyUICanvasByMask(CanvasView canvasView)
         {
             // 先判断当前 Canvas 是否需要遮罩
@@ -337,6 +388,12 @@ namespace ZQFramework.Toolkits.UIKit.Core
             {
                 Debug.LogWarning("该 CanvasView 已经是显示状态，请先关闭对应窗口");
                 return canvasView;
+            }
+
+            if (!canvasView.HasInit)
+            {
+                canvasView.UIAwake();
+                m_AllCanvasViewList.Add(canvasView);
             }
 
             canvasView.transform.SetAsLastSibling();

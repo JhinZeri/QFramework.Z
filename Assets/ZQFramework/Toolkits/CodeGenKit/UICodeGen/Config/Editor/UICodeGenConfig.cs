@@ -33,7 +33,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
             ResetUIScriptGenPath();
             ResetUICodeNamespace();
             ResetCodeGenPreview();
-            ResetOnlySavedLatestUIParseLogInfo();
             // 添加 Tag ---
             ResetUICodeGenAdditionalTags();
             AddConfigTags2UnityEditor();
@@ -58,7 +57,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
         const string DEFAULT_UI_CODE_GEN_PATH = "Assets/ZGameProject/UI";
         public const string DEFAULT_UI_CODE_NAMESPACES = "ZGameProject.UI";
         const bool DEFAULT_CODE_GEN_PREVIEW = true;
-        const bool DEFAULT_ONLY_SAVED_LATEST_UI_PARSE_LOG_INFO = true;
 
         readonly List<string> m_DefaultAdditionalTags = new()
         {
@@ -90,11 +88,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
         void ResetCodeGenPreview()
         {
             CurrentCodeGenPreview = DEFAULT_CODE_GEN_PREVIEW;
-        }
-
-        void ResetOnlySavedLatestUIParseLogInfo()
-        {
-            OnlySavedLatestUIParseLogInfo = DEFAULT_ONLY_SAVED_LATEST_UI_PARSE_LOG_INFO;
         }
 
         void ResetUICodeGenAdditionalTags()
@@ -254,12 +247,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
         [InlineButton("ResetCodeGenPreview", "默认设置")]
         [PropertyOrder(5)]
         public bool CurrentCodeGenPreview;
-
-        [FoldoutGroup("调试按钮")]
-        [LabelText("是否只保存最新的 UI 解析日志")]
-        [InlineButton("ResetOnlySavedLatestUIParseLogInfo", "默认设置")]
-        [PropertyOrder(6)]
-        public bool OnlySavedLatestUIParseLogInfo;
 
         #endregion
     }

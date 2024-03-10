@@ -30,7 +30,8 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
                 { "运行时设置/UI 设置", UIRuntimeSetting.Instance, SdfIconType.SunriseFill },
                 { "工具配置", null, SdfIconType.Tools },
                 { "工具配置/名称前缀卡片绘制", HierarchyPrefixColorCardConfig.Instance, SdfIconType.PaletteFill },
-                { "ZQ 过程日志信息", null, SdfIconType.InfoCircle }
+                { "ZQ 过程日志信息", null, SdfIconType.InfoCircle },
+                { "ZQ 过程日志信息/UI 解析日志", UICodeGenProcessLogInfo.Instance, SdfIconType.Pause }
             };
             return tree;
         }

@@ -13,27 +13,30 @@ using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
 {
-    public class FrameworkCodeGenConfig : ScriptableObject, IConfigOrSettingOrLogInfo
+    public class ArchitectureCodeGenConfig : ScriptableObject, IConfigOrSettingOrLogInfo
     {
         #region 资源文件相关
 
         const string CONFIG_ROOT_PATH =
-            "Assets/ZQFramework/Toolkits/ConfigKit/Editor/Config/FrameworkCodeGenConfig.asset";
+            "Assets/ZQFramework/Toolkits/ConfigKit/Editor/Config/ArchitectureCodeGenConfig.asset";
 
-        static FrameworkCodeGenConfig m_Instance;
+        static ArchitectureCodeGenConfig m_Instance;
 
-        public static FrameworkCodeGenConfig Instance
+        public static ArchitectureCodeGenConfig Instance
         {
             get
             {
                 if (m_Instance != null) return m_Instance;
                 m_Instance = GetOrCreateScriptableObject
-                    .GetSingletonAssetOnPathAssetDatabase<FrameworkCodeGenConfig>(CONFIG_ROOT_PATH);
+                    .GetSingletonAssetOnPathAssetDatabase<ArchitectureCodeGenConfig>(CONFIG_ROOT_PATH);
                 return m_Instance;
             }
         }
 
-        public void Init() { }
+        public void Init()
+        {
+            ResetArchitectureList();
+        }
 
         [Title("锁定脚本工具")]
         [Button("锁定脚本", ButtonSizes.Medium)]
@@ -42,7 +45,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetOnProjectObject.FindAndSelectedScript(nameof(FrameworkCodeGenConfig)));
+                GetOnProjectObject.FindAndSelectedScript(nameof(ArchitectureCodeGenConfig)));
 #endif
         }
 

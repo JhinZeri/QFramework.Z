@@ -6,7 +6,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
     /// CanvasViewController 是一个抽象基类，
     /// 它继承自 IController，这意味着它可以被 ZQFramework 框架管理
     /// </summary>
-    public abstract class CanvasViewController : IController
+    public abstract class CanvasViewController : CanvasView, IController
     {
         public abstract IArchitecture GetArchitecture();
     }

@@ -7,7 +7,9 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using ZQFramework.Toolkits.CodeGenKit.Common;
+using ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor;
 using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor;
+using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
 using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
 
 namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
@@ -18,7 +20,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         public static List<UIComponentAnalysisData> UIAnalysisDataList = new();
         static UICodeGenConfig CodeGenConfig => UICodeGenConfig.Instance;
 
-       
 
 #if UNITY_EDITOR
 
@@ -34,14 +35,14 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         [MenuItem("GameObject/@ ZQ UIKit -------", true, 199)]
         static bool AddSeparatorValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
-        [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析(Ctrl+Shift+V) #%v", priority = 200)]
+        [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析 (Shift+Alt+V) #&v", priority = 200)]
         public static void CreateUIScriptsUseNameAndTag()
         {
             var obj = Selection.activeGameObject;
             ParseAndCreateUIScripts(obj);
         }
 
-        [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析(Ctrl+Shift+V) #%v", true, 200)]
+        [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析 (Shift+Alt+V) #&v", true, 200)]
         public static bool CreateUIScriptsUseNameAndTagValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
 
 
@@ -449,12 +450,13 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine("using UnityEngine;");
             sb.AppendLine("using UnityEngine.UI;");
             sb.AppendLine("using ZQFramework.Framework;");
+            sb.AppendLine("using ZQFramework.Framework.Core;");
             sb.AppendLine("using ZQFramework.Toolkits.UIKit.Core;");
             sb.AppendLine("using Sirenix.OdinInspector;");
-            // if (CodeGenConfig.ExistArchitecture &&
-            //     CodeGenConfig.ArchitectureName != null &&
-            //     CodeGenConfig.CurProjectNamespace != null)
-            //     sb.AppendLine("using " + CodeGenConfig.CurProjectNamespace + ";");
+            if (ArchitectureCodeGenConfig.Instance.HasFindArchitecture &&
+                ArchitectureCodeGenConfig.Instance.CurrentArchitectureClassName != null &&
+                ArchitectureCodeGenConfig.Instance.CurrentArchitectureNamespace != null)
+                sb.AppendLine("using " + ProjectFolderConfig.Instance.CurrentFrameworkNamespace + ";");
             sb.AppendLine();
 
             // 编写该脚本的命名空间
@@ -466,24 +468,26 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine("{");
             sb.AppendLine(CodeGenCommon.ONE_INDENT + "public partial class " + designerViewName);
             sb.AppendLine(CodeGenCommon.ONE_INDENT + "{");
-            sb.AppendLine(CodeGenCommon.ONE_INDENT + "[Title(\"自动化绑定 UI 组件，运行时自动赋值\")]");
+            sb.AppendLine(CodeGenCommon.TWO_INDENT + "[Title(\"自动化绑定 UI 组件，运行时自动赋值\")]");
             // 根据获取到的字段数据列表，声明字段
             foreach (var objectData in UIAnalysisDataList)
                 sb.AppendLine(CodeGenCommon.TWO_INDENT + "public " + objectData.FieldType + " " +
                               objectData.FieldPrefixName + objectData.FieldType + ";");
 
-            // sb.AppendLine(TWO_INDENT + "// ZQFramework 框架必要方法 ");
-            // sb.AppendLine(TWO_INDENT + "protected override IArchitecture GetArchitecture()");
-            // sb.AppendLine(TWO_INDENT + "{");
-            // sb.AppendLine(THREE_INDENT + "// 若没有使用 ZFramework 架构， 则 null 即可");
-            // sb.AppendLine(THREE_INDENT + "// 若项目使用 ZFramework 架构，则 return XXX.Interface;");
-            // if (CodeGenConfig.ExistArchitecture &&
-            //     CodeGenConfig.ArchitectureName != null)
-            //     sb.AppendLine(THREE_INDENT + "return " + CodeGenConfig.ArchitectureName +
-            //                   ".Interface;");
-            // else
-            //     sb.AppendLine(THREE_INDENT + "return null;");
-            // sb.AppendLine(TWO_INDENT + "}");
+            // CanvasViewController
+            sb.AppendLine(CodeGenCommon.TWO_INDENT + "// ZQFramework 框架必要方法 ");
+            sb.AppendLine(CodeGenCommon.TWO_INDENT + "protected override IArchitecture GetArchitecture()");
+            sb.AppendLine(CodeGenCommon.TWO_INDENT + "{");
+            sb.AppendLine(CodeGenCommon.THREE_INDENT + "// 若没有使用 ZFramework 架构， 则 null ");
+            sb.AppendLine(CodeGenCommon.THREE_INDENT + "// 若项目使用 ZFramework 架构，则 return XXX.Interface;");
+            if (ArchitectureCodeGenConfig.Instance.HasFindArchitecture &&
+                ArchitectureCodeGenConfig.Instance.CurrentArchitectureClassName != null)
+                sb.AppendLine(CodeGenCommon.THREE_INDENT + "return " +
+                              ArchitectureCodeGenConfig.Instance.CurrentArchitectureClassName +
+                              ".Interface;");
+            else
+                sb.AppendLine(CodeGenCommon.THREE_INDENT + "return null;");
+            sb.AppendLine(CodeGenCommon.TWO_INDENT + "}");
 
             // 声明初始化 UI 组件方法
             sb.AppendLine();
@@ -501,19 +505,22 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                 {
                     case "GameObject":
                         // UIPanel = UIPanel != null ? UIPanel : transform.Find("UIPanel").GetComponent<Image>();
-                        sb.AppendLine(CodeGenCommon.THREE_INDENT + finalVariableName + " = " + finalVariableName + " != " + "null" +
+                        sb.AppendLine(CodeGenCommon.THREE_INDENT + finalVariableName + " = " + finalVariableName +
+                                      " != " + "null" +
                                       " ? " + finalVariableName + " : " + "transform.Find(\"" +
                                       analysisData.ObjectHierarchyPath +
                                       "\").gameObject;");
                         break;
                     case "Transform":
-                        sb.AppendLine(CodeGenCommon.THREE_INDENT + finalVariableName + " = " + finalVariableName + " != " + "null" +
+                        sb.AppendLine(CodeGenCommon.THREE_INDENT + finalVariableName + " = " + finalVariableName +
+                                      " != " + "null" +
                                       " ? " + finalVariableName + " : " + "transform.Find(\"" +
                                       analysisData.ObjectHierarchyPath +
                                       "\").transform;");
                         break;
                     default:
-                        sb.AppendLine(CodeGenCommon.THREE_INDENT + finalVariableName + " = " + finalVariableName + " != " + "null" +
+                        sb.AppendLine(CodeGenCommon.THREE_INDENT + finalVariableName + " = " + finalVariableName +
+                                      " != " + "null" +
                                       " ? " + finalVariableName + " : " + "transform.Find(\"" +
                                       analysisData.ObjectHierarchyPath + "\").GetComponent<" + analysisData.FieldType +
                                       ">();");
@@ -579,7 +586,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
             sb.AppendLine("{");
             // TODO: 没有加 Controller
-            sb.AppendLine(CodeGenCommon.ONE_INDENT + "public partial class " + logicControllerName + " : CanvasView");
+            sb.AppendLine(CodeGenCommon.ONE_INDENT + "public partial class " + logicControllerName +
+                          " : CanvasViewController");
             sb.AppendLine(CodeGenCommon.ONE_INDENT + "{");
             sb.AppendLine(CodeGenCommon.TWO_INDENT + "#region UI 自定义生命周期 ");
             sb.AppendLine();
@@ -674,7 +682,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                     if (uiType.Contains("Button"))
                     {
                         originScript = originScript.Insert(newCodeStartIndex,
-                            "\n" + CodeGenCommon.TWO_INDENT + "void On" + analysisData.FieldPrefixName + uiType + "Click(){ }");
+                            "\n" + CodeGenCommon.TWO_INDENT + "void On" + analysisData.FieldPrefixName + uiType +
+                            "Click(){ }");
                         break;
                     }
 

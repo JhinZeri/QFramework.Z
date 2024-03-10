@@ -8,7 +8,6 @@ namespace ZQFramework.Framework.Core
 
     public abstract class AbstractController : MonoBehaviour, IController
     {
-        public IArchitecture GetArchitecture() => SetControllerArchitecture();
-        protected abstract IArchitecture SetControllerArchitecture();
+        public abstract IArchitecture GetArchitecture();
     }
 }

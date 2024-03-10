@@ -1,0 +1,9 @@
+using ZQFramework.Framework.Core;
+
+namespace #ZFPROJECTNAME#
+{
+    public class #ZFMODELSCRIPTNAME# : AbstractModel
+    {
+        protected override void OnInit() { }
+    }
+}

@@ -7,28 +7,44 @@ using UnityEngine;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
 using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
 
-
-namespace ZFramework.Editor.Tools.TemplateScriptTool
+namespace ZQFramework.Toolkits.CodeGenKit.ModulesTemplateCodeGen.Editor
 {
-    public static class ZFTemplateGen
+    public static class ModulesTemplateCodeGen
     {
-        [MenuItem("Assets/Create/C# ZFModelScript", false, 80)]
+        #region 模板路径
+
+        static readonly string ModelTemplatePath =
+            Path.Combine("Assets/ZQFramework/Toolkits/CodeGenKit/ModulesTemplateCodeGen/TemplateScriptTxt",
+                "C# ModelScript.cs.txt");
+
+        static readonly string SystemTemplatePath =
+            Path.Combine("Assets/ZQFramework/Toolkits/CodeGenKit/ModulesTemplateCodeGen/TemplateScriptTxt",
+                "C# SystemScript.cs.txt");
+
+        #endregion
+
+        #region 新增模板菜单选项
+
+        [MenuItem("Assets/Create/C# AbstractModel", false, 80)]
         public static void CreateModelScript()
         {
             string locationPath = GetSelectedPathOrFallback();
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                ScriptableObject.CreateInstance<ZFModelScriptAsset>(), locationPath + "/NewModelScript.cs", null,
-                ZF_MODEL_TEMPLATE_PATH);
+                ScriptableObject.CreateInstance<AbstractModelScriptAsset>(), locationPath + "/NewModelScript.cs", null,
+                ModelTemplatePath);
         }
 
-        [MenuItem("Assets/Create/C# ZFSystemScript", false, 79)]
+        [MenuItem("Assets/Create/C# AbstractSystem", false, 79)]
         public static void CreateSystemScript()
         {
             string locationPath = GetSelectedPathOrFallback();
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                ScriptableObject.CreateInstance<ZFSystemScriptAsset>(), locationPath + "/NewSystemScript.cs", null,
-                ZF_SYSTEM_TEMPLATE_PATH);
+                ScriptableObject.CreateInstance<AbstractSystemScriptAsset>(), locationPath + "/NewSystemScript.cs",
+                null,
+                SystemTemplatePath);
         }
+
+        #endregion
 
         private static string GetSelectedPathOrFallback()
         {
@@ -36,7 +52,7 @@ namespace ZFramework.Editor.Tools.TemplateScriptTool
 
             // 遍历选择模式为 Assets 的每个选定的 UnityEngine.Object 对象
             // 遍历是为了可能出现选择多个资源
-            foreach (Object obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
+            foreach (var obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
             {
                 path = AssetDatabase.GetAssetPath(obj); // 获取当前对象的资源路径。
 
@@ -54,8 +70,8 @@ namespace ZFramework.Editor.Tools.TemplateScriptTool
         }
 
 
-        // 定义一个名为 ZFModelScriptAsset 的类，继承自 EndNameEditAction 类。
-        private class ZFModelScriptAsset : EndNameEditAction
+        // 定义一个名为 AbstractModelScriptAsset 的类，继承自 EndNameEditAction 类。
+        private class AbstractModelScriptAsset : EndNameEditAction
         {
             // 重写 Action 方法，用于执行创建脚本资产的操作。
             public override void Action(int instanceId, string pathName, string resourceFile)
@@ -98,7 +114,7 @@ namespace ZFramework.Editor.Tools.TemplateScriptTool
             }
         }
 
-        private class ZFSystemScriptAsset : EndNameEditAction
+        private class AbstractSystemScriptAsset : EndNameEditAction
         {
             public override void Action(int instanceId, string pathName, string resourceFile)
             {
@@ -109,15 +125,5 @@ namespace ZFramework.Editor.Tools.TemplateScriptTool
                 ProjectWindowUtil.ShowCreatedAsset(o);
             }
         }
-
-        #region 模板路径
-
-        private const string ZF_MODEL_TEMPLATE_PATH =
-            "Assets/ZQFramework/Toolkits/UnityEditorKit/Editor/Tools/TemplateScriptTool/TemplateTxt/C# ModelScript.cs.txt";
-
-        private const string ZF_SYSTEM_TEMPLATE_PATH =
-            "Assets/ZQFramework/Toolkits/UnityEditorKit/Editor/Tools/TemplateScriptTool/TemplateTxt/C# SystemScript.cs.txt";
-
-        #endregion
     }
 }

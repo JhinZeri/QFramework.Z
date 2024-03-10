@@ -30,7 +30,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
                 {
                     "ZQ 框架配置/项目脚本文件夹配置", ProjectFolderConfig.Instance, SdfIconType.Folder2
                 }, // Draws the this.someData field in this case.
-                { "ZQ 框架配置/框架脚本生成配置", FrameworkCodeGenConfig.Instance, SdfIconType.FileRuled },
+                { "ZQ 框架配置/架构脚本生成配置", ArchitectureCodeGenConfig.Instance, SdfIconType.FileRuled },
                 { "ZQ 框架配置/UI 脚本生成配置", UICodeGenConfig.Instance, SdfIconType.App },
                 { "运行时设置/", null, SdfIconType.Sunset },
                 { "运行时设置/UI 设置", UIRuntimeSetting.Instance, SdfIconType.SunriseFill },

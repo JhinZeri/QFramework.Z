@@ -38,6 +38,7 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
         {
             ResetSingleMaskSystem();
             ResetSingleMaskAlpha();
+            GenerateUIPrefabToPathInResourcesUnit();
         }
 
         [Title("锁定脚本工具")]

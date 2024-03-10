@@ -9,9 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f41a739631b80b469da1c8ec28eef38, type: 3}
-  m_Name: UIRuntimeSetting
+  m_Script: {fileID: 11500000, guid: 4ec49af2eefe49c2ba09635322395c43, type: 3}
+  m_Name: VersionConfig
   m_EditorClassIdentifier: 
-  SingleMaskSystem: 1
-  SingleMaskAlpha: 0.7
-  UIPrefabToPathInResourcesManager: []
+  PackageName: ZQFramework_
+  Version: v0.0.1
+  FolderList:
+  - Assets/ZQFramework
+  - Assets/Plugins
+  - "Assets/\u8FED\u4EE3\u6D4B\u8BD5\u8FC7\u7A0B\u6587\u4EF6\u5939"

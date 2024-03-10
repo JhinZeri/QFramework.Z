@@ -29,7 +29,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
                 { "ZQ 框架配置", null, SdfIconType.GearFill },
                 {
                     "ZQ 框架配置/项目脚本文件夹配置", ProjectFolderConfig.Instance, SdfIconType.Folder2
-                }, // Draws the this.someData field in this case.
+                },
                 { "ZQ 框架配置/架构脚本生成配置", ArchitectureCodeGenConfig.Instance, SdfIconType.FileRuled },
                 { "ZQ 框架配置/UI 脚本生成配置", UICodeGenConfig.Instance, SdfIconType.App },
                 { "运行时设置/", null, SdfIconType.Sunset },
@@ -37,7 +37,8 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
                 { "工具配置", null, SdfIconType.Tools },
                 { "工具配置/名称前缀卡片绘制", HierarchyPrefixColorCardConfig.Instance, SdfIconType.PaletteFill },
                 { "ZQ 过程日志信息", null, SdfIconType.InfoCircle },
-                { "ZQ 过程日志信息/UI 解析日志", UICodeGenProcessLogInfo.Instance, SdfIconType.Pause }
+                { "ZQ 过程日志信息/UI 解析日志", UICodeGenProcessLogInfo.Instance, SdfIconType.Pause },
+                { "ZQ 版本导出配置", VersionConfig.VersionConfig.Instance, SdfIconType.BorderOuter }
             };
             return tree;
         }

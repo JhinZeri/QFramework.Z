@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ff152d5e6bd8847b2dea748061faf9, type: 3}
   m_Name: ProjectFolderConfig
   m_EditorClassIdentifier: 
-  m_ZQFrameworkIsInitialized: 1
+  m_ZQFrameworkIsInitialized: 0
   CurrentArchitecturePath: Assets/ZQProject/Scripts/Architecture
   CurrentControllerPath: Assets/ZQProject/Scripts/Controller
   CurrentModelPath: Assets/ZQProject/Scripts/Model

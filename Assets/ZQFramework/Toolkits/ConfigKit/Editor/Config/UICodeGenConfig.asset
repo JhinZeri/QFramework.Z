@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df146627c7a54880baa72207afe1235e, type: 3}
   m_Name: UICodeGenConfig
   m_EditorClassIdentifier: 
-  CurrentUICodeGenPath: Assets/ZQProject/Scripts/UI
-  CurrentUICodeNamespace: GameProject.UI
   IsCompleteTag: 1
   CurrentUICodeGenAdditionalTags:
   - "ZQ \u6846\u67B6 UI \u6807\u7B7E Start"

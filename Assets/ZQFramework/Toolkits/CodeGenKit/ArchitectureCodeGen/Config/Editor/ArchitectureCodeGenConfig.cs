@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,7 +36,9 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
 
         public void Init()
         {
+            CurrentArchitectureClassName = string.Empty;
             ResetArchitectureList();
+            CheckFolderList();
         }
 
         [Title("锁定脚本工具")]
@@ -182,11 +185,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
         }
 
         #endregion
-
-        [PropertyOrder(18)]
-        [TitleGroup("项目架构生成及检测")]
-        [OnInspectorGUI]
-        void Space0() { }
 
         #endregion
     }

@@ -25,17 +25,29 @@ namespace ZQFramework.Toolkits.UnityEditorKit.SimulationEditor
         /// <returns> 字符串路径 </returns>
         public static string FindAssetPath<T>() where T : Object
         {
-            string assetPath = null;
             string typeName = typeof(T).Name;
-            assetPath = AssetDatabase.FindAssets("t:" + typeName)
-                                     .Select(AssetDatabase.GUIDToAssetPath)
-                                     .FirstOrDefault();
+            string assetPath = AssetDatabase.FindAssets("t:" + typeName)
+                                            .Select(AssetDatabase.GUIDToAssetPath)
+                                            .FirstOrDefault();
 
             return !string.IsNullOrEmpty(assetPath) ? assetPath : null;
         }
 
         /// <summary>
-        /// 查找脚本
+        /// 通过脚本名字找到脚本路径，同名脚本可能会找错
+        /// </summary>
+        /// <param name="scriptName"></param>
+        /// <returns></returns>
+        public static string FindScriptPath(string scriptName)
+        {
+            string scriptAssetPath = AssetDatabase.FindAssets("t:MonoScript " + scriptName)
+                                                  .Select(AssetDatabase.GUIDToAssetPath)
+                                                  .FirstOrDefault();
+            return !string.IsNullOrEmpty(scriptAssetPath) ? scriptAssetPath : null;
+        }
+
+        /// <summary>
+        /// 查找脚本，并选择到这个脚本文件
         /// 注意：查找的是 MonoScript，而不是 ScriptableObject，加载的也是 MonoScript
         /// </summary>
         /// <param name="scriptName"> </param>

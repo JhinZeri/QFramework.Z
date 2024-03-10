@@ -17,6 +17,8 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
 
         #endregion
 
+        #region 变量+方法
+
         [PropertyOrder(5)]
         [TitleGroup("项目工程文件夹路径")]
         [BoxGroup("项目工程文件夹路径/框架规则相关")]
@@ -133,6 +135,8 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
 
             AssetDatabase.Refresh();
         }
+
+        #endregion
 
         #region 资源文件相关
 

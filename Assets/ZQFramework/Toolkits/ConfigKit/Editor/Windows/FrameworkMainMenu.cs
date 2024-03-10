@@ -3,7 +3,9 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
+using ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor;
 using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor;
+using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
 using ZQFramework.Toolkits.UIKit.UISetting;
 using ZQFramework.Toolkits.UnityEditorKit.Editor.Tools.HierarchyColorCardTool;
 
@@ -11,7 +13,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
 {
     public class FrameworkMainMenu : OdinMenuEditorWindow
     {
-        [UnityEditor.MenuItem("ZQFramework/控制面板", priority = 11)]
+        [UnityEditor.MenuItem("ZQFramework/控制面板", priority = 15)]
         public static void OpenWindow()
         {
             var window = GetWindow<FrameworkMainMenu>();
@@ -24,8 +26,12 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
         {
             var tree = new OdinMenuTree(true)
             {
-                { "ZQ 框架配置", null, SdfIconType.GearFill }, // Draws the this.someData field in this case.
-                { "ZQ 框架配置/UI 代码生成配置", UICodeGenConfig.Instance, SdfIconType.Apple },
+                { "ZQ 框架配置", null, SdfIconType.GearFill },
+                {
+                    "ZQ 框架配置/项目脚本文件夹配置", ProjectFolderConfig.Instance, SdfIconType.Folder2
+                }, // Draws the this.someData field in this case.
+                { "ZQ 框架配置/框架脚本生成配置", FrameworkCodeGenConfig.Instance, SdfIconType.FileRuled },
+                { "ZQ 框架配置/UI 脚本生成配置", UICodeGenConfig.Instance, SdfIconType.App },
                 { "运行时设置/", null, SdfIconType.Sunset },
                 { "运行时设置/UI 设置", UIRuntimeSetting.Instance, SdfIconType.SunriseFill },
                 { "工具配置", null, SdfIconType.Tools },

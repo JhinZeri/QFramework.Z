@@ -106,18 +106,18 @@ namespace ZQFramework.Framework.Core
     public abstract class Architecture<T> : MonoBehaviour, IArchitecture where T : Architecture<T>, new()
     {
         // 静态变量，存储架构实例
-        static T _architecture;
+        static T m_Architecture;
 
         // 标记是否已经初始化
-        bool _hasInited;
+        bool m_HasInited;
 
         // 获取架构接口
         public static IArchitecture Interface
         {
             get
             {
-                if (_architecture == null) MakeSureArchitecture();
-                return _architecture;
+                if (m_Architecture == null) MakeSureArchitecture();
+                return m_Architecture;
             }
         }
 
@@ -126,18 +126,18 @@ namespace ZQFramework.Framework.Core
         {
             OnDeInit();
             // 反初始化系统
-            foreach (KeyValuePair<Type, ISystem> systemValuePair in _mSystemIOCContainer.InstanceDictionary
+            foreach (KeyValuePair<Type, ISystem> systemValuePair in m_SystemIOCContainer.InstanceDictionary
                 .Where(s => s.Value.Initialized = true))
                 systemValuePair.Value.DeInit();
             // 反初始化模型
-            foreach (KeyValuePair<Type, IModel> modelValuePair in _mModelIOCContainer.InstanceDictionary
+            foreach (KeyValuePair<Type, IModel> modelValuePair in m_ModelIOCContainer.InstanceDictionary
                 .Where(m => m.Value.Initialized = true))
                 modelValuePair.Value.DeInit();
             // 清空容器
-            _mSystemIOCContainer.Clear();
-            _mModelIOCContainer.Clear();
-            _mUtilityContainer.Clear();
-            _architecture = null;
+            m_SystemIOCContainer.Clear();
+            m_ModelIOCContainer.Clear();
+            m_UtilityContainer.Clear();
+            m_Architecture = null;
         }
 
         #region MonoBehavior 生命周期
@@ -164,10 +164,10 @@ namespace ZQFramework.Framework.Core
             // 使用这个注册方法，默认是没有的，new 一个，设置 system 的架构，并注册到容器
             var system = new TSystem();
             system.SetArchitecture(this);
-            _mSystemIOCContainer.Register(system);
+            m_SystemIOCContainer.Register(system);
 
             // 如果 Architecture 已经完成了初始化，那么注册之后立刻进行 system 的初始化
-            if (!_hasInited) return;
+            if (!m_HasInited) return;
             system.Init();
             system.Initialized = true;
         }
@@ -179,9 +179,9 @@ namespace ZQFramework.Framework.Core
         {
             var model = new TModel();
             model.SetArchitecture(this);
-            _mModelIOCContainer.Register(model);
+            m_ModelIOCContainer.Register(model);
 
-            if (!_hasInited) return;
+            if (!m_HasInited) return;
             model.Init();
             model.Initialized = true;
         }
@@ -193,19 +193,19 @@ namespace ZQFramework.Framework.Core
         public void RegisterUtility<TUtility>() where TUtility : class, IUtility, new()
         {
             var utility = new TUtility();
-            _mUtilityContainer.Register(utility);
+            m_UtilityContainer.Register(utility);
         }
 
         // 获取系统
         public TSystem GetSystem<TSystem>() where TSystem : class, ISystem =>
-            _mSystemIOCContainer.TryGetModule<TSystem>();
+            m_SystemIOCContainer.TryGetModule<TSystem>();
 
         // 获取模型
-        public TModel GetModel<TModel>() where TModel : class, IModel => _mModelIOCContainer.TryGetModule<TModel>();
+        public TModel GetModel<TModel>() where TModel : class, IModel => m_ModelIOCContainer.TryGetModule<TModel>();
 
         // 获取工具
         public TUtility GetUtility<TUtility>() where TUtility : class, IUtility =>
-            _mUtilityContainer.TryGetModule<TUtility>();
+            m_UtilityContainer.TryGetModule<TUtility>();
 
         #endregion
 
@@ -222,7 +222,7 @@ namespace ZQFramework.Framework.Core
         // 发送查询
         public TResult SendQuery<TResult>(IQuery<TResult> query) => DoQuery(query);
 
-        readonly TypeEventSystem _mTypeEventSystem = new();
+        readonly TypeEventSystem m_TypeEventSystem = new();
 
         [Title("事件信息")]
         [InfoBox("仅记录 Architecture 内部的 TypeEventSystem 的事件信息字典")]
@@ -230,26 +230,26 @@ namespace ZQFramework.Framework.Core
         [Searchable]
         public List<EventInfo> EventInfos = new();
 
-        public void SendEvent<TEvent>() where TEvent : new() => _mTypeEventSystem.Send<TEvent>();
+        public void SendEvent<TEvent>() where TEvent : new() => m_TypeEventSystem.Send<TEvent>();
 
-        public void SendEvent<TEvent>(TEvent e) => _mTypeEventSystem.Send(e);
+        public void SendEvent<TEvent>(TEvent e) => m_TypeEventSystem.Send(e);
 
         public IUnRegister RegisterEvent<TEvent>(Action<TEvent> onEvent) where TEvent : new()
         {
             var type = typeof(TEvent);
-            var eventInfo = new EventInfo(type, () => _mTypeEventSystem.Send<TEvent>());
+            var eventInfo = new EventInfo(type, () => m_TypeEventSystem.Send<TEvent>());
             bool exist =
                 EventInfos.Any(info => info.EventType == type);
             if (!exist) EventInfos.Add(eventInfo);
-            var unRegister = _mTypeEventSystem.Register(onEvent);
-            List<string> mInvocationList = _mTypeEventSystem.GetEasyEvent<TEvent>().GetActionInvocationList();
+            var unRegister = m_TypeEventSystem.Register(onEvent);
+            List<string> mInvocationList = m_TypeEventSystem.GetEasyEvent<TEvent>().GetActionInvocationList();
             eventInfo.SetMethodList(mInvocationList);
             return unRegister;
         }
 
         public void UnRegisterEvent<TEvent>(Action<TEvent> onEvent)
         {
-            _mTypeEventSystem.UnRegister(onEvent);
+            m_TypeEventSystem.UnRegister(onEvent);
         }
 
         #endregion
@@ -262,11 +262,11 @@ namespace ZQFramework.Framework.Core
         static void MakeSureArchitecture()
         {
             // 如果不为空，表示场景中存在
-            if (_architecture != null) return;
+            if (m_Architecture != null) return;
             if (FindFirstObjectByType<T>() != null)
             {
-                _architecture = FindFirstObjectByType<T>();
-                _architecture.gameObject.name = "*Archi*" + "Architecture_" + typeof(T).Name;
+                m_Architecture = FindFirstObjectByType<T>();
+                m_Architecture.gameObject.name = "*Archi*" + "Architecture_" + typeof(T).Name;
             }
             else
             {
@@ -274,15 +274,15 @@ namespace ZQFramework.Framework.Core
                 var architectureTrans =
                     CreateArchitectureGameObject(null, "*Archi*" + "Architecture_" + typeof(T).Name);
                 // Add 的时候就会执行 Awake () 
-                _architecture = architectureTrans.gameObject.AddComponent<T>();
+                m_Architecture = architectureTrans.gameObject.AddComponent<T>();
             }
 
             // 架构初始化，注册需要的模块到容器中
-            _architecture.Init();
+            m_Architecture.Init();
             // 模块收集完毕，开始对各个模块进行初始化
-            _architecture.InitModules();
+            m_Architecture.InitModules();
             // 标记架构整个初始化过程结束
-            _architecture._hasInited = true;
+            m_Architecture.m_HasInited = true;
         }
 
         /// <summary>
@@ -290,13 +290,13 @@ namespace ZQFramework.Framework.Core
         /// </summary>
         void InitModules()
         {
-            foreach (KeyValuePair<Type, IModel> typeModel in _mModelIOCContainer.InstanceDictionary)
+            foreach (KeyValuePair<Type, IModel> typeModel in m_ModelIOCContainer.InstanceDictionary)
             {
                 typeModel.Value.Init();
                 typeModel.Value.Initialized = true;
             }
 
-            foreach (KeyValuePair<Type, ISystem> typeSystem in _mSystemIOCContainer.InstanceDictionary)
+            foreach (KeyValuePair<Type, ISystem> typeSystem in m_SystemIOCContainer.InstanceDictionary)
             {
                 typeSystem.Value.Init();
                 typeSystem.Value.Initialized = true;
@@ -341,9 +341,9 @@ namespace ZQFramework.Framework.Core
 
         #region 三个模块容器
 
-        readonly ModuleIOCContainer<IModel> _mModelIOCContainer = new ModelContainer();
-        readonly ModuleIOCContainer<ISystem> _mSystemIOCContainer = new SystemContainer();
-        readonly ModuleIOCContainer<IUtility> _mUtilityContainer = new UtilityContainer();
+        readonly ModuleIOCContainer<IModel> m_ModelIOCContainer = new ModelContainer();
+        readonly ModuleIOCContainer<ISystem> m_SystemIOCContainer = new SystemContainer();
+        readonly ModuleIOCContainer<IUtility> m_UtilityContainer = new UtilityContainer();
 
         #endregion
 

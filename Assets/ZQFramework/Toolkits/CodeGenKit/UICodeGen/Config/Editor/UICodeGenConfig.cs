@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using ZQFramework.Toolkits.ConfigKit;
+using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
 using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
 using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
 
@@ -30,8 +31,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
 
         public void Init()
         {
-            ResetUIScriptGenPath();
-            ResetUICodeNamespace();
             ResetCodeGenPreview();
             // 添加 Tag ---
             ResetUICodeGenAdditionalTags();
@@ -54,8 +53,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
 
         #region 默认配置+重置方法
 
-        const string DEFAULT_UI_CODE_GEN_PATH = "Assets/ZGameProject/UI";
-        public const string DEFAULT_UI_CODE_NAMESPACES = "ZGameProject.UI";
+        public const string DEFAULT_UI_CODE_NAMESPACES = "GameProject.UI";
         const bool DEFAULT_CODE_GEN_PREVIEW = true;
 
         readonly List<string> m_DefaultAdditionalTags = new()
@@ -74,17 +72,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
             "ZQ 框架 UI 标签 End"
         };
 
-
-        void ResetUIScriptGenPath()
-        {
-            CurrentUICodeGenPath = DEFAULT_UI_CODE_GEN_PATH;
-        }
-
-        void ResetUICodeNamespace()
-        {
-            CurrentUICodeNamespace = DEFAULT_UI_CODE_NAMESPACES;
-        }
-
         void ResetCodeGenPreview()
         {
             CurrentCodeGenPreview = DEFAULT_CODE_GEN_PREVIEW;
@@ -99,18 +86,25 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
 
         #region Config
 
-        [Title("UI 自动化脚本生成配置")]
-        [LabelText("当前 UI 脚本生成文件夹路径")]
-        [InlineButton("ResetUIScriptGenPath", "重置")]
-        [FolderPath]
+        [TitleGroup("CodeGen 自动化生成 UI 脚本配置")]
+        [InfoBox("请前往项目文件夹配置修改")]
         [PropertyOrder(0)]
-        public string CurrentUICodeGenPath;
+        [OnInspectorGUI]
+        void Space0() { }
 
-        [LabelText("当前 UI 脚本命名空间")]
-        [InlineButton("ResetUICodeNamespace", "重置")]
-        [SuffixLabel("命名空间不要以字符'.'结尾", Overlay = true)]
         [PropertyOrder(1)]
-        public string CurrentUICodeNamespace;
+        [TitleGroup("CodeGen 自动化生成 UI 脚本配置")]
+        [LabelText("当前 UI 脚本 文件夹路径")]
+        [ShowInInspector]
+        [DisplayAsString]
+        public string CurrentUICodeGenPath => ProjectFolderConfig.Instance.CurrentUICodePath;
+
+        [PropertyOrder(2)]
+        [TitleGroup("CodeGen 自动化生成 UI 脚本配置")]
+        [LabelText("当前 UI 脚本命名空间")]
+        [ShowInInspector]
+        [DisplayAsString]
+        public string CurrentUICodeNamespace => ProjectFolderConfig.Instance.CurrentUINamespace;
 
         #region 添加 Tag 相关
 

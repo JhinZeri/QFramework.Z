@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility
 {
-    public class CreateScriptFromTemplateTxt
+    public  class CreateScriptFromTemplateTxt
     {
         /// <summary>
         /// 根据模板生成脚本，并替换命名空间和类名占位符，通用方法，通常为 txt 文件

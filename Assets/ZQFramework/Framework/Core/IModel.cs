@@ -6,13 +6,13 @@ namespace ZQFramework.Framework.Core
 
     public abstract class AbstractModel : IModel
     {
-        IArchitecture _architecture;
+        IArchitecture m_Architecture;
 
-        IArchitecture IBelongToArchitecture.GetArchitecture() => _architecture;
+        IArchitecture IBelongToArchitecture.GetArchitecture() => m_Architecture;
 
         void ICanSetArchitecture.SetArchitecture(IArchitecture architecture)
         {
-            _architecture = architecture;
+            m_Architecture = architecture;
         }
 
         public bool Initialized { get; set; }

@@ -1,0 +1,22 @@
+using ZQFramework.Framework.Core;
+
+namespace #PROJECTNAME#
+{
+    // 定义一个数据接口继承 IModel
+    public interface I#MODELSCRIPTNAME# : IModel
+    {
+        // 可以编写数据属性
+        // public BindableProperty<int> Property { get; }
+    }
+
+    public class #MODELSCRIPTNAME# : AbstractModel, I#MODELSCRIPTNAME#
+    {
+        // 实现数据属性
+        // public BindableProperty<int> Property { get; } = new()
+        // {
+        //     Value = default
+        // };
+        
+        protected override void OnInit() { }
+    }
+}

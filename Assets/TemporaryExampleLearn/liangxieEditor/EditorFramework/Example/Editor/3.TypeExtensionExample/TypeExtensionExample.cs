@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Toolkits.CommonKit.StaticExtKit;
 
 namespace EditorFramework
 {

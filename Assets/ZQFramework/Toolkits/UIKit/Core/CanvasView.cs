@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Toolkits.CommonKit.StaticExtKit;
 using ZQFramework.Toolkits.UIKit.UISetting;
 
 namespace ZQFramework.Toolkits.UIKit.Core
@@ -41,21 +41,24 @@ namespace ZQFramework.Toolkits.UIKit.Core
         [InfoBox("如果 Canvas 的 OrderInLayer <= 100，则初始化自动设置为 false，不使用遮罩")]
         public bool CanvasDontMask;
 
-        [ShowIf("HasInit")]
+        [LabelText("不可交互")]
+        [InfoBox("如果不使用遮罩，默认为True，面板不可交互，包括子节点")]
+        public bool CanvasIsNoninteractive;
+
         [LabelText("已经完成初始化")]
+        [ShowIf("HasInit")]
         public bool HasInit;
 
-        [ShowIf("Visible")]
         [LabelText("界面处于显示状态")]
+        [ShowIf("Visible")]
         public bool Visible;
 
         [Title("堆栈状态")]
-        [InfoBox("发起者尽管没有在实际的堆栈队列中，但是自身关闭前属于堆栈队列")]
         [LabelText("是否属于堆栈队列中")]
+        [InfoBox("发起者尽管没有在实际的堆栈队列中，但是自身关闭前属于堆栈队列")]
         public bool BelongViewQueue;
 
         #endregion
-
 
         #region 方法
 
@@ -102,6 +105,19 @@ namespace ZQFramework.Toolkits.UIKit.Core
             UIKit.DestroyCanvas<T>();
         }
 
+
+        /// <summary>
+        /// 在运行状态修改UI设置，可以设置
+        /// 1. 是否使用遮罩
+        /// 2. 是否可以交互
+        /// </summary>
+        /// <param name="uiData"> new 一个 UIData </param>
+        public void ChangeUIData(UIData uiData)
+        {
+            CanvasDontMask = uiData.CanvasDontMask;
+            CanvasIsNoninteractive = uiData.CanvasIsNoninteractive;
+        }
+
         #endregion
 
         #region UIKit 内部方法
@@ -111,40 +127,66 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// </summary>
         void Awake()
         {
-            InitCanvasViewComponents();
+            InitBaseComponents();
             BindCanvasViewComponents();
         }
 
         /// <summary>
         /// 绑定 CanvasView 的基础组件变量
         /// </summary>
-        public void InitCanvasViewComponents()
+        public void InitBaseComponents()
         {
+            // 组件赋值
             UICanvas = UICanvas ? UICanvas : transform.GetComponentInChildren<Canvas>();
             UICanvasGroup = UICanvasGroup != null ? UICanvasGroup : transform.GetComponent<CanvasGroup>();
             UIMaskCanvasGroup = UIMaskCanvasGroup != null
                 ? UIMaskCanvasGroup
                 : transform.Find("UIMask").GetComponent<CanvasGroup>();
             UIPanel = UIPanel != null ? UIPanel : transform.Find("UIPanel").GetComponent<Image>();
+            // 基础状态
+            // 判断是否 DontMask，通常不使用遮罩，则为信息常驻面板，不需要交互
+            CanvasDontMask = UICanvas.sortingOrder <= 100;
+            CanvasIsNoninteractive = CanvasDontMask;
         }
 
         /// <summary>
-        /// 设置物体可见性
+        /// 设置物体可见性，同时修改自身遮罩，同时设置交互
         /// </summary>
         /// <param name="isVisible"> </param>
         public void SetVisible(bool isVisible)
         {
             Visible = isVisible;
             UICanvasGroup.alpha = isVisible ? 1 : 0;
-            UICanvasGroup.blocksRaycasts = isVisible;
-            // gameObject.SetActive(isVisible); 
+
+            // 如果 UI 数据是不可交互的，在修改时默认变为不可交互
+            SetMaskVisibleSelf(isVisible);
+            SetInteractiveSelf(isVisible);
+        }
+
+        public void SetInteractiveSelf(bool isInteractive)
+        {
+            if (CanvasIsNoninteractive)
+            {
+                UICanvasGroup.blocksRaycasts = false;
+                UICanvasGroup.interactable = false;
+            }
+            else
+            {
+                UICanvasGroup.blocksRaycasts = isInteractive;
+                UICanvasGroup.interactable = isInteractive;
+            }
         }
 
         public void SetMaskVisibleSelf(bool isVisible)
         {
-            // 如果不是单层遮罩系统，直接返回
-            if (!UIRuntimeSetting.Instance.SingleMaskSystem) return;
+            if (CanvasDontMask)
+            {
+                UIMaskCanvasGroup.alpha = 0f;
+                return;
+            }
 
+            // 设置遮罩的透明度，无论是单层遮罩还是多层，遮罩的显示属性，都与这个界面是否显示相关，
+            // 此方法仅设置自身 Mask 的透明度
             UIMaskCanvasGroup.alpha = isVisible ? UIRuntimeSetting.Instance.SingleMaskAlpha : 0f;
         }
 
@@ -153,7 +195,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region UICanvasView 自定义生命周期
 
         /// <summary>
-        /// 首次生成初始化，在 UI 物体的 MonoBehaviour 的 Awake 之后调用
+        /// 首次生成初始化，在 UI 物体的 MonoBehaviour 的 Awake 之后调用，完成初始化，会加入全局所有面板列表中
         /// </summary>
         public void UIAwake()
         {
@@ -205,7 +247,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         #region 抽象方法
 
         /// <summary>
-        /// 首次生成初始化，在 UI 物体的 MonoBehaviour 的 Awake 之后调用
+        /// 预加载不会触发 OnInit，首次生成初始化，在 UI 物体的 MonoBehaviour 的 Awake 之后调用
         /// </summary>
         protected abstract void OnInit();
 

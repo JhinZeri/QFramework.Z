@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using ZQFramework.Framework.BindableProperty;
 using ZQFramework.Framework.Core;
-using ZQFramework.Framework.EventSystemIntegration;
-using ZQFramework.Framework.Observable;
+using ZQFramework.Framework.Event;
 using ZQFramework.Framework.Rule;
 
 namespace ZQFramework.Examples._0.CounterApp.Scripts

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using ZQFramework.Framework.EventSystemIntegration;
+using ZQFramework.Framework.Event;
 using ZQFramework.Toolkits.EventKit.EventTrigger.Physics;
 using ZQFramework.Toolkits.EventKit.EventTrigger.UI;
 

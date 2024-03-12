@@ -5,8 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using ZQFramework.Toolkits.ConfigKit;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
-using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
+using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
 {
@@ -23,8 +22,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
             get
             {
                 if (m_Instance != null) return m_Instance;
-                m_Instance = GetOrCreateScriptableObject
-                    .GetSingletonAssetOnPathAssetDatabase<UICodeGenConfig>(CONFIG_ROOT_PATH);
+                m_Instance = GetOrCreateSOAsset
+                    .GetSingleSOAndDeleteExtraUseAssetDatabase<UICodeGenConfig>(CONFIG_ROOT_PATH);
                 return m_Instance;
             }
         }
@@ -45,7 +44,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetOnProjectObject.FindAndSelectedScript(nameof(UICodeGenConfig)));
+                GetProjectObject.FindAndSelectedScript(nameof(UICodeGenConfig)));
 #endif
         }
 

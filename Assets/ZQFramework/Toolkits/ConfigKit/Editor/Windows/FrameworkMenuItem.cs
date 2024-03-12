@@ -1,10 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor;
+using ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor;
 using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
+using ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool;
 using ZQFramework.Toolkits.UIKit.UISetting;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.Tools.HierarchyColorCardTool;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
 {
@@ -14,14 +14,14 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
         public static void Initialize()
         {
             ProjectFolderConfig.Instance.m_ZQFrameworkIsInitialized = true;
-            Menu.SetChecked("ZQFramework/框架初始化", true);
+            Menu.SetChecked("ZQFramework/框架初始化", ProjectFolderConfig.Instance.m_ZQFrameworkIsInitialized);
             // 执行框架初始化操作
             // 项目架构
             ProjectFolderConfig.Instance.Init();
             ArchitectureCodeGenConfig.Instance.Init();
             // ui
             UICodeGenConfig.Instance.Init();
-            UICodeGenProcessLogInfo.Instance.Init();
+            UICodeGenLogInfo.Instance.Init();
             UIRuntimeSetting.Instance.Init();
             // tool
             HierarchyPrefixColorCardConfig.Instance.Init();

@@ -1,0 +1,16 @@
+﻿using ZQFramework.Framework.Core;
+
+namespace #PROJECTNAME#
+{
+    // 定义一个功能接口继承 IUtility
+    public interface I#UTILITYSCRIPTNAME# : IUtility
+    {
+        // 编写功能方法
+        // void Function1();
+    }
+
+    public class #UTILITYSCRIPTNAME# : I#UTILITYSCRIPTNAME#
+    {
+        // 实现功能接口的方法
+    }
+}

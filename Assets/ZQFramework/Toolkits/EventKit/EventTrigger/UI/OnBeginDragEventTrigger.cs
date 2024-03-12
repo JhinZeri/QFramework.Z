@@ -9,8 +9,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using ZQFramework.Framework.EventSystemIntegration;
-using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Framework.Event;
+using ZQFramework.Toolkits.CommonKit.StaticExtKit;
 
 namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
 {

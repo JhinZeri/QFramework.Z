@@ -1,8 +1,8 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
+using ZQFramework.Toolkits.EditorKit.Editor.ReuseUtil;
 
-namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.UIHelper.Editor
+namespace ZQFramework.Toolkits.UIKit.UIHelper.Editor
 {
     public static class UIHelperMenuItem
     {
@@ -17,6 +17,6 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.UIHelper.Editor
         }
 
         // [MenuItem("GameObject/挂载 UI 助手脚本 (Shift + Alt + Z) #&z", true, priority = 0)]
-        static bool AddUIHelperValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+        static bool AddUIHelperValidator() => FilterSelection.IsUIKitCanvasTemplate();
     }
 }

@@ -16,13 +16,13 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         [DidReloadScripts]
         public static void AutoBindUICanvasView2GameObject()
         {
-            if (UICodeGenProcessLogInfo.Instance.LatestAnalysisData == null)
+            if (UICodeGenLogInfo.Instance.LatestAnalysisData == null)
                 // Debug.Log("最新解析数据为空，无需绑定");
                 return;
-            bool objIsPrefabInScene = UICodeGenProcessLogInfo.Instance.isPrefabInScene;
-            // Debug.Log("UICodeGenProcessLogInfo.Instance.isPrefabInScene: " + objIsPrefabInScene);
-            var analysisData = UICodeGenProcessLogInfo.Instance.LatestAnalysisData;
-            string className = analysisData.CanvasViewRootGameObjectName;
+            bool objIsPrefabInScene = UICodeGenLogInfo.Instance.isPrefabInScene;
+            // Debug.Log("UICodeGenLogInfo.Instance.isPrefabInScene: " + objIsPrefabInScene);
+            var analysisData = UICodeGenLogInfo.Instance.LatestAnalysisData;
+            string className = analysisData.RootGameObjectName;
             if (string.IsNullOrEmpty(className)) return;
 
             // 1.通过反射的方式，从程序集中找到这个脚本，把它挂载到对应的物体上
@@ -37,7 +37,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                 if (canvasViewType == null) return;
 
                 var canvasGameObject =
-                    EditorUtility.InstanceIDToObject(analysisData.CanvasGameObjectInstanceId) as GameObject;
+                    EditorUtility.InstanceIDToObject(analysisData.UIGameObjectInstanceId) as GameObject;
                 if (canvasGameObject != null)
                 {
                     var component =
@@ -69,7 +69,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                             // 引用赋值
                             if (asCanvasView != null)
                             {
-                                asCanvasView.InitCanvasViewComponents();
+                                asCanvasView.InitBaseComponents();
                                 asCanvasView.BindCanvasViewComponents();
                             }
                             else
@@ -131,7 +131,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                             // 引用赋值
                             if (asCanvasView != null)
                             {
-                                asCanvasView.InitCanvasViewComponents();
+                                asCanvasView.InitBaseComponents();
                                 asCanvasView.BindCanvasViewComponents();
                             }
                             else
@@ -185,7 +185,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                             // 引用赋值
                             if (asCanvasView != null)
                             {
-                                asCanvasView.InitCanvasViewComponents();
+                                asCanvasView.InitBaseComponents();
                                 asCanvasView.BindCanvasViewComponents();
                             }
                             else
@@ -236,7 +236,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                             // 引用赋值
                             if (asCanvasView != null)
                             {
-                                asCanvasView.InitCanvasViewComponents();
+                                asCanvasView.InitBaseComponents();
                                 asCanvasView.BindCanvasViewComponents();
                             }
                             else
@@ -290,8 +290,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             }
 
             //最后清空临时数据
-            UICodeGenProcessLogInfo.Instance.LatestAnalysisData = null;
-            UICodeGenProcessLogInfo.Instance.Init();
+            UICodeGenLogInfo.Instance.LatestAnalysisData = null;
+            UICodeGenLogInfo.Instance.Init();
             // 强制刷新一次
             AssetDatabase.Refresh(ImportAssetOptions.Default);
             EditorApplication.LockReloadAssemblies();

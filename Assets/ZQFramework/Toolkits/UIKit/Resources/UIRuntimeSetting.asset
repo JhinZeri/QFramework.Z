@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SingleMaskSystem: 1
   SingleMaskAlpha: 0.7
-  UIPrefabToPathInResourcesManager: []
+  UIPrefabToPathInResourcesManager:
+  - UIPrefabName: UIGameInfo
+    ResourcesPath: UIPrefabs/UIGameInfo
+  - UIPrefabName: UIGameOver
+    ResourcesPath: UIPrefabs/UIGameOver

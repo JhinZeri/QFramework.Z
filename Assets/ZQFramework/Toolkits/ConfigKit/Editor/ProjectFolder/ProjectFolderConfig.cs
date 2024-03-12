@@ -2,8 +2,7 @@ using System.IO;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
-using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
+using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
 {
@@ -12,12 +11,37 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
     {
         #region 框架是否执行过初始化
 
-        [HideInInspector]
+        [PropertyOrder(1)]
+        [LabelText("框架是否执行过初始化")]
         public bool m_ZQFrameworkIsInitialized;
 
         #endregion
 
         #region 变量+方法
+
+        #region 根目录文件夹
+
+        [PropertyOrder(4)]
+        [TitleGroup("项目工程文件夹路径")]
+        [BoxGroup("项目工程文件夹路径/目录相关")]
+        [LabelText("根目录文件夹名称")]
+        [InfoBox("直接写具体的文件夹名称，将会替换默认的 ZQProject ")]
+        [InlineButton("ChangeRootFolder", "更换根目录文件夹")]
+        public string CurrentRootFolder;
+
+        public void ChangeRootFolder()
+        {
+            CurrentArchitecturePath = DEFAULT_ARCHITECTURE_PATH.Replace("ZQProject", CurrentRootFolder);
+            CurrentControllerPath = DEFAULT_CONTROLLER_PATH.Replace("ZQProject", CurrentRootFolder);
+            CurrentModelPath = DEFAULT_MODEL_PATH.Replace("ZQProject", CurrentRootFolder);
+            CurrentSystemPath = DEFAULT_SYSTEM_PATH.Replace("ZQProject", CurrentRootFolder);
+            CurrentUtilityPath = DEFAULT_UTILITY_PATH.Replace("ZQProject", CurrentRootFolder);
+            // UI
+            CurrentUICodePath = DEFAULT_UI_PATH.Replace("ZQProject", CurrentRootFolder);
+            CurrentUIPrefabPath = DEFAULT_UI_PREFAB_ASSET_PATH.Replace("ZQProject", CurrentRootFolder);
+        }
+
+        #endregion
 
         [PropertyOrder(5)]
         [TitleGroup("项目工程文件夹路径")]
@@ -95,7 +119,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         void Space0() { }
 
         [PropertyOrder(1)]
-        [ButtonGroup("文件夹配置")]
+        [BoxGroup("方法按钮")]
         [Button("一键重置所有文件夹路径", ButtonSizes.Large, IconAlignment = IconAlignment.LeftOfText, Icon = SdfIconType.Moon)]
         void ResetAllFolderPath()
         {
@@ -115,7 +139,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         }
 
         [PropertyOrder(2)]
-        [ButtonGroup("文件夹配置")]
+        [BoxGroup("方法按钮")]
         [Button("根据当前设置生成项目文件夹", ButtonSizes.Large, IconAlignment = IconAlignment.LeftOfText, Icon = SdfIconType.Star)]
         void CreateProjectFolderPath()
         {
@@ -148,8 +172,8 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
             get
             {
                 if (m_Instance != null) return m_Instance;
-                m_Instance = GetOrCreateScriptableObject
-                    .GetSingletonAssetOnPathAssetDatabase<ProjectFolderConfig>(CONFIG_ROOT_PATH);
+                m_Instance = GetOrCreateSOAsset
+                    .GetSingleSOAndDeleteExtraUseAssetDatabase<ProjectFolderConfig>(CONFIG_ROOT_PATH);
                 return m_Instance;
             }
         }
@@ -167,7 +191,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetOnProjectObject.FindAndSelectedScript(nameof(ProjectFolderConfig)));
+                GetProjectObject.FindAndSelectedScript(nameof(ProjectFolderConfig)));
 #endif
         }
 
@@ -177,7 +201,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
 
         // 框架脚本
         const string DEFAULT_ARCHITECTURE_PATH = "Assets/ZQProject/Scripts/Architecture";
-        const string DEFAULT_CONTROLLER_PATH = "Assets/ZQProject/Scripts/Controller";
+        public const string DEFAULT_CONTROLLER_PATH = "Assets/ZQProject/Scripts/Controller";
         const string DEFAULT_MODEL_PATH = "Assets/ZQProject/Scripts/Model";
         const string DEFAULT_SYSTEM_PATH = "Assets/ZQProject/Scripts/System";
         const string DEFAULT_UTILITY_PATH = "Assets/ZQProject/Scripts/Utility";

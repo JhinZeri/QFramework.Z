@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ff152d5e6bd8847b2dea748061faf9, type: 3}
   m_Name: ProjectFolderConfig
   m_EditorClassIdentifier: 
-  m_ZQFrameworkIsInitialized: 0
-  CurrentArchitecturePath: Assets/ZQProject/Scripts/Architecture
-  CurrentControllerPath: Assets/ZQProject/Scripts/Controller
-  CurrentModelPath: Assets/ZQProject/Scripts/Model
-  CurrentSystemPath: Assets/ZQProject/Scripts/System
-  CurrentUtilityPath: Assets/ZQProject/Scripts/Utility
-  CurrentUICodePath: Assets/ZQProject/Scripts/UI
-  CurrentUIPrefabPath: Assets/ZQProject/Resources/UIPrefabs
-  CurrentFrameworkNamespace: GameProject
+  m_ZQFrameworkIsInitialized: 1
+  CurrentRootFolder: FlappyBirdGame
+  CurrentArchitecturePath: Assets/FlappyBirdGame/Scripts/Architecture
+  CurrentControllerPath: Assets/FlappyBirdGame/Scripts/Controller
+  CurrentModelPath: Assets/FlappyBirdGame/Scripts/Model
+  CurrentSystemPath: Assets/FlappyBirdGame/Scripts/System
+  CurrentUtilityPath: Assets/FlappyBirdGame/Scripts/Utility
+  CurrentUICodePath: Assets/FlappyBirdGame/Scripts/UI
+  CurrentUIPrefabPath: Assets/FlappyBirdGame/Resources/UIPrefabs
+  CurrentFrameworkNamespace: FlappyBirdGame

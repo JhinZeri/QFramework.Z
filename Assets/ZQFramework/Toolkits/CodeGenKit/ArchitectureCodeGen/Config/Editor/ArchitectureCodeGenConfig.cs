@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,13 +5,12 @@ using System.Text;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Editor;
+using ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Editor;
 using ZQFramework.Toolkits.ConfigKit;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
-using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
+using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 
-namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
+namespace ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor
 {
     public class ArchitectureCodeGenConfig : ScriptableObject, IConfigOrSettingOrLogInfo
     {
@@ -28,8 +26,8 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
             get
             {
                 if (m_Instance != null) return m_Instance;
-                m_Instance = GetOrCreateScriptableObject
-                    .GetSingletonAssetOnPathAssetDatabase<ArchitectureCodeGenConfig>(CONFIG_ROOT_PATH);
+                m_Instance = GetOrCreateSOAsset
+                    .GetSingleSOAndDeleteExtraUseAssetDatabase<ArchitectureCodeGenConfig>(CONFIG_ROOT_PATH);
                 return m_Instance;
             }
         }
@@ -48,7 +46,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetOnProjectObject.FindAndSelectedScript(nameof(ArchitectureCodeGenConfig)));
+                GetProjectObject.FindAndSelectedScript(nameof(ArchitectureCodeGenConfig)));
 #endif
         }
 
@@ -153,12 +151,15 @@ namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor
         public void DeleteArchitecture()
         {
             string archiName = CurrentArchitectureClassName;
-            string curArchitecturePath = AssetDatabase.FindAssets(archiName)
-                                                      .Select(AssetDatabase.GUIDToAssetPath)
-                                                      .FirstOrDefault();
+            string curArchitecturePath = GetProjectObject.FindScriptPath(archiName);
+
             // Debug.Log(curArchitecturePath);
-            AssetDatabase.DeleteAsset(curArchitecturePath);
-            Debug.Log("删除架构 Architecture 成功");
+            if (curArchitecturePath != null)
+            {
+                AssetDatabase.DeleteAsset(curArchitecturePath);
+                Debug.Log("删除架构 Architecture 成功,路径为: " + curArchitecturePath);
+            }
+
             AssetDatabase.Refresh();
             CheckFolderList();
         }

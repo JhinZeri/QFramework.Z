@@ -3,11 +3,11 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
-using ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor;
+using ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor;
 using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
+using ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool;
 using ZQFramework.Toolkits.UIKit.UISetting;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.Tools.HierarchyColorCardTool;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
 {
@@ -37,7 +37,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
                 { "工具配置", null, SdfIconType.Tools },
                 { "工具配置/名称前缀卡片绘制", HierarchyPrefixColorCardConfig.Instance, SdfIconType.PaletteFill },
                 { "ZQ 过程日志信息", null, SdfIconType.InfoCircle },
-                { "ZQ 过程日志信息/UI 解析日志", UICodeGenProcessLogInfo.Instance, SdfIconType.Pause },
+                { "ZQ 过程日志信息/UI 解析日志", UICodeGenLogInfo.Instance, SdfIconType.Pause },
                 { "ZQ 版本导出配置", VersionConfig.VersionConfig.Instance, SdfIconType.BorderOuter }
             };
             return tree;

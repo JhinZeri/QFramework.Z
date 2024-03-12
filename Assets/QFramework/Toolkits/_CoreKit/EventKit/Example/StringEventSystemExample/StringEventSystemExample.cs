@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using ZQFramework.Framework.EventSystemIntegration;
+using ZQFramework.Framework.Event;
 using ZQFramework.Toolkits.EventKit.EventSystem;
 
 namespace QFramework.Example

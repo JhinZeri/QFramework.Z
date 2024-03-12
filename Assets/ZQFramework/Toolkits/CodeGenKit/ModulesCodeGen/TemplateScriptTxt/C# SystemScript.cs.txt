@@ -1,0 +1,25 @@
+﻿using ZQFramework.Framework.Core;
+
+namespace #PROJECTNAME#
+{
+    // 定义一个系统接口继承 ISystem
+    public interface I#SYSTEMSCRIPTNAME# : ISystem
+    {
+        // 可以编写系统数据属性
+        // public BindableProperty<int> Property { get; }
+
+        // 可以编写系统方法
+        // void Function1();
+    }
+
+    public class #SYSTEMSCRIPTNAME# : AbstractSystem, I#SYSTEMSCRIPTNAME#
+    {
+        // 实现系统数据属性
+        // public BindableProperty<int> Property { get; } = new()
+        // {
+        //     Value = default
+        // };
+
+        protected override void OnInit() { }
+    }
+}

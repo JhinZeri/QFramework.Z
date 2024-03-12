@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using ZQFramework.Toolkits.ConfigKit;
+using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 #if UNITY_EDITOR
-using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
 #endif
 
 namespace ZQFramework.Toolkits.UIKit.UISetting
@@ -25,8 +25,8 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
             {
                 if (m_Instance != null) return m_Instance;
 #if UNITY_EDITOR
-                m_Instance = GetOrCreateRuntimeSetting
-                    .GetSingletonAssetOnPathAssetDatabase<UIRuntimeSetting>(
+                m_Instance = GetOrCreateSOAsset
+                    .GetSingleSOAndDeleteExtraUseAssetDatabase<UIRuntimeSetting>(
                         UI_RUNTIME_SETTING_RESOURCES_PATH);
 #endif
                 m_Instance = Resources.Load<UIRuntimeSetting>("UIRuntimeSetting");
@@ -47,7 +47,7 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
         public void PingScript()
         {
 #if UNITY_EDITOR
-            UnityEditor.EditorGUIUtility.PingObject(GetOnProjectObject.FindAndSelectedScript(nameof(UIRuntimeSetting)));
+            UnityEditor.EditorGUIUtility.PingObject(GetProjectObject.FindAndSelectedScript(nameof(UIRuntimeSetting)));
 #endif
         }
 
@@ -113,11 +113,15 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
                 string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
                 var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
+                // 筛选不是 UI 预制体的情况，
                 if (prefab == null || !prefab.name.StartsWith("UI") ||
                     prefab.name.Contains("Template") || prefab.name.Contains("UIRoot")) continue;
+                // 筛选不是在 Resources 文件夹下的预制体的情况
                 if (!path.Contains("Resources/")) continue;
                 int index = path.IndexOf("Resources/", StringComparison.Ordinal) + "Resources/".Length;
                 path = path.Substring(index, path.Length - index);
+                // Resources.Load<GameObject>("UIRoot"); 是不需要后缀名的
+                // 替换掉 .prefab 文件后缀名
                 if (path.EndsWith(".prefab")) path = path.Replace(".prefab", "");
 
                 UIPrefabToPathInResourcesManager.Add(new UIPrefabToPathInResources

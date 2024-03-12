@@ -1,9 +1,0 @@
-﻿using ZQFramework.Framework.Core;
-
-namespace #ZFPROJECTNAME#
-{
-    public class #ZFSYSTEMSCRIPTNAME# : AbstractSystem
-    {
-        protected override void OnInit() { }
-    }
-}

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using ZQFramework.Framework.EventSystemIntegration;
-using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Framework.Event;
+using ZQFramework.Toolkits.CommonKit.StaticExtKit;
 
 namespace ZQFramework.Toolkits.EventKit.EventTrigger.Mono
 {

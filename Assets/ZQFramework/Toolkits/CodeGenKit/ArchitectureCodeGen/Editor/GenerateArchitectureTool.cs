@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using ZQFramework.Toolkits.CodeGenKit.Common;
+using ZQFramework.Toolkits.CodeGenKit._Common;
 
-namespace ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Editor
+namespace ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Editor
 {
     public class GenerateArchitectureTool
     {

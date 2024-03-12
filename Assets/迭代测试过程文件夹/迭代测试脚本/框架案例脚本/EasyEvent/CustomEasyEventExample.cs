@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using ZQFramework.Framework.EventSystemIntegration;
+using ZQFramework.Framework.Event;
 
 namespace 迭代测试过程文件夹.迭代测试脚本.框架案例脚本.EasyEvent
 {

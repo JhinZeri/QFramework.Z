@@ -6,11 +6,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.CodeGenKit.Common;
-using ZQFramework.Toolkits.CodeGenKit.FrameworkCodeGen.Config.Editor;
+using ZQFramework.Toolkits.CodeGenKit._Common;
+using ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor;
 using ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
+using ZQFramework.Toolkits.EditorKit.Editor.ReuseUtil;
 
 namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 {
@@ -33,7 +33,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/@ ZQ UIKit -------", true, 199)]
-        static bool AddSeparatorValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+        static bool AddSeparatorValidator() => FilterSelection.IsUIKitCanvasTemplate();
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析 (Shift+Alt+V) #&v", priority = 200)]
         public static void CreateUIScriptsUseNameAndTag()
@@ -43,7 +43,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析 (Shift+Alt+V) #&v", true, 200)]
-        public static bool CreateUIScriptsUseNameAndTagValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+        public static bool CreateUIScriptsUseNameAndTagValidator() => FilterSelection.IsUIKitCanvasTemplate();
 
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,仅Tag解析", priority = 201)]
@@ -54,7 +54,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,仅Tag解析", true, 201)]
-        public static bool CreateUIScriptsOnlyTagValidator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+        public static bool CreateUIScriptsOnlyTagValidator() => FilterSelection.IsUIKitCanvasTemplate();
 
         // 添加分割线
         [MenuItem("GameObject/------- @ ZQ UIKit", false, 202)]
@@ -64,7 +64,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/------- @ ZQ UIKit", true, 202)]
-        static bool AddSeparator2Validator() => FilterSelectedGameObject.IsUIKitCanvasTemplate();
+        static bool AddSeparator2Validator() => FilterSelection.IsUIKitCanvasTemplate();
 
         #endregion
 
@@ -72,14 +72,14 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
         public static void ParseAndCreateUIScripts(GameObject selectedGameObject, bool useNameAndTagParse = true)
         {
-            if (FilterSelectedGameObject.IsPrefabOnProject()) return;
+            if (FilterSelection.IsPrefabOnProject()) return;
 
-            if (!FilterSelectedGameObject.IsUIKitCanvasTemplate()) return;
+            if (!FilterSelection.IsUIKitCanvasTemplate()) return;
 
-            if (FilterSelectedGameObject.IsPrefabInScene())
+            if (FilterSelection.IsPrefabInScene())
             {
-                UICodeGenProcessLogInfo.Instance.isPrefabInScene = true;
-                Debug.Log("当前选中的是场景中的 Prefab + " + UICodeGenProcessLogInfo.Instance.isPrefabInScene);
+                UICodeGenLogInfo.Instance.isPrefabInScene = true;
+                Debug.Log("当前选中的是场景中的 Prefab + " + UICodeGenLogInfo.Instance.isPrefabInScene);
             }
 
             var obj = selectedGameObject;
@@ -379,17 +379,17 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             List<UIComponentAnalysisData> uiAnalysisDataList)
         {
             // 临时数据，用完清空
-            UICodeGenProcessLogInfo.Instance.LatestAnalysisData = new UICanvasViewGameObjectAnalysisData
+            UICodeGenLogInfo.Instance.LatestAnalysisData = new UIGameObjectAnalysisData
             {
-                CanvasGameObjectInstanceId = trans.gameObject.GetInstanceID(),
-                CanvasViewRootGameObjectName = rootCanvasName,
+                UIGameObjectInstanceId = trans.gameObject.GetInstanceID(),
+                RootGameObjectName = rootCanvasName,
                 UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
             };
             // 记录数据，保留上一个分析完成的UI物体数据
-            UICodeGenProcessLogInfo.Instance.PreviousUIGameObjectAnalysisData = new UICanvasViewGameObjectAnalysisData
+            UICodeGenLogInfo.Instance.PreviousUIGameObjectAnalysisData = new UIGameObjectAnalysisData
             {
-                CanvasGameObjectInstanceId = trans.gameObject.GetInstanceID(),
-                CanvasViewRootGameObjectName = rootCanvasName,
+                UIGameObjectInstanceId = trans.gameObject.GetInstanceID(),
+                RootGameObjectName = rootCanvasName,
                 UIComponents = new List<UIComponentAnalysisData>(uiAnalysisDataList)
             };
         }
@@ -468,9 +468,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                 sb.AppendLine(CodeGenCommon.TWO_INDENT + "public " + objectData.FieldType + " " +
                               objectData.FieldPrefixName + objectData.FieldType + ";");
 
+            sb.AppendLine();
             // CanvasViewController
             sb.AppendLine(CodeGenCommon.TWO_INDENT + "// ZQFramework 框架必要方法 ");
-            sb.AppendLine(CodeGenCommon.TWO_INDENT + "protected override IArchitecture GetArchitecture()");
+            sb.AppendLine(CodeGenCommon.TWO_INDENT + "public override IArchitecture GetArchitecture()");
             sb.AppendLine(CodeGenCommon.TWO_INDENT + "{");
             sb.AppendLine(CodeGenCommon.THREE_INDENT + "// 若没有使用 ZFramework 架构， 则 null ");
             sb.AppendLine(CodeGenCommon.THREE_INDENT + "// 若项目使用 ZFramework 架构，则 return XXX.Interface;");
@@ -487,9 +488,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
             sb.AppendLine();
             sb.AppendLine(CodeGenCommon.TWO_INDENT + "public override void BindCanvasViewComponents()");
             sb.AppendLine(CodeGenCommon.TWO_INDENT + "{");
-            sb.AppendLine(CodeGenCommon.THREE_INDENT + "// 判断是否 DontMask");
-            sb.AppendLine(CodeGenCommon.THREE_INDENT + "CanvasDontMask = UICanvas.sortingOrder <= 100;");
-            sb.AppendLine();
+            // sb.AppendLine(CodeGenCommon.THREE_INDENT + " // 判断是否 DontMask，通常不使用遮罩，则为信息常驻面板，不需要交互");
+            // sb.AppendLine(CodeGenCommon.THREE_INDENT + "CanvasDontMask = UICanvas.sortingOrder <= 100;");
+            // sb.AppendLine(CodeGenCommon.THREE_INDENT + "CanvasIsNoninteractive = CanvasDontMask;");
+            // sb.AppendLine();
             sb.AppendLine(CodeGenCommon.THREE_INDENT + "// UI 组件自动化绑定");
             // 根据查找路径字典，自动绑定UI组件
             foreach (var analysisData in UIAnalysisDataList)

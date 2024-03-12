@@ -19,48 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using ZQFramework.Framework.EventSystemIntegration;
+using ZQFramework.Framework.Event;
 
 namespace ZQFramework.Framework.Core
 {
-    /// <summary>
-    /// 事件信息单元
-    /// </summary>
-    [Serializable]
-    public class EventInfo
-    {
-        [LabelText("事件类型")]
-        [ShowInInspector]
-        [PropertyOrder(0)]
-        public string TypeName => EventType.Name;
-
-        [PropertyOrder(2)]
-        [ShowInInspector]
-        [ReadOnly]
-        [LabelText("事件订阅方法列表")]
-        [Searchable]
-        public List<string> MethodList = new();
-
-        public Type EventType;
-
-        Action m_Action;
-
-        public EventInfo(Type eventType, Action action)
-        {
-            EventType = eventType;
-            m_Action = action;
-        }
-
-        [Button("@\"触发事件 \"+TypeName", Icon = SdfIconType.List)]
-        [PropertyOrder(1)]
-        public void TryTrigger()
-        {
-            m_Action?.Invoke();
-        }
-
-        public void SetMethodList(IEnumerable<string> list) => MethodList = new List<string>(list);
-    }
-
     public interface IArchitecture
     {
         #region 框架模块
@@ -239,8 +201,7 @@ namespace ZQFramework.Framework.Core
         {
             var type = typeof(TEvent);
             var eventInfo = new EventInfo(type, () => m_TypeEventSystem.Send<TEvent>());
-            bool exist =
-                EventInfos.Any(info => info.EventType == type);
+            bool exist = EventInfos.Any(info => info.EventType == type);
             if (!exist) EventInfos.Add(eventInfo);
             var unRegister = m_TypeEventSystem.Register(onEvent);
             List<string> mInvocationList = m_TypeEventSystem.GetEasyEvent<TEvent>().GetActionInvocationList();

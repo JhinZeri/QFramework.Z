@@ -1,5 +1,5 @@
 ﻿using System;
-using ZQFramework.Framework.EventSystemIntegration;
+using ZQFramework.Framework.Event;
 
 namespace ZQFramework.Framework.Rule
 {

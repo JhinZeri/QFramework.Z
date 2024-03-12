@@ -6,6 +6,9 @@ using Object = UnityEngine.Object;
 
 namespace ZQFramework.Toolkits.UIKit.UIHelper
 {
+    /// <summary>
+    /// 测试 Canvas 是否进行网格重建，模板代码
+    /// </summary>
     public class CanvasRebuildTest : MonoBehaviour
     {
         public IList<ICanvasElement> GraphicRebuildQueue;

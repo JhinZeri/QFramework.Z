@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ZQFramework.Framework.EventSystemIntegration;
-using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Framework.Event;
+using ZQFramework.Toolkits.CommonKit.StaticExtKit;
 
 namespace ZQFramework.Toolkits.EventKit.EventSystem
 {
@@ -9,7 +9,7 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
     {
         public static readonly EnumEventSystem Global = new();
 
-        readonly Dictionary<int, IEasyEvent> _mEvents = new(50);
+        readonly Dictionary<int, IEasyEvent> m_Events = new(50);
 
         protected EnumEventSystem() { }
 
@@ -19,7 +19,7 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
         {
             var kv = key.ToInt32(null);
 
-            if (_mEvents.TryGetValue(kv, out var e))
+            if (m_Events.TryGetValue(kv, out var e))
             {
                 EasyEvent<int, object[]> easyEvent = e.As<EasyEvent<int, object[]>>();
                 return easyEvent.Register(onEvent);
@@ -27,7 +27,7 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
             else
             {
                 EasyEvent<int, object[]> easyEvent = new();
-                _mEvents.Add(kv, easyEvent);
+                m_Events.Add(kv, easyEvent);
                 return easyEvent.Register(onEvent);
             }
         }
@@ -36,26 +36,26 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
         {
             var kv = key.ToInt32(null);
 
-            if (_mEvents.TryGetValue(kv, out var e)) e.As<EasyEvent<int, object[]>>()?.UnRegister(onEvent);
+            if (m_Events.TryGetValue(kv, out var e)) e.As<EasyEvent<int, object[]>>()?.UnRegister(onEvent);
         }
 
         public void UnRegister<T>(T key) where T : IConvertible
         {
             var kv = key.ToInt32(null);
 
-            if (_mEvents.ContainsKey(kv)) _mEvents.Remove(kv);
+            if (m_Events.ContainsKey(kv)) m_Events.Remove(kv);
         }
 
         public void UnRegisterAll()
         {
-            _mEvents.Clear();
+            m_Events.Clear();
         }
 
         public void Send<T>(T key, params object[] args) where T : IConvertible
         {
             var kv = key.ToInt32(null);
 
-            if (_mEvents.TryGetValue(kv, out var e)) e.As<EasyEvent<int, object[]>>().Trigger(kv, args);
+            if (m_Events.TryGetValue(kv, out var e)) e.As<EasyEvent<int, object[]>>().Trigger(kv, args);
         }
 
         #endregion

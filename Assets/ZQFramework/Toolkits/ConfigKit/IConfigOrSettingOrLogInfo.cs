@@ -18,7 +18,7 @@ namespace ZQFramework.Toolkits.ConfigKit
         /// 锁定脚本，ping一下
         /// </summary>
         /// <example>
-        /// EditorGUIUtility.PingObject(GetOnProjectObject.FindAndSelectedScript(nameof(类名)));
+        /// EditorGUIUtility.PingObject(GetProjectObject.FindAndSelectedScript(nameof(类名)));
         /// </example>
         [Title("锁定脚本工具")]
         [Button("锁定脚本", ButtonSizes.Medium)]

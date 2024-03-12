@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
-using ZQFramework.Toolkits.UnityEditorKit.Editor.ReuseUtility;
-using ZQFramework.Toolkits.UnityEditorKit.SimulationEditor;
+using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.VersionConfig
 {
@@ -20,8 +19,8 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.VersionConfig
             get
             {
                 if (m_Instance != null) return m_Instance;
-                m_Instance = GetOrCreateScriptableObject
-                    .GetSingletonAssetOnPathAssetDatabase<VersionConfig>(CONFIG_ROOT_PATH);
+                m_Instance = GetOrCreateSOAsset
+                    .GetSingleSOAndDeleteExtraUseAssetDatabase<VersionConfig>(CONFIG_ROOT_PATH);
                 return m_Instance;
             }
         }
@@ -38,7 +37,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.VersionConfig
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetOnProjectObject.FindAndSelectedScript(nameof(VersionConfig)));
+                GetProjectObject.FindAndSelectedScript(nameof(VersionConfig)));
 #endif
         }
 
@@ -53,7 +52,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.VersionConfig
             "Assets/迭代测试过程文件夹"
         };
 
-        public void ResetFolderList()
+        void ResetFolderList()
         {
             PackageName = "ZQFramework_";
             Version = "v0.0.0";

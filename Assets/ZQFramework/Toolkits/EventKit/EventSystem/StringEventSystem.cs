@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ZQFramework.Framework.EventSystemIntegration;
-using ZQFramework.Toolkits.CommonKit.StaticExtensionKit;
+using ZQFramework.Framework.Event;
+using ZQFramework.Toolkits.CommonKit.StaticExtKit;
 
 namespace ZQFramework.Toolkits.EventKit.EventSystem
 {
@@ -9,45 +9,12 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
     {
         public static readonly StringEventSystem Global = new();
 
-        readonly Dictionary<string, IEasyEvent> _mEvents = new();
-
-        public IUnRegister Register(string key, Action onEvent)
-        {
-            if (_mEvents.TryGetValue(key, out var e))
-            {
-                var easyEvent = e.As<EasyEvent>();
-                return easyEvent.Register(onEvent);
-            }
-            else
-            {
-                var easyEvent = new EasyEvent();
-                _mEvents.Add(key, easyEvent);
-                return easyEvent.Register(onEvent);
-            }
-        }
-
-        public void UnRegister(string key, Action onEvent)
-        {
-            if (_mEvents.TryGetValue(key, out var e))
-            {
-                var easyEvent = e.As<EasyEvent>();
-                easyEvent?.UnRegister(onEvent);
-            }
-        }
-
-        public void Send(string key)
-        {
-            if (_mEvents.TryGetValue(key, out var e))
-            {
-                var easyEvent = e.As<EasyEvent>();
-                easyEvent?.Trigger();
-            }
-        }
+        readonly Dictionary<string, IEasyEvent> m_Events = new();
 
 
         public IUnRegister Register<T>(string key, Action<T> onEvent)
         {
-            if (_mEvents.TryGetValue(key, out var e))
+            if (m_Events.TryGetValue(key, out var e))
             {
                 EasyEvent<T> easyEvent = e.As<EasyEvent<T>>();
                 return easyEvent.Register(onEvent);
@@ -55,7 +22,7 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
             else
             {
                 EasyEvent<T> easyEvent = new();
-                _mEvents.Add(key, easyEvent);
+                m_Events.Add(key, easyEvent);
                 return easyEvent.Register(onEvent);
             }
         }
@@ -63,7 +30,7 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
 
         public void UnRegister<T>(string key, Action<T> onEvent)
         {
-            if (_mEvents.TryGetValue(key, out var e))
+            if (m_Events.TryGetValue(key, out var e))
             {
                 EasyEvent<T> easyEvent = e.As<EasyEvent<T>>();
                 easyEvent?.UnRegister(onEvent);
@@ -72,11 +39,48 @@ namespace ZQFramework.Toolkits.EventKit.EventSystem
 
         public void Send<T>(string key, T data)
         {
-            if (_mEvents.TryGetValue(key, out var e))
+            if (m_Events.TryGetValue(key, out var e))
             {
                 EasyEvent<T> easyEvent = e.As<EasyEvent<T>>();
                 easyEvent?.Trigger(data);
             }
         }
+
+        #region 功能函数
+
+        public IUnRegister Register(string key, Action onEvent)
+        {
+            if (m_Events.TryGetValue(key, out var e))
+            {
+                var easyEvent = e.As<EasyEvent>();
+                return easyEvent.Register(onEvent);
+            }
+            else
+            {
+                var easyEvent = new EasyEvent();
+                m_Events.Add(key, easyEvent);
+                return easyEvent.Register(onEvent);
+            }
+        }
+
+        public void UnRegister(string key, Action onEvent)
+        {
+            if (m_Events.TryGetValue(key, out var e))
+            {
+                var easyEvent = e.As<EasyEvent>();
+                easyEvent?.UnRegister(onEvent);
+            }
+        }
+
+        public void Send(string key)
+        {
+            if (m_Events.TryGetValue(key, out var e))
+            {
+                var easyEvent = e.As<EasyEvent>();
+                easyEvent?.Trigger();
+            }
+        }
+
+        #endregion
     }
 }

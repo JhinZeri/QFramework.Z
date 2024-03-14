@@ -20,7 +20,10 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/无遮罩 Canvas 模板 (Shift+Alt+X) #&x", true, priority = 0)]
-        static bool CreateUICanvasTemplateLevelDontMaskValidator() => !FilterSelection.IsUIKitCanvasTemplate();
+        static bool CreateUICanvasTemplateLevelDontMaskValidator()
+        {
+            return !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         #endregion
 
@@ -36,7 +39,10 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/一级 Canvas 模板 (Shift+Alt+C) #&c", true, priority = 1)]
-        static bool TemplateLevelFirstValidator() => !FilterSelection.IsUIKitCanvasTemplate();
+        static bool TemplateLevelFirstValidator()
+        {
+            return !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/二级 Canvas 模板", false, priority = 2)]
         static void CreateUICanvasTemplateLevelSecond(MenuCommand menuCommand)
@@ -48,7 +54,10 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/二级 Canvas 模板", true, priority = 2)]
-        static bool TemplateLevelSecondValidator() => !FilterSelection.IsUIKitCanvasTemplate();
+        static bool TemplateLevelSecondValidator()
+        {
+            return !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/三级 Canvas 模板", false, priority = 3)]
         static void CreateUICanvasTemplateLevelThird(MenuCommand menuCommand)
@@ -60,7 +69,10 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/三级 Canvas 模板", true, priority = 3)]
-        static bool TemplateLevelThirdValidator() => !FilterSelection.IsUIKitCanvasTemplate();
+        static bool TemplateLevelThirdValidator()
+        {
+            return !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/四级 Canvas 模板", false, priority = 4)]
         static void CreateUICanvasTemplateLevelFourth(MenuCommand menuCommand)
@@ -72,7 +84,10 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/四级 Canvas 模板", true, priority = 4)]
-        static bool TemplateLevelFourthValidator() => !FilterSelection.IsUIKitCanvasTemplate();
+        static bool TemplateLevelFourthValidator()
+        {
+            return !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/五级 Canvas 模板", false, priority = 5)]
         static void CreateUICanvasTemplateLevelFifth(MenuCommand menuCommand)
@@ -84,7 +99,10 @@ namespace ZQFramework.Toolkits.UIKit.Editor
         }
 
         [MenuItem("GameObject/ZQ/UI 预制体模板/使用遮罩模板/五级 Canvas 模板", true, priority = 5)]
-        static bool TemplateLevelFifthValidator() => !FilterSelection.IsUIKitCanvasTemplate();
+        static bool TemplateLevelFifthValidator()
+        {
+            return !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         /// <summary>
         /// 创建 UICanvas 模板代码，为了保留 IDE 的 Resources 路径自动补全功能，并自动添加到选中的 GameObject 下

@@ -6,8 +6,10 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtKit
     /// <summary>
     /// UnityEngine.GameObject 的扩展方法
     /// </summary>
-    public static class GameObjectExtension
+    public static class GameObjectExtensions
     {
+        #region 显示和隐藏
+
         /// <summary>
         /// 显示 GameObject
         /// </summary>
@@ -53,6 +55,10 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtKit
             selfComponent.gameObject.Hide();
             return selfComponent;
         }
+
+        #endregion
+
+        #region 设置 Layer 层
 
         /// <summary>
         /// 设置 GameObject 的 layer 层
@@ -106,42 +112,79 @@ namespace ZQFramework.Toolkits.CommonKit.StaticExtKit
             return selfComponent;
         }
 
+        #endregion
+
+        #region 组件相关
+
         /// <summary>
         /// 获取组件，没有则添加再返回
         /// </summary>
         public static T GetOrAddComponent<T>(this GameObject self) where T : Component
         {
-            var comp = self.gameObject.GetComponent<T>();
-            return comp ? comp : self.gameObject.AddComponent<T>();
+            return self.TryGetComponent(out T component) ? component : self.AddComponent<T>();
         }
-
-        /// <summary>
-        /// 获取组件，没有则添加再返回
-        /// </summary>
-        public static T GetOrAddComponent<T>(this Component component) where T : Component =>
-            component.gameObject.GetOrAddComponent<T>();
 
         /// <summary>
         /// 获取组件，没有则添加再返回
         /// </summary>
         public static Component GetOrAddComponent(this GameObject self, Type type)
         {
-            var component = self.gameObject.GetComponent(type);
-            return component ? component : self.gameObject.AddComponent(type);
+            var component = self.GetComponent(type);
+            return component ? component : self.AddComponent(type);
         }
+
+        /// <summary>
+        /// Trying to get component in this or any it's children.
+        /// </summary>
+        /// <typeparam name="T"> Component type. </typeparam>
+        /// <param name="gameObject"> Target gameobject. </param>
+        /// <param name="component"> Target component. </param>
+        /// <param name="includeInactive"> Should we find component on inactive game objects? </param>
+        /// <returns> <see langword="true" /> if component was found. </returns>
+        public static bool TryGetComponentInChildren<T>(this GameObject gameObject, out T component,
+            bool includeInactive = false) where T : Component
+        {
+            return component = gameObject.GetComponentInChildren<T>(includeInactive);
+        }
+
+        /// <summary>
+        /// Trying to get component in this or any it's parent.
+        /// </summary>
+        /// <typeparam name="T"> Component type. </typeparam>
+        /// <param name="gameObject"> Target gameobject. </param>
+        /// <param name="component"> Target component. </param>
+        /// <param name="includeInactive"> Should we find component on inactive game objects? </param>
+        /// <returns> <see langword="true" /> if component was found. </returns>
+        public static bool TryGetComponentInParent<T>(this GameObject gameObject, out T component,
+            bool includeInactive = false) where T : Component
+        {
+            return component = gameObject.GetComponentInParent<T>(includeInactive);
+        }
+
+        #endregion
+
+        #region 获取物体的 Position
 
         /// <summary>
         /// 快速获取position-Vector3
         /// </summary>
         /// <param name="obj"> </param>
         /// <returns> </returns>
-        public static Vector3 GetPositionVector3(this GameObject obj) => obj.transform.position;
+        public static Vector3 GetPositionVector3(this GameObject obj)
+        {
+            return obj.transform.position;
+        }
 
         /// <summary>
         /// 快速获取position-Vector2
         /// </summary>
         /// <param name="obj"> </param>
         /// <returns> </returns>
-        public static Vector2 GetPositionVector2(this GameObject obj) => obj.transform.position;
+        public static Vector2 GetPositionVector2(this GameObject obj)
+        {
+            return obj.transform.position;
+        }
+
+        #endregion
     }
 }

@@ -27,10 +27,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnCancelEventTriggerExtension
     {
         public static IUnRegister OnCancelEvent<T>(this T self, Action<BaseEventData> onCancel)
-            where T : Component =>
-            self.GetOrAddComponent<OnCancelEventTrigger>().OnCancelEvent.Register(onCancel);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnCancelEventTrigger>().OnCancelEvent.Register(onCancel);
+        }
 
-        public static IUnRegister OnCancelEvent(this GameObject self, Action<BaseEventData> onCancel) =>
-            self.GetOrAddComponent<OnCancelEventTrigger>().OnCancelEvent.Register(onCancel);
+        public static IUnRegister OnCancelEvent(this GameObject self, Action<BaseEventData> onCancel)
+        {
+            return self.GetOrAddComponent<OnCancelEventTrigger>().OnCancelEvent.Register(onCancel);
+        }
     }
 }

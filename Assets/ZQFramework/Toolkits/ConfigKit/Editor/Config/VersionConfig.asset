@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: VersionConfig
   m_EditorClassIdentifier: 
   PackageName: ZQFramework_
-  Version: v0.0.1
+  Version: v0.0.1_20240313
   FolderList:
   - Assets/ZQFramework
   - Assets/Plugins

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c657f01b9d4a9f44aee4cf67f7bc4c1, type: 3}
   m_Name: ArchitectureCodeGenConfig
   m_EditorClassIdentifier: 
-  CurrentArchitectureClassName: FlappyBird
-  HasFindArchitecture: 1
+  CurrentArchitectureClassName: 
+  HasFindArchitecture: 0
   ArchitectureCheckList:
-  - Assets/FlappyBirdGame
+  - Assets/ZQProject/Scripts/Architecture

@@ -27,7 +27,7 @@ namespace 迭代测试过程文件夹.迭代测试脚本.框架案例脚本.Enum
             EnumEventSystem.Global.Register(TestEvent.EventA, OnEvent);
         }
 
-        void OnEvent(int ky, params object[] objects)
+        static void OnEvent(int ky, params object[] objects)
         {
             switch (ky)
             {

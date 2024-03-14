@@ -27,10 +27,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnPointerEnterEventTriggerExtension
     {
         public static IUnRegister OnPointerEnterEvent<T>(this T self, Action<PointerEventData> onPointerEnter)
-            where T : Component =>
-            self.GetOrAddComponent<OnPointerEnterEventTrigger>().OnPointerEnterEvent.Register(onPointerEnter);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnPointerEnterEventTrigger>().OnPointerEnterEvent.Register(onPointerEnter);
+        }
 
-        public static IUnRegister OnPointerEnterEvent(this GameObject self, Action<PointerEventData> onPointerEnter) =>
-            self.GetOrAddComponent<OnPointerEnterEventTrigger>().OnPointerEnterEvent.Register(onPointerEnter);
+        public static IUnRegister OnPointerEnterEvent(this GameObject self, Action<PointerEventData> onPointerEnter)
+        {
+            return self.GetOrAddComponent<OnPointerEnterEventTrigger>().OnPointerEnterEvent.Register(onPointerEnter);
+        }
     }
 }

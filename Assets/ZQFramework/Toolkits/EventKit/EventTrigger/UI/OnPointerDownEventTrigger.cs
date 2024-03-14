@@ -27,15 +27,19 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnPointerDownEventTriggerExtension
     {
         public static IUnRegister OnPointerDownEvent<T>(this T self, Action<PointerEventData> onPointerDownEvent)
-            where T : Component =>
-            self.GetOrAddComponent<OnPointerDownEventTrigger>()
-                .OnPointerDownEvent
-                .Register(onPointerDownEvent);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnPointerDownEventTrigger>()
+                       .OnPointerDownEvent
+                       .Register(onPointerDownEvent);
+        }
 
         public static IUnRegister
-            OnPointerDownEvent(this GameObject self, Action<PointerEventData> onPointerDownEvent) =>
-            self.GetOrAddComponent<OnPointerDownEventTrigger>()
-                .OnPointerDownEvent
-                .Register(onPointerDownEvent);
+            OnPointerDownEvent(this GameObject self, Action<PointerEventData> onPointerDownEvent)
+        {
+            return self.GetOrAddComponent<OnPointerDownEventTrigger>()
+                       .OnPointerDownEvent
+                       .Register(onPointerDownEvent);
+        }
     }
 }

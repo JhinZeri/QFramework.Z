@@ -106,12 +106,16 @@ namespace ZQFramework.Framework.Event
         }
 
         public static IUnRegister UnRegisterWhenGameObjectDestroyed<T>(this IUnRegister self, T component)
-            where T : UnityEngine.Component =>
-            self.UnRegisterWhenGameObjectDestroyed(component.gameObject);
+            where T : UnityEngine.Component
+        {
+            return self.UnRegisterWhenGameObjectDestroyed(component.gameObject);
+        }
 
         public static IUnRegister UnRegisterWhenDisabled<T>(this IUnRegister self, T component)
-            where T : UnityEngine.Component =>
-            self.UnRegisterWhenDisabled(component.gameObject);
+            where T : UnityEngine.Component
+        {
+            return self.UnRegisterWhenDisabled(component.gameObject);
+        }
 
         public static IUnRegister UnRegisterWhenDisabled(this IUnRegister unRegister,
             UnityEngine.GameObject gameObject)
@@ -136,11 +140,20 @@ namespace ZQFramework.Framework.Event
     {
         public static readonly TypeEventSystem Global = new();
         readonly EasyEvents m_Events = new();
-        public void Send<T>() where T : new() => m_Events.GetEvent<EasyEvent<T>>()?.Trigger(new T());
+        public void Send<T>() where T : new()
+        {
+            m_Events.GetEvent<EasyEvent<T>>()?.Trigger(new T());
+        }
 
-        public void Send<T>(T e) => m_Events.GetEvent<EasyEvent<T>>()?.Trigger(e);
+        public void Send<T>(T e)
+        {
+            m_Events.GetEvent<EasyEvent<T>>()?.Trigger(e);
+        }
 
-        public IUnRegister Register<T>(Action<T> onEvent) => m_Events.GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
+        public IUnRegister Register<T>(Action<T> onEvent)
+        {
+            return m_Events.GetOrAddEvent<EasyEvent<T>>().Register(onEvent);
+        }
 
         public void UnRegister<T>(Action<T> onEvent)
         {
@@ -148,6 +161,9 @@ namespace ZQFramework.Framework.Event
             e?.UnRegister(onEvent);
         }
 
-        public EasyEvent<T> GetEasyEvent<T>() => m_Events.GetEvent<EasyEvent<T>>();
+        public EasyEvent<T> GetEasyEvent<T>()
+        {
+            return m_Events.GetEvent<EasyEvent<T>>();
+        }
     }
 }

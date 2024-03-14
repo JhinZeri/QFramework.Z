@@ -45,6 +45,10 @@ namespace ZQFramework.Toolkits.UIKit.Core
         [InfoBox("如果不使用遮罩，默认为True，面板不可交互，包括子节点")]
         public bool CanvasIsNoninteractive;
 
+        [LabelText("执行每帧刷新")]
+        [InfoBox("面板值即为初始化值，通常设置为 False，可以在运行过程中修改状态，仅在显示状态可刷新")]
+        public bool NeedUpdate;
+
         [LabelText("已经完成初始化")]
         [ShowIf("HasInit")]
         public bool HasInit;
@@ -110,12 +114,14 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// 在运行状态修改UI设置，可以设置
         /// 1. 是否使用遮罩
         /// 2. 是否可以交互
+        /// 3. 是否需要每帧刷新
         /// </summary>
         /// <param name="uiData"> new 一个 UIData </param>
         public void ChangeUIData(UIData uiData)
         {
             CanvasDontMask = uiData.CanvasDontMask;
             CanvasIsNoninteractive = uiData.CanvasIsNoninteractive;
+            NeedUpdate = uiData.NeedUpdate;
         }
 
         #endregion
@@ -212,7 +218,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
         }
 
         /// <summary>
-        /// 处于显示状态时由 UIKit 控制执行
+        /// 处于显示状态时由 UIKit 控制执行，如果不需要每帧刷新则不执行
         /// </summary>
         public void UIUpdate()
         {

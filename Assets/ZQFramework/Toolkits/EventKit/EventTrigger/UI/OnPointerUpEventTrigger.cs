@@ -27,14 +27,18 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnPointerUpEventTriggerExtension
     {
         public static IUnRegister OnPointerUpEvent<T>(this T self, Action<PointerEventData> onPointerUpEvent)
-            where T : Component =>
-            self.GetOrAddComponent<OnPointerUpEventTrigger>()
-                .OnPointerUpEvent
-                .Register(onPointerUpEvent);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnPointerUpEventTrigger>()
+                       .OnPointerUpEvent
+                       .Register(onPointerUpEvent);
+        }
 
-        public static IUnRegister OnPointerUpEvent(this GameObject self, Action<PointerEventData> onPointerUpEvent) =>
-            self.GetOrAddComponent<OnPointerUpEventTrigger>()
-                .OnPointerUpEvent
-                .Register(onPointerUpEvent);
+        public static IUnRegister OnPointerUpEvent(this GameObject self, Action<PointerEventData> onPointerUpEvent)
+        {
+            return self.GetOrAddComponent<OnPointerUpEventTrigger>()
+                       .OnPointerUpEvent
+                       .Register(onPointerUpEvent);
+        }
     }
 }

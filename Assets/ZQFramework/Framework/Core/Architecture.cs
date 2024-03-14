@@ -204,7 +204,7 @@ namespace ZQFramework.Framework.Core
             bool exist = EventInfos.Any(info => info.EventType == type);
             if (!exist) EventInfos.Add(eventInfo);
             var unRegister = m_TypeEventSystem.Register(onEvent);
-            List<string> mInvocationList = m_TypeEventSystem.GetEasyEvent<TEvent>().GetActionInvocationList();
+            List<string> mInvocationList = m_TypeEventSystem.GetEasyEvent<TEvent>().GetMethodNameList();
             eventInfo.SetMethodList(mInvocationList);
             return unRegister;
         }
@@ -234,7 +234,7 @@ namespace ZQFramework.Framework.Core
             {
                 // 创建新的 架构物体 
                 var architectureTrans =
-                    CreateArchitectureGameObject(null, "*Archi*" + "Architecture_" + typeof(T).Name);
+                    CreateArchitectureGameObject(null, "@A@" + "Architecture_" + typeof(T).Name);
                 // Add 的时候就会执行 Awake () 
                 m_Architecture = architectureTrans.gameObject.AddComponent<T>();
             }

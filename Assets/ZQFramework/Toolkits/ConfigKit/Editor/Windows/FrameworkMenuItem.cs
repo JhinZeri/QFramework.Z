@@ -29,7 +29,10 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.Windows
         }
 
         [MenuItem("ZQFramework/框架初始化", validate = true, priority = 0)]
-        public static bool InitializeValidator() => !ProjectFolderConfig.Instance.m_ZQFrameworkIsInitialized;
+        public static bool InitializeValidator()
+        {
+            return !ProjectFolderConfig.Instance.m_ZQFrameworkIsInitialized;
+        }
 
 
         [MenuItem("ZQFramework/解锁初始化按钮", priority = 1)]

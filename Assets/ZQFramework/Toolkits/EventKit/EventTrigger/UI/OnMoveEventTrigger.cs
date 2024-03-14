@@ -27,10 +27,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnMoveEventTriggerExtension
     {
         public static IUnRegister OnMoveEvent<T>(this T self, Action<AxisEventData> onMove)
-            where T : Component =>
-            self.GetOrAddComponent<OnMoveEventTrigger>().OnMoveEvent.Register(onMove);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnMoveEventTrigger>().OnMoveEvent.Register(onMove);
+        }
 
-        public static IUnRegister OnMoveEvent(this GameObject self, Action<AxisEventData> onMove) =>
-            self.GetOrAddComponent<OnMoveEventTrigger>().OnMoveEvent.Register(onMove);
+        public static IUnRegister OnMoveEvent(this GameObject self, Action<AxisEventData> onMove)
+        {
+            return self.GetOrAddComponent<OnMoveEventTrigger>().OnMoveEvent.Register(onMove);
+        }
     }
 }

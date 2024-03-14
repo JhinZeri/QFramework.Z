@@ -28,10 +28,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnDeselectEventTriggerExtension
     {
         public static IUnRegister OnDeselectEvent<T>(this T self, Action<BaseEventData> onDeselect)
-            where T : Component =>
-            self.GetOrAddComponent<OnDeselectEventTrigger>().OnDeselectEvent.Register(onDeselect);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnDeselectEventTrigger>().OnDeselectEvent.Register(onDeselect);
+        }
 
-        public static IUnRegister OnDeselectEvent(this GameObject self, Action<BaseEventData> onDeselect) =>
-            self.GetOrAddComponent<OnDeselectEventTrigger>().OnDeselectEvent.Register(onDeselect);
+        public static IUnRegister OnDeselectEvent(this GameObject self, Action<BaseEventData> onDeselect)
+        {
+            return self.GetOrAddComponent<OnDeselectEventTrigger>().OnDeselectEvent.Register(onDeselect);
+        }
     }
 }

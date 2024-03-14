@@ -26,14 +26,18 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.Physics
     public static class OnCollisionEnterEventTriggerExtension
     {
         public static IUnRegister OnCollisionEnterEvent<T>(this T self, Action<Collision> onCollisionEnter)
-            where T : Component =>
-            self.GetOrAddComponent<OnCollisionEnterEventTrigger>()
-                .OnCollisionEnterEvent
-                .Register(onCollisionEnter);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnCollisionEnterEventTrigger>()
+                       .OnCollisionEnterEvent
+                       .Register(onCollisionEnter);
+        }
 
-        public static IUnRegister OnCollisionEnterEvent(this GameObject self, Action<Collision> onCollisionEnter) =>
-            self.GetOrAddComponent<OnCollisionEnterEventTrigger>()
-                .OnCollisionEnterEvent
-                .Register(onCollisionEnter);
+        public static IUnRegister OnCollisionEnterEvent(this GameObject self, Action<Collision> onCollisionEnter)
+        {
+            return self.GetOrAddComponent<OnCollisionEnterEventTrigger>()
+                       .OnCollisionEnterEvent
+                       .Register(onCollisionEnter);
+        }
     }
 }

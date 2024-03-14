@@ -28,12 +28,16 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnUpdateSelectedEventTriggerExtension
     {
         public static IUnRegister OnUpdateSelectedEvent<T>(this T self, Action<BaseEventData> onUpdateSelected)
-            where T : Component =>
-            self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
-                .OnUpdateSelectedEvent.Register(onUpdateSelected);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
+                       .OnUpdateSelectedEvent.Register(onUpdateSelected);
+        }
 
-        public static IUnRegister OnUpdateSelectedEvent(this GameObject self, Action<BaseEventData> onUpdateSelected) =>
-            self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
-                .OnUpdateSelectedEvent.Register(onUpdateSelected);
+        public static IUnRegister OnUpdateSelectedEvent(this GameObject self, Action<BaseEventData> onUpdateSelected)
+        {
+            return self.GetOrAddComponent<OnUpdateSelectedEventTrigger>()
+                       .OnUpdateSelectedEvent.Register(onUpdateSelected);
+        }
     }
 }

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace ZQFramework.Toolkits.CommonKit.StaticExtKit
 {
-    public static class TypeExtension
+    public static class TypeExtensions
     {
         /// <summary>
         /// 没有特殊情况时，该方法可以获取整个项目中继承了该类的所有子类,仅查找 Assembly 开头的程序集，通常也就是指自定义的代码编译之后的程序集

@@ -26,14 +26,18 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.Mono
     public static class OnBecameInvisibleEventTriggerExtension
     {
         public static IUnRegister OnBecameInvisibleEvent<T>(this T self, Action onBecameInvisible)
-            where T : Component =>
-            self.GetOrAddComponent<OnBecameInvisibleEventTrigger>()
-                .OnBecameInvisibleEvent
-                .Register(onBecameInvisible);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnBecameInvisibleEventTrigger>()
+                       .OnBecameInvisibleEvent
+                       .Register(onBecameInvisible);
+        }
 
-        public static IUnRegister OnBecameInvisibleEvent(this GameObject self, Action onBecameInvisible) =>
-            self.GetOrAddComponent<OnBecameInvisibleEventTrigger>()
-                .OnBecameInvisibleEvent
-                .Register(onBecameInvisible);
+        public static IUnRegister OnBecameInvisibleEvent(this GameObject self, Action onBecameInvisible)
+        {
+            return self.GetOrAddComponent<OnBecameInvisibleEventTrigger>()
+                       .OnBecameInvisibleEvent
+                       .Register(onBecameInvisible);
+        }
     }
 }

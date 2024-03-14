@@ -23,7 +23,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.ControllerCodeGen.Editor
         }
 
         [MenuItem("GameObject/@ ZQ Controller -------", true, 199)]
-        static bool AddSeparatorValidator() => GenerateValidate();
+        static bool AddSeparatorValidator()
+        {
+            return GenerateValidate();
+        }
 
         [MenuItem("GameObject/生成同名Controller脚本 (Shift+Alt+Q) #&q", priority = 200)]
         public static void Generate()
@@ -80,9 +83,11 @@ namespace ZQFramework.Toolkits.CodeGenKit.ControllerCodeGen.Editor
         }
 
         [MenuItem("GameObject/生成同名Controller脚本 (Shift+Alt+Q) #&q", true, priority = 200)]
-        public static bool GenerateValidate() =>
+        public static bool GenerateValidate()
+        {
             // 检查是否有选中对象
-            Selection.activeGameObject != null && !FilterSelection.IsUIKitCanvasTemplate();
+            return Selection.activeGameObject != null && !FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         // 添加分割线
         [MenuItem("GameObject/------- @ ZQ Controller", false, 202)]
@@ -92,7 +97,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.ControllerCodeGen.Editor
         }
 
         [MenuItem("GameObject/------- @ ZQ Controller", true, 202)]
-        static bool AddSeparator2Validator() => GenerateValidate();
+        static bool AddSeparator2Validator()
+        {
+            return GenerateValidate();
+        }
 
         #region StringBuilder
 

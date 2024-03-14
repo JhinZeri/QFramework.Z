@@ -27,10 +27,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnPointerClickEventTriggerExtension
     {
         public static IUnRegister OnPointerClickEvent<T>(this T self, Action<PointerEventData> onPointerClick)
-            where T : Component =>
-            self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
+        }
 
-        public static IUnRegister OnPointerClickEvent(this GameObject self, Action<PointerEventData> onPointerClick) =>
-            self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
+        public static IUnRegister OnPointerClickEvent(this GameObject self, Action<PointerEventData> onPointerClick)
+        {
+            return self.GetOrAddComponent<OnPointerClickEventTrigger>().OnPointerClickEvent.Register(onPointerClick);
+        }
     }
 }

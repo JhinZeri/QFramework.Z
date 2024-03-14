@@ -26,14 +26,18 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.Physics
     public static class OnCollisionStay2DEventTriggerExtension
     {
         public static IUnRegister OnCollisionStay2DEvent<T>(this T self, Action<Collision2D> onCollisionStay2D)
-            where T : Component =>
-            self.GetOrAddComponent<OnCollisionStay2DEventTrigger>()
-                .OnCollisionStay2DEvent
-                .Register(onCollisionStay2D);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnCollisionStay2DEventTrigger>()
+                       .OnCollisionStay2DEvent
+                       .Register(onCollisionStay2D);
+        }
 
-        public static IUnRegister OnCollisionStay2DEvent(this GameObject self, Action<Collision2D> onCollisionStay2D) =>
-            self.GetOrAddComponent<OnCollisionStay2DEventTrigger>()
-                .OnCollisionStay2DEvent
-                .Register(onCollisionStay2D);
+        public static IUnRegister OnCollisionStay2DEvent(this GameObject self, Action<Collision2D> onCollisionStay2D)
+        {
+            return self.GetOrAddComponent<OnCollisionStay2DEventTrigger>()
+                       .OnCollisionStay2DEvent
+                       .Register(onCollisionStay2D);
+        }
     }
 }

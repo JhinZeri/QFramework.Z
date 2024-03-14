@@ -17,6 +17,9 @@ namespace ZQFramework.Toolkits.UIKit.UIHelper.Editor
         }
 
         // [MenuItem("GameObject/挂载 UI 助手脚本 (Shift + Alt + Z) #&z", true, priority = 0)]
-        static bool AddUIHelperValidator() => FilterSelection.IsUIKitCanvasTemplate();
+        static bool AddUIHelperValidator()
+        {
+            return FilterSelection.IsUIKitCanvasTemplate();
+        }
     }
 }

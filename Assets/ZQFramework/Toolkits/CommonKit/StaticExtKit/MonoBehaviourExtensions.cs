@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace ZQFramework.Toolkits.CommonKit.StaticExtKit
 {
-    public static class MonoBehaviourExtension
+    public static class MonoBehaviourExtensions
     {
         public static void Example()
         {

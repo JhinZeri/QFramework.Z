@@ -70,7 +70,14 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         void Update()
         {
-            foreach (var canvasView in m_VisibleCanvasViewList) canvasView.UIUpdate();
+            int count = m_VisibleCanvasViewList.Count;
+            for (var i = 0; i < count; i++)
+            {
+                if (m_VisibleCanvasViewList[i].NeedUpdate)
+                {
+                    m_VisibleCanvasViewList[i].UIUpdate();
+                }
+            }
         }
 
         /// <summary>
@@ -89,7 +96,7 @@ namespace ZQFramework.Toolkits.UIKit.Core
                 ? GameObject.Find("/UIRoot(Clone)").transform
                 : GameObject.Find("/UIRoot").transform;
 
-            Instance.m_UIRoot.name = "*UI*UIRoot";
+            Instance.m_UIRoot.name = "@U@UIRoot";
             Instance.m_UICamera = Instance.m_UIRoot.Find("UICamera")
                                           .GetComponent<Camera>();
             Instance.m_DontMaskParent = Instance.m_UIRoot.Find("DontMaskUILayer").transform;
@@ -389,7 +396,10 @@ namespace ZQFramework.Toolkits.UIKit.Core
         /// <summary>
         /// 内部对字典进行判断，尝试获取 CanvasView 对象
         /// </summary>
-        CanvasView TryGetCanvasFromDict(Type canvasType) => m_AllCanvasViewDict.GetValueOrDefault(canvasType);
+        CanvasView TryGetCanvasFromDict(Type canvasType)
+        {
+            return m_AllCanvasViewDict.GetValueOrDefault(canvasType);
+        }
 
         /// <summary>
         /// Show CanvasView 对象并返回

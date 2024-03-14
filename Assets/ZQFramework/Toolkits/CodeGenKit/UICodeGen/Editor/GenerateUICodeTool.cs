@@ -33,7 +33,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/@ ZQ UIKit -------", true, 199)]
-        static bool AddSeparatorValidator() => FilterSelection.IsUIKitCanvasTemplate();
+        static bool AddSeparatorValidator()
+        {
+            return FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析 (Shift+Alt+V) #&v", priority = 200)]
         public static void CreateUIScriptsUseNameAndTag()
@@ -43,7 +46,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,名称+Tag解析 (Shift+Alt+V) #&v", true, 200)]
-        public static bool CreateUIScriptsUseNameAndTagValidator() => FilterSelection.IsUIKitCanvasTemplate();
+        public static bool CreateUIScriptsUseNameAndTagValidator()
+        {
+            return FilterSelection.IsUIKitCanvasTemplate();
+        }
 
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,仅Tag解析", priority = 201)]
@@ -54,7 +60,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/@ZQ 生成UI脚本,仅Tag解析", true, 201)]
-        public static bool CreateUIScriptsOnlyTagValidator() => FilterSelection.IsUIKitCanvasTemplate();
+        public static bool CreateUIScriptsOnlyTagValidator()
+        {
+            return FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         // 添加分割线
         [MenuItem("GameObject/------- @ ZQ UIKit", false, 202)]
@@ -64,7 +73,10 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         }
 
         [MenuItem("GameObject/------- @ ZQ UIKit", true, 202)]
-        static bool AddSeparator2Validator() => FilterSelection.IsUIKitCanvasTemplate();
+        static bool AddSeparator2Validator()
+        {
+            return FilterSelection.IsUIKitCanvasTemplate();
+        }
 
         #endregion
 

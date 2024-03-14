@@ -124,6 +124,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         void ResetAllFolderPath()
         {
             // 重置方法
+            ResetRootFolder();
             ResetArchitecturePath();
             ResetControllerPath();
             ResetModelPath();
@@ -180,8 +181,10 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
 
         public void Init()
         {
+            // 重置路径
             ResetAllFolderPath();
-            CreateProjectFolderPath();
+            // 初始化不生成文件夹
+            // CreateProjectFolderPath();
         }
 
         [Title("锁定脚本工具")]
@@ -214,17 +217,51 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         public const string DEFAULT_FRAMEWORK_NAMESPACE = "GameProject";
 
         // 重置方法
-        void ResetArchitecturePath() => CurrentArchitecturePath = DEFAULT_ARCHITECTURE_PATH;
-        void ResetControllerPath() => CurrentControllerPath = DEFAULT_CONTROLLER_PATH;
-        void ResetModelPath() => CurrentModelPath = DEFAULT_MODEL_PATH;
-        void ResetSystemPath() => CurrentSystemPath = DEFAULT_SYSTEM_PATH;
-        void ResetUtilityPath() => CurrentUtilityPath = DEFAULT_UTILITY_PATH;
+        void ResetRootFolder()
+        {
+            CurrentRootFolder = string.Empty;
+        }
+
+        void ResetArchitecturePath()
+        {
+            CurrentArchitecturePath = DEFAULT_ARCHITECTURE_PATH;
+        }
+
+        void ResetControllerPath()
+        {
+            CurrentControllerPath = DEFAULT_CONTROLLER_PATH;
+        }
+
+        void ResetModelPath()
+        {
+            CurrentModelPath = DEFAULT_MODEL_PATH;
+        }
+
+        void ResetSystemPath()
+        {
+            CurrentSystemPath = DEFAULT_SYSTEM_PATH;
+        }
+
+        void ResetUtilityPath()
+        {
+            CurrentUtilityPath = DEFAULT_UTILITY_PATH;
+        }
 
         // UI
-        void ResetUICodePath() => CurrentUICodePath = DEFAULT_UI_PATH;
-        void ResetUIPrefabPath() => CurrentUIPrefabPath = DEFAULT_UI_PREFAB_ASSET_PATH;
+        void ResetUICodePath()
+        {
+            CurrentUICodePath = DEFAULT_UI_PATH;
+        }
 
-        void ResetNamespace() => CurrentFrameworkNamespace = DEFAULT_FRAMEWORK_NAMESPACE;
+        void ResetUIPrefabPath()
+        {
+            CurrentUIPrefabPath = DEFAULT_UI_PREFAB_ASSET_PATH;
+        }
+
+        void ResetNamespace()
+        {
+            CurrentFrameworkNamespace = DEFAULT_FRAMEWORK_NAMESPACE;
+        }
 
         #endregion
     }

@@ -6,11 +6,11 @@ namespace 迭代测试过程文件夹.迭代测试脚本.框架案例脚本.Easy
 {
     public class CustomEasyEventExample : MonoBehaviour
     {
-        readonly EasyEvent<string> _easyEvent = new EasyEvent<string>();
+        readonly EasyEvent<string> m_EasyEvent = new();
 
         void Awake()
         {
-            _easyEvent.Register(str =>
+            m_EasyEvent.Register(str =>
                       {
                           Debug.Log(str);
                       })
@@ -37,7 +37,7 @@ namespace 迭代测试过程文件夹.迭代测试脚本.框架案例脚本.Easy
         {
             if (Input.GetMouseButtonDown(0))
             {
-                _easyEvent.Trigger("Hello ZQFramework");
+                m_EasyEvent.Trigger("Hello ZQFramework");
             }
 
             if (Input.GetMouseButtonDown(1))

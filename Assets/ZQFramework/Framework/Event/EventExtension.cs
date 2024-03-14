@@ -5,7 +5,7 @@ namespace ZQFramework.Framework.Event
 {
     public class OrEvent : IUnRegisterList
     {
-        Action _onEvent = () => { };
+        Action m_OnEvent = () => { };
 
         public List<IUnRegister> UnregisterList { get; } = new();
 
@@ -17,7 +17,7 @@ namespace ZQFramework.Framework.Event
 
         public IUnRegister Register(Action onEvent)
         {
-            _onEvent += onEvent;
+            m_OnEvent += onEvent;
             return new CustomUnRegister(() =>
             {
                 UnRegister(onEvent);
@@ -26,13 +26,13 @@ namespace ZQFramework.Framework.Event
 
         public void UnRegister(Action onEvent)
         {
-            _onEvent -= onEvent;
+            m_OnEvent -= onEvent;
             this.UnRegisterAll();
         }
 
         void Trigger()
         {
-            _onEvent?.Invoke();
+            m_OnEvent?.Invoke();
         }
     }
 

@@ -101,7 +101,7 @@ namespace ZQFramework.Framework.BindableProperty
         /// <summary>
         /// 获取事件回调函数列表
         /// </summary>
-        public List<string> GetActionInvocationList() => m_OnValueChanged.GetActionInvocationList();
+        public List<string> GetMethodNameList() => m_OnValueChanged.GetMethodNameList();
 
         /// <summary>
         /// 在程序运行过程中动态设置一个比较规则

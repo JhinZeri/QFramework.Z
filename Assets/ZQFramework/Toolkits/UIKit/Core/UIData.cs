@@ -13,10 +13,14 @@ namespace ZQFramework.Toolkits.UIKit.Core
         [LabelText("不可交互")]
         public readonly bool CanvasIsNoninteractive;
 
-        public UIData(bool canvasDontMask = true, bool canvasIsNoninteractive = true)
+        [LabelText("每帧刷新")]
+        public readonly bool NeedUpdate;
+
+        public UIData(bool canvasDontMask = true, bool canvasIsNoninteractive = true, bool needUpdate = false)
         {
             CanvasDontMask = canvasDontMask;
             CanvasIsNoninteractive = canvasIsNoninteractive;
+            NeedUpdate = needUpdate;
         }
     }
 }

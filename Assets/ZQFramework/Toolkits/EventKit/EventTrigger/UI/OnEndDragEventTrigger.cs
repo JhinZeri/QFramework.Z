@@ -27,10 +27,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnEndDragEventTriggerExtension
     {
         public static IUnRegister OnEndDragEvent<T>(this T self, Action<PointerEventData> onEndDrag)
-            where T : Component =>
-            self.GetOrAddComponent<OnEndDragEventTrigger>().OnEndDragEvent.Register(onEndDrag);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnEndDragEventTrigger>().OnEndDragEvent.Register(onEndDrag);
+        }
 
-        public static IUnRegister OnEndDragEvent(this GameObject self, Action<PointerEventData> onEndDrag) =>
-            self.GetOrAddComponent<OnEndDragEventTrigger>().OnEndDragEvent.Register(onEndDrag);
+        public static IUnRegister OnEndDragEvent(this GameObject self, Action<PointerEventData> onEndDrag)
+        {
+            return self.GetOrAddComponent<OnEndDragEventTrigger>().OnEndDragEvent.Register(onEndDrag);
+        }
     }
 }

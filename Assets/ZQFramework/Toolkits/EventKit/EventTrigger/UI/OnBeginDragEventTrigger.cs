@@ -27,10 +27,14 @@ namespace ZQFramework.Toolkits.EventKit.EventTrigger.UI
     public static class OnBeginDragEventTriggerExtension
     {
         public static IUnRegister OnBeginDragEvent<T>(this T self, Action<PointerEventData> onBeganDrag)
-            where T : Component =>
-            self.GetOrAddComponent<OnBeginDragEventTrigger>().OnBeginDragEvent.Register(onBeganDrag);
+            where T : Component
+        {
+            return self.GetOrAddComponent<OnBeginDragEventTrigger>().OnBeginDragEvent.Register(onBeganDrag);
+        }
 
-        public static IUnRegister OnBeginDragEvent(this GameObject self, Action<PointerEventData> onBeganDrag) =>
-            self.GetOrAddComponent<OnBeginDragEventTrigger>().OnBeginDragEvent.Register(onBeganDrag);
+        public static IUnRegister OnBeginDragEvent(this GameObject self, Action<PointerEventData> onBeganDrag)
+        {
+            return self.GetOrAddComponent<OnBeginDragEventTrigger>().OnBeginDragEvent.Register(onBeganDrag);
+        }
     }
 }

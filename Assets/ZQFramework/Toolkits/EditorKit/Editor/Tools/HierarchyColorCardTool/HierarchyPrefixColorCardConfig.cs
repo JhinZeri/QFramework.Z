@@ -54,7 +54,7 @@ namespace ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool
             {
                 new HierarchyCardColor
                 {
-                    Prefix = "*Archi*",
+                    Prefix = "@A@",
                     TextColor = Color.black,
                     BackgroundColor = Color.cyan,
                     TextAlignment = TextAnchor.MiddleCenter,
@@ -62,7 +62,7 @@ namespace ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool
                 },
                 new HierarchyCardColor
                 {
-                    Prefix = "*UI*",
+                    Prefix = "@U@",
                     TextColor = Color.black,
                     BackgroundColor = Color.yellow,
                     TextAlignment = TextAnchor.MiddleCenter,

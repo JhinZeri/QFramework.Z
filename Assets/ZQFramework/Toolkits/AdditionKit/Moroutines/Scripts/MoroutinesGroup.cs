@@ -29,7 +29,7 @@ namespace Redcode.Moroutines
                     return null;
 
                 var owner = Moroutines[0].Owner;
-
+                
                 for (int i = 1; i < Moroutines.Count; i++)
                 {
                     if (Moroutines[i].Owner != owner)
@@ -41,7 +41,6 @@ namespace Redcode.Moroutines
         }
 
         #region State
-
         /// <summary>
         /// Are all moroutines in the reset state?
         /// </summary>
@@ -71,7 +70,6 @@ namespace Redcode.Moroutines
         /// Are all moroutines have owner?
         /// </summary>
         public bool IsOwned => Moroutines.All(m => m.IsOwned);
-
         #endregion
 
         /// <summary>
@@ -84,7 +82,6 @@ namespace Redcode.Moroutines
         }
 
         #region Events
-
         /// <summary>
         /// The event that is redeemed when the group resets all moroutines to its initial state.
         /// Triggered after <see cref="Reset"/> method called.
@@ -108,11 +105,9 @@ namespace Redcode.Moroutines
         /// Triggered after <see cref="Destroy"/> method called.
         /// </summary>
         public event Action<MoroutinesGroup> Destroyed;
-
         #endregion
 
         #region Constructors
-
         /// <summary>
         /// Create empty group.
         /// </summary>
@@ -129,19 +124,16 @@ namespace Redcode.Moroutines
         /// </summary>
         /// <param name="moroutines">Moroutines to add in group.</param>
         public MoroutinesGroup(IEnumerable<Moroutine> moroutines) => Moroutines.AddRange(moroutines);
-
         #endregion
 
         #region Owning
-
         /// <summary>
         /// Find all unowned moroutines in the group.
         /// </summary>
         /// <returns>Unowned moroutines.</returns>
         public List<Moroutine> GetUnownedMoroutines()
         {
-            return GetUnownedMoroutines(State.Reseted | State.Running | State.Stopped | State.Completed |
-                                        State.Destroyed);
+            return GetUnownedMoroutines(State.Reseted | State.Running | State.Stopped | State.Completed | State.Destroyed);
         }
 
         /// <summary>
@@ -174,11 +166,9 @@ namespace Redcode.Moroutines
         /// Makes all moroutines unowned.
         /// </summary>
         public MoroutinesGroup MakeUnowned() => SetOwner((GameObject)null);
-
         #endregion
 
         #region Control
-
         /// <summary>
         /// Resets all moroutines in group.
         /// </summary>
@@ -226,11 +216,9 @@ namespace Redcode.Moroutines
 
             return this;
         }
-
         #endregion
 
         #region Subscribing
-
         private MoroutinesGroup OnSubscribe(ref Action<MoroutinesGroup> ev, Action<MoroutinesGroup> action)
         {
             ev += action;
@@ -257,11 +245,9 @@ namespace Redcode.Moroutines
         /// <param name="action"><inheritdoc cref="OnReseted(Action{Moroutine})"/></param>
         /// <returns>The moroutines group.</returns>
         public MoroutinesGroup OnStopped(Action<MoroutinesGroup> action) => OnSubscribe(ref Stopped, action);
-
         #endregion
 
         #region Yielders
-
         /// <summary>
         /// Create an awaiter object, wich knows how to wait until all moroutines is complete. <br/>
         /// Changing the list of moroutines after calling this method will have no effect on the awaiting.
@@ -296,11 +282,9 @@ namespace Redcode.Moroutines
         /// </summary>
         /// <returns><inheritdoc cref="WaitForComplete"/></returns>
         public WaitForAll WaitForDestroy() => new(Moroutines.Select(m => m.WaitForDestroy()).ToList());
-
         #endregion
 
         #region Destroying
-
         /// <summary>
         /// Stop and destroy moroutines immediatly. You can't run moroutines after it destroying.
         /// </summary>
@@ -322,7 +306,6 @@ namespace Redcode.Moroutines
             AutoDestroy = autoDestroy;
             return this;
         }
-
         #endregion
     }
 }

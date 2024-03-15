@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ZQFramework.Toolkits.EditorKit.Editor.ReuseUtil
 {
-    public class GetProjectPath
+    public static class GetProjectPath
     {
         /// <summary>
         /// 获取选择资源所在文件夹的路径，

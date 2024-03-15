@@ -14,4 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SingleMaskSystem: 1
   SingleMaskAlpha: 0.7
-  UIPrefabToPathInResourcesManager: []
+  Scaler:
+    ScaleMode: 1
+    ScaleFactor: 1
+    ScreenSize: {x: 1920, y: 1080}
+    MatchMode: 0
+    Match: 0.5
+    PhysicalUnit: 3
+    FallbackScreenDPI: 96
+    DefaultSpriteDPI: 96
+    PixelsPerUnit: 100
+  UIPrefabToPathInResourcesManager:
+  - UIPrefabName: UIGameInfo
+    ResourcesPath: UIPrefabs/UIGameInfo
+  - UIPrefabName: UIGameOver
+    ResourcesPath: UIPrefabs/UIGameOver

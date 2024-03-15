@@ -6,21 +6,21 @@ using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 
 namespace ZQFramework.Toolkits.ConfigKit.Editor.VersionConfig
 {
-    // [CreateAssetMenu(fileName = "VersionConfig", menuName = "ZFramework/EditorConfig(默认存在)/VersionConfig", order = 0)]
-    public class VersionConfig : ScriptableObject, IConfigOrSettingOrLogInfo
+    // [CreateAssetMenu(fileName = "VersionExportConfig", menuName = "ZFramework/EditorConfig(默认存在)/VersionExportConfig", order = 0)]
+    public class VersionExportConfig : ScriptableObject, IConfigOrSettingOrLogInfo
     {
         #region 资源文件相关
 
-        const string CONFIG_ROOT_PATH = "Assets/ZQFramework/Toolkits/ConfigKit/Editor/Config/VersionConfig.asset";
-        static VersionConfig m_Instance;
+        const string CONFIG_ROOT_PATH = "Assets/ZQFramework/Toolkits/ConfigKit/Editor/Config/VersionExportConfig.asset";
+        static VersionExportConfig m_Instance;
 
-        public static VersionConfig Instance
+        public static VersionExportConfig Instance
         {
             get
             {
                 if (m_Instance != null) return m_Instance;
                 m_Instance = GetOrCreateSOAsset
-                    .GetSingleSOAndDeleteExtraUseAssetDatabase<VersionConfig>(CONFIG_ROOT_PATH);
+                    .GetSingleSOAndDeleteExtraUseAssetDatabase<VersionExportConfig>(CONFIG_ROOT_PATH);
                 return m_Instance;
             }
         }
@@ -37,7 +37,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.VersionConfig
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetProjectObject.FindAndSelectedScript(nameof(VersionConfig)));
+                ScriptUtil.FindAndSelectedScript(nameof(VersionExportConfig)));
 #endif
         }
 

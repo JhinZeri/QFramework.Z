@@ -17,49 +17,80 @@ namespace ZQFramework.Toolkits.UIKit.Core
     {
         #region 变量
 
+        [PropertyOrder(0)]
+        [Title("CanvasView 基类设置如下")]
+        [InfoBox("提示: Reset 方法可以一键赋值")]
+        [OnInspectorGUI]
+        public void Space() { }
+
+        [PropertyOrder(5)]
+        [FoldoutGroup("全局运行时设置")]
+        [InlineEditor]
+        [LabelText("SO文件设置")]
+        public UIRuntimeSetting UIRuntimeSetting;
+
         // 组件字段
+        [PropertyOrder(6)]
         [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("根节点 Canvas")]
         public Canvas UICanvas;
 
+        [PropertyOrder(7)]
+        [FoldoutGroup("基础组件，运行时自动赋值")]
+        [LabelText("Canvas 分辨率设置")]
+        public CanvasScaler UICanvasScaler;
+
+        [PropertyOrder(8)]
         [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("根节点 CanvasGroup")]
         public CanvasGroup UICanvasGroup;
 
         // 子级组件
+        [PropertyOrder(15)]
         [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("遮罩 CanvasGroup")]
         public CanvasGroup UIMaskCanvasGroup;
 
+        [PropertyOrder(16)]
         [FoldoutGroup("基础组件，运行时自动赋值")]
         [LabelText("UI 面板")]
         public Image UIPanel;
 
         // 状态字段
-        [Title("基础状态")]
+        [PropertyOrder(20)]
+        [Title("基础设置")]
+        [LabelText("同步全局分辨率")]
+        [InfoBox("默认为 false，请在 UIRuntimeSetting 中修改全局分辨率")]
+        public bool GlobalScaler;
+
+        [PropertyOrder(21)]
         [LabelText("不使用遮罩")]
         [InfoBox("如果 Canvas 的 OrderInLayer <= 100，则初始化自动设置为 false，不使用遮罩")]
         public bool CanvasDontMask;
 
+        [PropertyOrder(22)]
         [LabelText("不可交互")]
-        [InfoBox("如果不使用遮罩，默认为True，面板不可交互，包括子节点")]
+        [InfoBox("面板值即为初始值，若为 true，则不可交互，包括子节点，可以运行过程中修改")]
         public bool CanvasIsNoninteractive;
 
+        [PropertyOrder(23)]
         [LabelText("执行每帧刷新")]
-        [InfoBox("面板值即为初始化值，通常设置为 False，可以在运行过程中修改状态，仅在显示状态可刷新")]
+        [InfoBox("面板值即为初始值，通常设置为 False，可以在运行过程中修改状态，仅在显示状态可刷新")]
         public bool NeedUpdate;
 
+        [PropertyOrder(24)]
+        [Title("基础状态")]
         [LabelText("已经完成初始化")]
-        [ShowIf("HasInit")]
         public bool HasInit;
 
+        [PropertyOrder(25)]
         [LabelText("界面处于显示状态")]
-        [ShowIf("Visible")]
         public bool Visible;
 
+        [PropertyOrder(26)]
         [Title("堆栈状态")]
         [LabelText("是否属于堆栈队列中")]
-        [InfoBox("发起者尽管没有在实际的堆栈队列中，但是自身关闭前属于堆栈队列")]
+        [InfoBox("Awake 中会设置初始值为 false，在 OnInit 中发起队列，发起者尽管没有在实际的堆栈队列中，但是自身关闭前属于堆栈队列")]
         public bool BelongViewQueue;
 
         #endregion
@@ -109,7 +140,6 @@ namespace ZQFramework.Toolkits.UIKit.Core
             UIKit.DestroyCanvas<T>();
         }
 
-
         /// <summary>
         /// 在运行状态修改UI设置，可以设置
         /// 1. 是否使用遮罩
@@ -128,6 +158,13 @@ namespace ZQFramework.Toolkits.UIKit.Core
 
         #region UIKit 内部方法
 
+#if UNITY_EDITOR
+        void Reset()
+        {
+            InitBaseComponents();
+            BindCanvasViewComponents();
+        }
+#endif
         /// <summary>
         /// UI 物体一旦生成，绑定赋值 UIKit 模板组件变量
         /// </summary>
@@ -138,12 +175,15 @@ namespace ZQFramework.Toolkits.UIKit.Core
         }
 
         /// <summary>
-        /// 绑定 CanvasView 的基础组件变量
+        /// 初始化 CanvasView 的基础组件变量
         /// </summary>
         public void InitBaseComponents()
         {
+            UIRuntimeSetting =
+                UIRuntimeSetting ? UIRuntimeSetting : UIRuntimeSetting.Instance;
             // 组件赋值
-            UICanvas = UICanvas ? UICanvas : transform.GetComponentInChildren<Canvas>();
+            UICanvas = UICanvas ? UICanvas : transform.GetComponent<Canvas>();
+            UICanvasScaler = UICanvasScaler ? UICanvasScaler : transform.GetComponent<CanvasScaler>();
             UICanvasGroup = UICanvasGroup != null ? UICanvasGroup : transform.GetComponent<CanvasGroup>();
             UIMaskCanvasGroup = UIMaskCanvasGroup != null
                 ? UIMaskCanvasGroup
@@ -152,7 +192,57 @@ namespace ZQFramework.Toolkits.UIKit.Core
             // 基础状态
             // 判断是否 DontMask，通常不使用遮罩，则为信息常驻面板，不需要交互
             CanvasDontMask = UICanvas.sortingOrder <= 100;
-            CanvasIsNoninteractive = CanvasDontMask;
+            BelongViewQueue = false;
+
+            #region 根据全局分辨率调整
+
+            if (!GlobalScaler) return;
+            switch (UIRuntimeSetting.Scaler.ScaleMode)
+            {
+                case UIRuntimeSetting.ResolutionScaler.UIScaleMode.ConstantPixel:
+                    UICanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+                    UICanvasScaler.scaleFactor = UIRuntimeSetting.Scaler.ScaleFactor;
+                    break;
+                case UIRuntimeSetting.ResolutionScaler.UIScaleMode.WithScreenSize:
+                    UICanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                    UICanvasScaler.referenceResolution = UIRuntimeSetting.Scaler.ScreenSize;
+                    UICanvasScaler.screenMatchMode = UIRuntimeSetting.Scaler.MatchMode switch
+                    {
+                        UIRuntimeSetting.ResolutionScaler.ScreenMatchMode.MatchWidthOrHeight => CanvasScaler
+                            .ScreenMatchMode.MatchWidthOrHeight,
+                        UIRuntimeSetting.ResolutionScaler.ScreenMatchMode.Expand => CanvasScaler.ScreenMatchMode
+                            .Expand,
+                        UIRuntimeSetting.ResolutionScaler.ScreenMatchMode.Shrink => CanvasScaler.ScreenMatchMode
+                            .Shrink,
+                        var _ => throw new ArgumentOutOfRangeException()
+                    };
+                    if (UICanvasScaler.screenMatchMode == CanvasScaler.ScreenMatchMode.MatchWidthOrHeight)
+                    {
+                        UICanvasScaler.matchWidthOrHeight = UIRuntimeSetting.Scaler.Match;
+                    }
+
+                    break;
+                case UIRuntimeSetting.ResolutionScaler.UIScaleMode.PhysicsSize:
+                    UICanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPhysicalSize;
+                    UICanvasScaler.physicalUnit = UIRuntimeSetting.Scaler.PhysicalUnit switch
+                    {
+                        UIRuntimeSetting.ResolutionScaler.Unit.Centimeters => CanvasScaler.Unit.Centimeters,
+                        UIRuntimeSetting.ResolutionScaler.Unit.Millimeters => CanvasScaler.Unit.Millimeters,
+                        UIRuntimeSetting.ResolutionScaler.Unit.Inches => CanvasScaler.Unit.Inches,
+                        UIRuntimeSetting.ResolutionScaler.Unit.Points => CanvasScaler.Unit.Points,
+                        UIRuntimeSetting.ResolutionScaler.Unit.Picas => CanvasScaler.Unit.Picas,
+                        var _ => throw new ArgumentOutOfRangeException()
+                    };
+                    UICanvasScaler.fallbackScreenDPI = UIRuntimeSetting.Scaler.FallbackScreenDPI;
+                    UICanvasScaler.defaultSpriteDPI = UIRuntimeSetting.Scaler.DefaultSpriteDPI;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            UICanvasScaler.referencePixelsPerUnit = UIRuntimeSetting.Scaler.PixelsPerUnit;
+
+            #endregion
         }
 
         /// <summary>

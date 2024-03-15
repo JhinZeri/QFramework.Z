@@ -35,7 +35,7 @@ namespace 迭代测试过程文件夹.说明工具脚本.Editor
         public void PingScript()
         {
             EditorGUIUtility.PingObject(
-                GetProjectObject.FindAndSelectedScript(nameof(DescriptionSO)));
+                ScriptUtil.FindAndSelectedScript(nameof(DescriptionSO)));
         }
 
         #endregion

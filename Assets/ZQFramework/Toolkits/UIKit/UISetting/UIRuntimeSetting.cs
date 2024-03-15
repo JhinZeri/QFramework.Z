@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.UI;
 using ZQFramework.Toolkits.ConfigKit;
 using ZQFramework.Toolkits.EditorKit.SimulationEditor;
 #if UNITY_EDITOR
@@ -38,16 +39,17 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
         {
             ResetSingleMaskSystem();
             ResetSingleMaskAlpha();
+            ResetResolutionScaler();
             GenerateUIPrefabToPathInResourcesUnit();
         }
 
         [Title("锁定脚本工具")]
-        [Button("锁定脚本", ButtonSizes.Medium)]
+        [Button("锁定 UIRuntimeSetting 脚本", ButtonSizes.Medium)]
         [PropertyOrder(100)]
         public void PingScript()
         {
 #if UNITY_EDITOR
-            UnityEditor.EditorGUIUtility.PingObject(GetProjectObject.FindAndSelectedScript(nameof(UIRuntimeSetting)));
+            UnityEditor.EditorGUIUtility.PingObject(ScriptUtil.FindAndSelectedScript(nameof(UIRuntimeSetting)));
 #endif
         }
 
@@ -68,40 +70,183 @@ namespace ZQFramework.Toolkits.UIKit.UISetting
             SingleMaskAlpha = DEFAULT_SING_MASK_ALPHA;
         }
 
+        void ResetResolutionScaler()
+        {
+            Scaler = new ResolutionScaler
+            {
+                ScaleMode = ResolutionScaler.UIScaleMode.WithScreenSize,
+                MatchMode = ResolutionScaler.ScreenMatchMode.MatchWidthOrHeight,
+                ScreenSize = new Vector2(1920, 1080),
+                Match = 0.5f,
+                ScaleFactor = 1f,
+                PixelsPerUnit = 100,
+                PhysicalUnit = ResolutionScaler.Unit.Points,
+                FallbackScreenDPI = 96,
+                DefaultSpriteDPI = 96
+            };
+        }
+
         #endregion
 
         #region Setting
 
         [PropertyOrder(0)]
-        [Title("遮罩设置")]
+        [TitleGroup("遮罩设置")]
         [InlineButton("ResetSingleMaskSystem", "恢复默认")]
         [LabelText("是否启用单层遮罩模式")]
         public bool SingleMaskSystem;
 
         [PropertyOrder(1)]
+        [TitleGroup("遮罩设置")]
         [Range(0f, 1f)]
         [InlineButton("ResetSingleMaskAlpha", "恢复默认")]
         [LabelText("单层遮罩Alpha值")]
         public float SingleMaskAlpha = 0.7f;
 
-        #region 预制体路径
+        #region Scaler 全局分辨率特殊类
+
+        [Serializable]
+        public class ResolutionScaler
+        {
+            public enum UIScaleMode
+            {
+                [LabelText("固定像素尺寸")]
+                ConstantPixel,
+
+                [LabelText("根据屏幕宽度缩放")]
+                WithScreenSize,
+
+                [LabelText("物理尺寸")]
+                PhysicsSize
+            }
+
+            [PropertyOrder(0)]
+            [LabelText("分辨率缩放模式")]
+            public UIScaleMode ScaleMode;
+
+            #region 固定像素
+
+            [LabelText("缩放因数")]
+            [ShowIf("IsConstantPixel")]
+            public float ScaleFactor = 1f;
+
+            #endregion
+
+            #region 根据屏幕宽度缩放
+
+            public enum ScreenMatchMode
+            {
+                MatchWidthOrHeight = 0,
+                Expand = 1,
+                Shrink = 2
+            }
+
+            [LabelText("分辨率")]
+            [ShowIf("IsWithScreenSize")]
+            public Vector2 ScreenSize = new(1920, 1080);
+
+            [LabelText("分辨率缩放模式")]
+            [ShowIf("IsWithScreenSize")]
+            public ScreenMatchMode MatchMode = ScreenMatchMode.MatchWidthOrHeight;
+
+            // 判断
+            public bool IsMatchWidthOrHeight => MatchMode == ScreenMatchMode.MatchWidthOrHeight && IsWithScreenSize;
+            public bool IsExpand => MatchMode == ScreenMatchMode.Expand && IsWithScreenSize;
+            public bool IsShrink => MatchMode == ScreenMatchMode.Shrink && IsWithScreenSize;
+
+            [ShowIf("IsMatchWidthOrHeight")]
+            [Range(0f, 1f)]
+            [LabelText("宽高缩放匹配度")]
+            [InfoBox("0 为匹配宽度优先, 1 为匹配高度优先，0.5 为均衡，推荐 0.5f")]
+            public float Match = 0.5f;
+
+            #endregion
+
+            #region 物理尺寸
+
+            /// <summary>
+            /// The possible physical unit types
+            /// </summary>
+            public enum Unit
+            {
+                /// <summary>
+                /// Use centimeters.
+                /// A centimeter is 1/100 of a meter
+                /// </summary>
+                Centimeters,
+
+                /// <summary>
+                /// Use millimeters.
+                /// A millimeter is 1/10 of a centimeter, and 1/1000 of a meter.
+                /// </summary>
+                Millimeters,
+
+                /// <summary>
+                /// Use inches.
+                /// </summary>
+                Inches,
+
+                /// <summary>
+                /// Use points.
+                /// One point is 1/12 of a pica, and 1/72 of an inch.
+                /// </summary>
+                Points,
+
+                /// <summary>
+                /// Use picas.
+                /// One pica is 1/6 of an inch.
+                /// </summary>
+                Picas
+            }
+
+            [ShowIf("IsPhysicsSize")]
+            public Unit PhysicalUnit = Unit.Points;
+
+            [ShowIf("IsPhysicsSize")]
+            public float FallbackScreenDPI = 96f;
+
+            [ShowIf("IsPhysicsSize")]
+            public float DefaultSpriteDPI = 96f;
+
+            #endregion
+
+            // 通用
+            [PropertyOrder(10)]
+            public float PixelsPerUnit = 100;
+
+            // 三个判断方法
+            public bool IsConstantPixel => ScaleMode == UIScaleMode.ConstantPixel;
+            public bool IsWithScreenSize => ScaleMode == UIScaleMode.WithScreenSize;
+            public bool IsPhysicsSize => ScaleMode == UIScaleMode.PhysicsSize;
+        }
+
+        #endregion
 
         [PropertyOrder(4)]
+        [TitleGroup("全局分辨率设置")]
+        [LabelText("全局 Scaler 设置")]
+        [InlineButton("ResetResolutionScaler", "重置")]
+        public ResolutionScaler Scaler = new();
+
+        #region 预制体路径
+
+        [PropertyOrder(10)]
         [Title("UI 预制体路径管理（Resources）")]
         [OnInspectorGUI]
         void Space() { }
 
-        [PropertyOrder(5)]
+        [PropertyOrder(11)]
         [LabelText("UI预制体路径管理列表")]
         [TableList]
         [ShowInInspector]
         [ReadOnly]
-        public List<UIPrefabToPathInResources> UIPrefabToPathInResourcesManager = new();
+        public List<UIPrefabToPathInResources> UIPrefabToPathInResourcesManager =
+            new();
 
         /// <summary>
         /// 找出 UI 预制体，并获得对应的路径
         /// </summary>
-        [PropertyOrder(6)]
+        [PropertyOrder(12)]
         [Button("生成预制体路径管理列表", ButtonSizes.Large)]
         public void GenerateUIPrefabToPathInResourcesUnit()
         {

@@ -8,62 +8,98 @@ namespace ZQFramework.Toolkits.UIKit.UIHelper.UGUIStaticExt
     /// </summary>
     public static class UGUIAgentExtension
     {
-        public static void SetUIObjVisible(this GameObject obj, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this GameObject obj, bool visible)
         {
             obj.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Transform trans, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Transform trans, bool visible)
         {
             trans.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Button button, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Button button, bool visible)
         {
             button.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Text text, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Text text, bool visible)
         {
             text.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Slider slider, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Slider slider, bool visible)
         {
             slider.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Toggle toggle, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Toggle toggle, bool visible)
         {
             toggle.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this InputField inputField, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this InputField inputField, bool visible)
         {
             inputField.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Image image, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Image image, bool visible)
         {
             image.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this RawImage rawImage, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this RawImage rawImage, bool visible)
         {
             rawImage.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Dropdown dropdown, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Dropdown dropdown, bool visible)
         {
             dropdown.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this Scrollbar scrollbar, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this Scrollbar scrollbar, bool visible)
         {
             scrollbar.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }
 
-        public static void SetUIObjVisible(this ScrollRect scrollRect, bool visible)
+        /// <summary>
+        /// 使用缩放来隐藏或显示 UI 组件，避免网格重建
+        /// </summary>
+        public static void SetUIComponentVisible(this ScrollRect scrollRect, bool visible)
         {
             scrollRect.transform.localScale = visible ? Vector3.one : Vector3.zero;
         }

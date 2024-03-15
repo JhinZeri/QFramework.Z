@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using ZQFramework.Framework.Core;
 using ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Editor;
 using ZQFramework.Toolkits.ConfigKit;
 using ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder;
@@ -46,7 +49,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetProjectObject.FindAndSelectedScript(nameof(ArchitectureCodeGenConfig)));
+                ScriptUtil.FindAndSelectedScript(nameof(ArchitectureCodeGenConfig)));
 #endif
         }
 
@@ -150,16 +153,38 @@ namespace ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor
             IconAlignment = IconAlignment.LeftOfText)]
         public void DeleteArchitecture()
         {
-            string archiName = CurrentArchitectureClassName;
-            string curArchitecturePath = GetProjectObject.FindScriptPath(archiName);
-
-            // Debug.Log(curArchitecturePath);
-            if (curArchitecturePath != null)
+            var abstractType = typeof(Architecture<>);
+            string curArchitecturePath = null;
+            foreach (string foldedPath in ArchitectureCheckList)
             {
-                AssetDatabase.DeleteAsset(curArchitecturePath);
-                Debug.Log("删除架构 Architecture 成功,路径为: " + curArchitecturePath);
+                curArchitecturePath = ScriptUtil.FindIsGenericSubClassOfInFolderReturnPath(abstractType, foldedPath);
+                if (!string.IsNullOrEmpty(curArchitecturePath))
+                {
+                    break;
+                }
             }
 
+            // 首先检测这个文件夹下有没有继承架构的类
+            string curArchitectureName = string.Empty;
+            foreach (string foldedPath in ArchitectureCheckList)
+            {
+                curArchitectureName =
+                    ScriptUtil.FindIsGenericSubClassOfInFolderReturnName(abstractType, foldedPath);
+                if (string.IsNullOrEmpty(curArchitectureName)) continue;
+                break;
+            }
+
+            if (string.IsNullOrEmpty(curArchitecturePath))
+            {
+                Debug.Log("该文件夹路径不存在架构类");
+                return;
+            }
+
+            if (!EditorUtility.DisplayDialog("删除核心架构 Architecture ",
+                $"确定要删除架构类 {curArchitectureName} 吗 ? 此操作无法撤回，请谨慎操作 ! ", "确定删除",
+                "取消")) return;
+            AssetDatabase.DeleteAsset(curArchitecturePath);
+            Debug.Log("删除架构 Architecture 成功,路径为: " + curArchitecturePath);
             AssetDatabase.Refresh();
             CheckFolderList();
         }
@@ -171,16 +196,38 @@ namespace ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor
             Icon = SdfIconType.SendDashFill)]
         public bool CheckFolderList()
         {
-            string guid = AssetDatabase.FindAssets(CurrentArchitectureClassName, ArchitectureCheckList.ToArray())
-                                       .FirstOrDefault();
-            if (guid == null)
+            var abstractType = typeof(Architecture<>);
+            string curArchitectureName = string.Empty;
+            // 首先检测这个文件夹下有没有继承架构的类
+            foreach (string foldedPath in ArchitectureCheckList)
             {
+                curArchitectureName =
+                    ScriptUtil.FindIsGenericSubClassOfInFolderReturnName(abstractType, foldedPath);
+                if (string.IsNullOrEmpty(curArchitectureName)) continue;
+                HasFindArchitecture = true;
+                CurrentArchitectureClassName = curArchitectureName;
+                break;
+            }
+
+            // 然后检测路径
+            string curArchitecturePath = null;
+            foreach (string foldedPath in ArchitectureCheckList)
+            {
+                curArchitecturePath = ScriptUtil.FindIsGenericSubClassOfInFolderReturnPath(abstractType, foldedPath);
+                if (!string.IsNullOrEmpty(curArchitecturePath))
+                {
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(CurrentArchitectureClassName))
+            {
+                Debug.LogError("没有发现架构类，且没有主动设置架构类名");
                 HasFindArchitecture = false;
-                Debug.Log("没有检测到 Architecture ");
                 return false;
             }
 
-            Debug.Log("成功检测到 Architecture，路径为: " + AssetDatabase.GUIDToAssetPath(guid));
+            Debug.Log($"ZQ === 在文件夹路径：{curArchitecturePath} 中找到一个架构类: {curArchitectureName} ===");
             HasFindArchitecture = true;
             return true;
         }

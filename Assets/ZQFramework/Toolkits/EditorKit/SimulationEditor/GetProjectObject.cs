@@ -32,48 +32,6 @@ namespace ZQFramework.Toolkits.EditorKit.SimulationEditor
 
             return !string.IsNullOrEmpty(assetPath) ? assetPath : null;
         }
-
-        /// <summary>
-        /// 通过脚本名字找到脚本路径，同名脚本可能会找错
-        /// </summary>
-        /// <param name="scriptName"> </param>
-        /// <returns> </returns>
-        public static string FindScriptPath(string scriptName)
-        {
-            string scriptAssetPath = AssetDatabase.FindAssets("t:MonoScript " + scriptName)
-                                                  .Select(AssetDatabase.GUIDToAssetPath)
-                                                  .FirstOrDefault();
-            return !string.IsNullOrEmpty(scriptAssetPath) ? scriptAssetPath : null;
-        }
-
-        /// <summary>
-        /// 查找脚本，并选择到这个脚本文件
-        /// 注意：查找的是 MonoScript，而不是 ScriptableObject，加载的也是 MonoScript
-        /// </summary>
-        /// <param name="scriptName"> </param>
-        /// <returns> </returns>
-        public static MonoScript FindAndSelectedScript(string scriptName)
-        {
-            MonoScript foundMonoScript = null;
-            string scriptAssetPath = AssetDatabase.FindAssets("t:MonoScript " + scriptName)
-                                                  .Select(AssetDatabase.GUIDToAssetPath)
-                                                  .FirstOrDefault();
-
-            if (!string.IsNullOrEmpty(scriptAssetPath))
-                foundMonoScript = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptAssetPath);
-
-            if (foundMonoScript != null)
-            {
-                Selection.activeObject = foundMonoScript;
-                Debug.Log("成功找到脚本并选择 " + foundMonoScript.name);
-            }
-            else
-            {
-                Debug.LogError("没有找到脚本" + scriptName);
-            }
-
-            return foundMonoScript;
-        }
     }
 }
 #endif

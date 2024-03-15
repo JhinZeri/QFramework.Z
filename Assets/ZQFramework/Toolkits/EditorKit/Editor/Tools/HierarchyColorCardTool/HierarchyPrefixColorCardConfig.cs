@@ -42,7 +42,7 @@ namespace ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool
         public void PingScript()
         {
             EditorGUIUtility.PingObject(
-                GetProjectObject.FindAndSelectedScript(nameof(HierarchyPrefixColorCardConfig)));
+                ScriptUtil.FindAndSelectedScript(nameof(HierarchyPrefixColorCardConfig)));
         }
 
         #endregion

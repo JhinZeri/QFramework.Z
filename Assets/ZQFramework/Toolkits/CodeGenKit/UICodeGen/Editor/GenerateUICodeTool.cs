@@ -80,7 +80,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
 
         #endregion
 
-        #region 过程辅助脚本
+        #region 过程脚本
 
         public static void ParseAndCreateUIScripts(GameObject selectedGameObject, bool useNameAndTagParse = true)
         {
@@ -195,10 +195,11 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
         /// <param name="rootCanvasName"> 场景中 ui 根节点的名称 </param>
         static void ParseUICanvasViewNodeData_NameAndTag(Transform trans, string rootCanvasName)
         {
-            // 解析前先获取到当前所有的tag列表
-            var tagManager =
-                new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
-            var tagsProp = tagManager.FindProperty("tags");
+            // 解析前先获取到当前所有的 UI 分析 tag 列表
+            List<string> additionalTags = UICodeGenConfig.Instance.CurrentUICodeGenAdditionalTags;
+            // var tagManager =
+            //     new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+            // var tagsProp = tagManager.FindProperty("tags");
 
             for (var i = 0; i < trans.childCount; i++)
             {
@@ -222,13 +223,11 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Editor
                 else if (!string.IsNullOrEmpty(obj.tag))
                 {
                     string objTag = obj.tag;
-                    foreach (SerializedProperty property in tagsProp)
+                    foreach (string tag in additionalTags.Where(tag => tag.Equals(objTag)))
                     {
-                        // 如果相等，表示匹配上了
-                        if (!property.stringValue.Equals(objTag))
-                            continue;
                         fieldName = obj.name;
-                        fieldType = property.stringValue;
+                        fieldType = tag;
+                        // 标记为可以解析
                         canParsed = true;
                         break;
                     }

@@ -40,7 +40,7 @@ namespace ZQFramework.Toolkits.CodeGenKit.UICodeGen.Config.Editor
         {
 #if UNITY_EDITOR
             UnityEditor.EditorGUIUtility.PingObject(
-                GetProjectObject.FindAndSelectedScript(nameof(UICodeGenLogInfo)));
+                ScriptUtil.FindAndSelectedScript(nameof(UICodeGenLogInfo)));
 #endif
         }
 

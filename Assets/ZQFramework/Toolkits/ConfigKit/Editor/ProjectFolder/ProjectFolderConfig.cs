@@ -13,7 +13,11 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
 
         [PropertyOrder(1)]
         [LabelText("框架是否执行过初始化")]
-        public bool m_ZQFrameworkIsInitialized;
+        public bool ZqFrameworkIsInitialized;
+
+        [HideInInspector]
+        [LabelText("解锁初始化按钮")]
+        public bool InitButtonLock;
 
         #endregion
 
@@ -102,9 +106,19 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         [PropertyOrder(15)]
         [TitleGroup("项目命名空间设置")]
         [InlineButton("ResetNamespace", "重置")]
+        [InlineButton("ChangeNamespaceToRootFolder", "与根目录文件夹一致")]
         [SuffixLabel("命名空间不要以字符'.'结尾", Overlay = true)]
         [LabelText("当前框架脚本命名空间")]
         public string CurrentFrameworkNamespace;
+
+        #region 特殊方法，与根目录文件夹一致
+
+        void ChangeNamespaceToRootFolder()
+        {
+            CurrentFrameworkNamespace = CurrentRootFolder;
+        }
+
+        #endregion
 
         [PropertyOrder(16)]
         [TitleGroup("项目命名空间设置")]
@@ -194,7 +208,7 @@ namespace ZQFramework.Toolkits.ConfigKit.Editor.ProjectFolder
         {
 #if UNITY_EDITOR
             EditorGUIUtility.PingObject(
-                GetProjectObject.FindAndSelectedScript(nameof(ProjectFolderConfig)));
+                ScriptUtil.FindAndSelectedScript(nameof(ProjectFolderConfig)));
 #endif
         }
 

@@ -24,8 +24,4 @@ MonoBehaviour:
     FallbackScreenDPI: 96
     DefaultSpriteDPI: 96
     PixelsPerUnit: 100
-  UIPrefabToPathInResourcesManager:
-  - UIPrefabName: UIGameInfo
-    ResourcesPath: UIPrefabs/UIGameInfo
-  - UIPrefabName: UIGameOver
-    ResourcesPath: UIPrefabs/UIGameOver
+  UIPrefabToPathInResourcesManager: []

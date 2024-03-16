@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -197,7 +194,18 @@ namespace ZQFramework.Toolkits.CodeGenKit.ArchitectureCodeGen.Config.Editor
         public bool CheckFolderList()
         {
             var abstractType = typeof(Architecture<>);
-            string curArchitectureName = string.Empty;
+            var curArchitectureName = string.Empty;
+
+            foreach (string foldedPath in ArchitectureCheckList)
+            {
+                if (!Directory.Exists(foldedPath))
+                {
+                    Debug.Log("该文件夹路径不存在，请检测有效的文件夹");
+                    HasFindArchitecture = false;
+                    return false;
+                }
+            }
+
             // 首先检测这个文件夹下有没有继承架构的类
             foreach (string foldedPath in ArchitectureCheckList)
             {

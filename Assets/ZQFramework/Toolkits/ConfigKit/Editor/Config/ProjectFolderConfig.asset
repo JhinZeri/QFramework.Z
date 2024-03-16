@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ff152d5e6bd8847b2dea748061faf9, type: 3}
   m_Name: ProjectFolderConfig
   m_EditorClassIdentifier: 
-  ZqFrameworkIsInitialized: 0
-  InitButtonLock: 0
+  ZqFrameworkIsInitialized: 1
+  InitButtonLock: 1
   CurrentRootFolder: 
-  CurrentArchitecturePath: 
-  CurrentControllerPath: 
-  CurrentModelPath: 
-  CurrentSystemPath: 
-  CurrentUtilityPath: 
-  CurrentUICodePath: 
-  CurrentUIPrefabPath: 
-  CurrentFrameworkNamespace: 
+  CurrentArchitecturePath: Assets/ZQProject/Scripts/Architecture
+  CurrentControllerPath: Assets/ZQProject/Scripts/Controller
+  CurrentModelPath: Assets/ZQProject/Scripts/Model
+  CurrentSystemPath: Assets/ZQProject/Scripts/System
+  CurrentUtilityPath: Assets/ZQProject/Scripts/Utility
+  CurrentUICodePath: Assets/ZQProject/Scripts/UI
+  CurrentUIPrefabPath: Assets/ZQProject/Resources/UIPrefabs
+  CurrentFrameworkNamespace: GameProject

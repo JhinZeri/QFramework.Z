@@ -44,7 +44,9 @@ namespace ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool
                 if (cardColor.BackgroundColor.a == 0) cardColor.BackgroundColor.a = 1;
                 if (cardColor.TextColor.a == 0) cardColor.TextColor.a = 1;
 
-                EditorGUI.DrawRect(selectionRect, cardColor.BackgroundColor);
+                var finalRect = new Rect(selectionRect.x + 15f, selectionRect.y, selectionRect.width - 15f,
+                    selectionRect.height);
+                EditorGUI.DrawRect(finalRect, cardColor.BackgroundColor);
                 var newGUIStyle = new GUIStyle
                 {
                     alignment = cardColor.TextAlignment,
@@ -54,8 +56,7 @@ namespace ZQFramework.Toolkits.EditorKit.Editor.Tools.HierarchyColorCardTool
                         textColor = cardColor.TextColor
                     }
                 };
-                EditorGUI.LabelField(selectionRect, newName, newGUIStyle);
-                // Debug.Log($"绘制字段 Field  {newName}");
+                EditorGUI.LabelField(finalRect, newName, newGUIStyle);
                 return;
             }
         }

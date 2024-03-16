@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ArchitectureCodeGenConfig
   m_EditorClassIdentifier: 
   CurrentArchitectureClassName: FlappyBird
-  HasFindArchitecture: 1
+  HasFindArchitecture: 0
   ArchitectureCheckList:
   - Assets/FlappyBirdGame/Scripts/Architecture
